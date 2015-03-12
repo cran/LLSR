@@ -36,7 +36,7 @@ mrgsn <- function(...) UseMethod("mrgsn")
 #' mrgsn(XYdt)
 mrgsn.default <- function(XYdt,...){
   names(XYdt)<-c("XC","YC")
-  controll<-nls.control(maxiter=50, tol=1e-10, minFactor = 1/1024, printEval = FALSE, warnOnly = FALSE)
+  #controll<-nls.control(maxiter=50, tol=1e-10, minFactor = 1/1024, printEval = FALSE, warnOnly = FALSE)
   FFn <- nls(
     YC~ A+B*(XC)^0.5+C*XC,
     start=list(A=50,B=1,C=0),
@@ -48,9 +48,10 @@ mrgsn.default <- function(XYdt,...){
 #' @description Othmer's equation to correlate tieline's data applying the lever's rule.
 #' @references Othmer, D.F. and P.E. Tobias, Liquid -Liquid Extraction Data -Toluene and Acetaldehyde Systems.
 #' Industrial & Engineering Chemistry, 1942. 34(6): p. 690-692.
-#' @method mrgsn othmer
 #' @param ... Additional optional arguments. None are used at present.
 #' @param TLdt - Tieline Experimental data that will be used in the nonlinear fit
+#' @method mrgsn othmer
+#' @export mrgsn.othmer
 #' @export
 #' @return Parameters K, n and Statistical data
 #' @examples 
@@ -87,7 +88,8 @@ mrgsn.othmer <- function(TLdt,...){
 #' @references Othmer, D.F. and P.E. Tobias, Liquid-Liquid Extraction Data -Toluene and Acetaldehyde Systems.
 #'  Industrial & Engineering Chemistry, 1942. 34(6): p. 690-692.
 #' @method mrgsn bancroft
-#' @export
+#' @export mrgsn.bancroft
+#' @export 
 #' @param ... Additional optional arguments. None are used at present.
 #' @param TLdt - Tieline Experimental data that will be used in the nonlinear fit
 #' @return Parameters K1, r and Statistical data
@@ -128,7 +130,8 @@ mrgsn.bancroft <- function(TLdt,...){
 #' @details This version uses the plot function and return a regular bidimensional plot. Future versions will
 #'  include a ternary diagram and more formal formatting.
 #' @method mrgsn plot
-#' @export
+#' @export mrgsn.plot
+#' @export 
 #' @param ... Additional optional arguments. None are used at present.
 #' @param XYdt - Standard bidimensional data.frame used in most of functions available in this package. [type::data.frame]
 #' @param xlbl - Plot's Horizontal axis label. If not set, It will admit the system under study is a PEG-Salt System.   [type:string]
@@ -143,34 +146,56 @@ mrgsn.bancroft <- function(TLdt,...){
 #' @param cexsub - Legacy from plot package. For more details, see \code{\link{plot.default}}
 #' @param xmax - Maximum value for the Horizontal axis' value  [type:double]
 #' @param ymax - Maximum value for the Vertical axis' value  [type:double]
-#' @return A plot containing the experimental data and the correspondent curve for the binodal in study.
+#' @param HR - Magnify Plot's text to be compatible with High Resolution size [type:Boulean]
+#' @param NP - Number of points used to build the fitted curve. Default is 100. [type:Integer]
+#' @return A plot containing the experimental data, the correspondent curve for the binodal in study and the curve's raw XY data.
 #' @examples 
 #' #Populating variable XYdt with binodal data
 #' XYdt <- peg4kslt[,1:2] 
 #' #Plot XYdt using Murugesan's function
-#' \dontrun{
+#' #
 #' mrgsn.plot(XYdt)
-#' }
+#' #
 mrgsn.plot <- function  (XYdt, xlbl="Salt Fraction (w/w)", ylbl="PEG Fraction (w/w)", main="Title", col="blue", type="p",
-                         cex=2.5, cexlab=2.5, cexaxis=2.5, cexmain=2.5, cexsub=2.5,xmax=0.4,ymax=0.5,...)
+                         cex=1, cexlab=1, cexaxis=1, cexmain=1, cexsub=1,xmax=0.4,ymax=0.5,HR=FALSE, NP=100,...)
   {
   #
-  par(mar = c(6,6,6,4) + 0.1)
+  if (HR==TRUE){
+    par(mar = c(6,6,6,4) + 0.1)
+    cex=2.5
+    cexlab=2.5
+    cexaxis=2.5
+    cexmain=2.5
+    cexsub=2.5
+  }else{
+    par(mar = c(5, 4, 4, 2) + 0.1)
+    cex=1
+    cexlab=1
+    cexaxis=1
+    cexmain=1
+    cexsub=1
+  }
   #
-  plot(XYdt, xlab=xlbl,ylab=ylbl,main=main,col=col, type=type,
-       cex=cex,cex.lab=cexlab, cex.axis=cexaxis, cex.main=cexmain,
-       cex.sub=cexsub,xlim=c(0,xmax),ylim=c(0,ymax))  
+  plot(XYdt, xlab = xlbl, ylab = ylbl, main = main, col = col, type = type,
+       cex = cex, cex.lab = cexlab, cex.axis = cexaxis, cex.main = cexmain,
+       cex.sub = cexsub, xlim = c(0,xmax), ylim = c(0,ymax)) 
   #
   Smmry<-summary(mrgsn(XYdt))
+  print(Smmry$coefficients[1])
+  print(Smmry$coefficients[2])
+  print(Smmry$coefficients[3])
   #
-  x<-sort(runif(500,0.001,xmax))
+  x <- sort(runif(NP,0.001,xmax))
   #
   Fn <- function(A,B,C,XC){
     A+B*(XC)^0.5+C*XC
   }
   #
-  curve(Fn(Smmry$coefficients[1],
+  rawdt <- curve(Fn(Smmry$coefficients[1],
                 Smmry$coefficients[2],
                 Smmry$coefficients[3],x),
-        add=TRUE)
+        add=TRUE, n = NP)
+  names(rawdt)<-c("XC","YC")
+  rawdt<-as.data.frame(rawdt)
+  invisible(rawdt)
 }

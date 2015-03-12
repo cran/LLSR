@@ -1,4 +1,5 @@
 #'Merchuk's Equation to fit Binodal Experimental Data
+#'@export
 #' @rdname mrchk
 #' @name mrchk
 #' @description Merchuk et al. published a paper in the Journal of 'Chromatography B: Biomedical Sciences and Applications' 
@@ -30,7 +31,7 @@ mrchk <- function(XYdt,...) UseMethod("mrchk")
 #' @examples
 #' #Populating variable XYdt with binodal data
 #' XYdt <- peg4kslt[,1:2] 
-#' #Fitting XYdt using Murugesan's function
+#' #Fitting XYdt using Merchuk's function
 #' mrchk(XYdt)
 mrchk.default <- function(XYdt,P1=10,P2=1,P3=0,...){
   #
@@ -48,7 +49,9 @@ mrchk.default <- function(XYdt,P1=10,P2=1,P3=0,...){
 #' @description The function returns a plot after fitting a dataset to the equation described by Merchuk.
 #' @details This version uses the plot function and return a regular bidimensional plot. Future versions will include a ternary 
 #' diagram and more formal formatting.
+#' @note \deqn{ y = P1\times{} \exp{(P2*x^1/2-P3*x^3) }}
 #' @method mrchk plot
+#' @export mrchk.plot
 #' @export
 #' @param ... Additional optional arguments. None are used at present.
 #' @param XYdt - Binodal Experimental data that will be used in the nonlinear fit
@@ -64,36 +67,55 @@ mrchk.default <- function(XYdt,P1=10,P2=1,P3=0,...){
 #' @param cexsub - Legacy from plot package. For more details, see \code{\link{plot.default}}
 #' @param xmax - Maximum value for the Horizontal axis' value
 #' @param ymax - Maximum value for the Vertical axis' value
-#' @return A plot containing the experimental data and the correspondent curve for the binodal in study.
+#' @param HR - Magnify Plot's text to be compatible with High Resolution size [type:Boulean]
+#' @param NP - Number of points used to build the fitted curve. Default is 100. [type:Integer]
+#' @return A plot containing the experimental data, the correspondent curve for the binodal in study and the curve's raw XY data.
 #' @examples
 #' #Populating variable XYdt with binodal data
 #' XYdt <- peg4kslt[,1:2] 
 #' #Plot XYdt using Merchuk's function
-#' \dontrun{
+#' #
 #' mrchk.plot(XYdt)
-#' }
+#' #
 mrchk.plot <- function  (XYdt, xlbl="Salt Fraction (w/w)", ylbl="PEG Fraction (w/w)", main=NULL, col="blue", type="p",
-                         cex=2.5, cexlab=2.5, cexaxis=2.5, cexmain=2.5, cexsub=2.5,xmax=0.4,ymax=0.5,...)
+                         cex=2.5, cexlab=2.5, cexaxis=2.5, cexmain=2.5, cexsub=2.5, xmax=0.4, ymax=0.5, HR=FALSE, NP=100,...)
 {
     #
-    par(mar = c(6,6,6,4) + 0.1)
+    if (HR==TRUE){
+      par(mar = c(6,6,6,4) + 0.1)
+      cex=2.5
+      cexlab=2.5
+      cexaxis=2.5
+      cexmain=2.5
+      cexsub=2.5
+    }else{
+      par(mar = c(5, 4, 4, 2) + 0.1)
+      cex=1
+      cexlab=1
+      cexaxis=1
+      cexmain=1
+      cexsub=1
+    }
     #
-    plot(XYdt, xlab=xlbl,ylab=ylbl,main=main,col=col, type=type,
-         cex=cex,cex.lab=cexlab, cex.axis=cexaxis, cex.main=cexmain,
-         cex.sub=cexsub,xlim=c(0,xmax),ylim=c(0,ymax))  
+    plot(XYdt, xlab = xlbl, ylab = ylbl, main = main, col = col, type = type,
+         cex = cex, cex.lab = cexlab, cex.axis = cexaxis, cex.main = cexmain,
+         cex.sub = cexsub, xlim = c(0,xmax), ylim = c(0,ymax))  
     #Test if summary exists
-    Smmry<-summary(mrchk(XYdt))
+    Smmry <- summary(mrchk(XYdt))
     #
-    x<-sort(runif(500,0.001,xmax))
+    x <- sort(runif(NP,0.001,xmax))
     #
     Fn <- function(P1,P2,P3,SALT){
       P1*exp(P2*(SALT^(0.5))-P3*(SALT^3))
     }
     #
-    curve(Fn(Smmry$coefficients[1],
+    rawdt <- curve(Fn(Smmry$coefficients[1],
                     Smmry$coefficients[2],
                     Smmry$coefficients[3],x),
-          add=TRUE)
+          add=TRUE, n = NP)
+    names(rawdt)<-c("XC","YC")
+    rawdt<-as.data.frame(rawdt)
+    invisible(rawdt)
 }
 #' @rdname mrchk.tielines
 #' @title Merchuk's Method - Tieline's Composition Calculation
@@ -102,6 +124,7 @@ mrchk.plot <- function  (XYdt, xlbl="Salt Fraction (w/w)", ylbl="PEG Fraction (w
 #' @details Using the binodal data, the global composition of a chosen tieline and its phases properties (more precisely each 
 #' phase density and volume)
 #' @method mrchk tielines
+#' @export mrchk.tielines
 #' @export
 #' @param XYdt - Binodal Experimental data that will be used in the nonlinear fit
 #' @param Xm - Component X's concentration in the tieline's global composition.
@@ -159,6 +182,7 @@ mrchk.tielines<- function(XYdt,Xm,Ym,Vt,Vb,dyt,dyb,...){
 #' under study. When used within a iterative function, mrchk.tielines() can be used to obtain TLL and S and therefore 
 #' calculate the critical composition.
 #' @method mrchk crpt
+#' @export mrchk.crpt
 #' @export
 #' @param tldata - A data.frame with two columns containing a set of Tieline's Slopes (S)
 #' and its bottom-rich component composition in the bottom phase (XB).

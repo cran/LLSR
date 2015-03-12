@@ -35,7 +35,7 @@ The function returns three parameters after fitting experimental data to the equ
 \examples{
 #Populating variable XYdt with binodal data
 XYdt <- peg4kslt[,1:2]
-#Fitting XYdt using Murugesan's function
+#Fitting XYdt using Merchuk's function
 mrchk(XYdt)
 }
 \references{

@@ -7,7 +7,7 @@
 \method{mrchk}{plot}(XYdt, xlbl = "Salt Fraction (w/w)",
   ylbl = "PEG Fraction (w/w)", main = NULL, col = "blue", type = "p",
   cex = 2.5, cexlab = 2.5, cexaxis = 2.5, cexmain = 2.5, cexsub = 2.5,
-  xmax = 0.4, ymax = 0.5, ...)
+  xmax = 0.4, ymax = 0.5, HR = FALSE, NP = 100, ...)
 }
 \arguments{
 \item{XYdt}{- Binodal Experimental data that will be used in the nonlinear fit}
@@ -36,10 +36,14 @@
 
 \item{ymax}{- Maximum value for the Vertical axis' value}
 
+\item{HR}{- Magnify Plot's text to be compatible with High Resolution size [type:Boulean]}
+
+\item{NP}{- Number of points used to build the fitted curve. Default is 100. [type:Integer]}
+
 \item{...}{Additional optional arguments. None are used at present.}
 }
 \value{
-A plot containing the experimental data and the correspondent curve for the binodal in study.
+A plot containing the experimental data, the correspondent curve for the binodal in study and the curve's raw XY data.
 }
 \description{
 The function returns a plot after fitting a dataset to the equation described by Merchuk.
@@ -48,12 +52,15 @@ The function returns a plot after fitting a dataset to the equation described by
 This version uses the plot function and return a regular bidimensional plot. Future versions will include a ternary
 diagram and more formal formatting.
 }
+\note{
+\deqn{ y = P1\times{} \exp{(P2*x^1/2-P3*x^3) }}
+}
 \examples{
 #Populating variable XYdt with binodal data
 XYdt <- peg4kslt[,1:2]
 #Plot XYdt using Merchuk's function
-\dontrun{
+#
 mrchk.plot(XYdt)
-}
+#
 }
 
