@@ -31,3 +31,38 @@ AQSysHR <- function (HR){
     Please use LLSR.info() to read more details about the current
     package version.', domain = NULL, appendLF = TRUE)
 }
+
+AQSys.merge <- function(wrbk, sheets){
+  #
+  sys.nrow <- NULL
+  sys.mrow <- NULL
+  sys.ncol <- NULL
+  sys.data <- NULL
+  #
+  for (nSh in grep("datasource_", sheets)){
+    #
+    sys.nrow <- nrow(readWorksheet(wrbk, nSh, header = FALSE))
+    sys.ncol <- ncol(readWorksheet(wrbk, nSh, header = FALSE))
+    #
+    if (is.null(sys.mrow)) sys.mrow <- sys.nrow
+    if (sys.nrow > sys.mrow) sys.mrow <- sys.nrow 
+    if (is.odd(sys.ncol)) AQSys.err("2")
+    }
+  #
+  for (nSh in grep("datasource_", sheets)){
+    #
+    sys.temp <- readWorksheet(wrbk, nSh, header = FALSE)
+    sys.nrow <- nrow(readWorksheet(wrbk, nSh, header = FALSE))
+    #
+    if (sys.nrow < sys.mrow) {
+      sys.temp[sys.mrow, ] <- NA
+    }
+    if (is.null(sys.data)){
+      sys.data <- sys.temp
+    } else {
+      sys.data <- as.data.frame(c(sys.data, sys.temp),stringsAsFactors=FALSE)
+    }
+    
+  }
+  invisible(sys.data)
+}

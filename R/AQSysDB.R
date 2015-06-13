@@ -23,27 +23,30 @@ AQSysDB <- function(path, order = "xy", CAS = FALSE){
     #
     wrbk <- loadWorkbook(path)
     sheets <- getSheets(wrbk)
-    nSh <- length(sheets)  
     #
     refdb <- data.frame()
-    refdb <- readWorksheet(wrbk, 1, header = FALSE)
+    refdb <- readWorksheet(wrbk, grep("REFDB", sheets), header = FALSE)
     refdb[,2] <- NA
     names(refdb) <- c("REF.NAME","REF.MD5")
     refdb[,2] <- sapply(refdb[,1], digest, algo="md5")
     #
     casdb <- data.frame()
-    casdb <- readWorksheet(wrbk, 2, header = FALSE)
+    casdb <- readWorksheet(wrbk, grep("CASDB", sheets), header = FALSE)
     names(casdb) <- c("CAS.CODE", "CHEM.NAME", "CHEM.COMMON")
     #
     #CONSIDER FIND OTHERS SHEETS FOLLOWING A PATTERN AND EVALUATE ALL OF THEM
     #
-    wsdt <- readWorksheet(wrbk, 3, header = FALSE)
+    #Loop through worksheet index that have the datasource string in its name
+    #and aggregate data under one data prior going got analysis.
     #
-    if (is.odd(ncol(wsdt))) AQSys.err("2")
+    #wsdt <- readWorksheet(wrbk, 3, header = FALSE)
+    #
+    #if (is.odd(ncol(wsdt))) AQSys.err("2")
+    wsdt <- AQSys.merge(wrbk, sheets)
     #
     nSys <- ncol(wsdt)/2
     #
-    llsrdb <- data.frame()
+    llsrdb <- data.frame(stringsAsFactors=FALSE)
     db.info <- 1
     db.data <- 6 
     #
