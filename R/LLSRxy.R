@@ -14,9 +14,11 @@
 #' #
 #' LLSRxy(Xdt,Ydt)
 LLSRxy <- function(XC,YC){
+  # convert variables into vectors
   xc <- as.vector(XC)
   yc <- as.vector(YC)
-  XYdt<-data.frame(XC=xc,YC=yc)
-  #Visible or hidden output?
+  # and combine them into a dataframe
+  XYdt <- data.frame(XC=xc,YC=yc)
+  #return data silently - should it be Visible or hidden?
   invisible(XYdt)
 }

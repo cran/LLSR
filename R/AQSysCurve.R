@@ -29,14 +29,16 @@
 AQSysCurve <- function  (mathDesc, param, xlbl = "", ylbl = "", main = NULL, col = "black", type = "p",
                      cex = 1, cexlab = 1, cexaxis = 1, cexmain = 1, cexsub = 1, xmax = 0.4, mpl = FALSE, HR = FALSE, NP = 100)
 {
-  #
+  # set graph parameters to export plots in High Quality
   AQSysHR(HR)
-  #
-  param<-as.double(unlist(param))
-  #
-  x<-sort(runif(NP, 0.001, xmax))
-  #
+  # unlist and convert parameters to double
+  param <- as.double(unlist(param))
+  # mass fraction range of bottom-rich component (min is 0, max is 1)
+  x <- sort(runif(NP, 0.001, xmax))
+  # select which model will be used to generate the plot
   switch(mathDesc,
+         # Fn receives a function correspondent to users choice.
+         # check AQSys.mathDesc.R for more details.
          merchuk={
            Fn <- AQSys.mathDesc("merchuk")
          },
@@ -46,13 +48,17 @@ AQSysCurve <- function  (mathDesc, param, xlbl = "", ylbl = "", main = NULL, col
          tello={
            Fn <- AQSys.mathDesc("tello")
          },
+         # if user selects an option not available, it triggers an error
+         # (check AQSys.err.R for details)
          AQSys.err("0")
   )
-  #
+  # generate curve using selected Fn function and store data in rawdt
   rawdt <- curve( Fn(param, x), col = col, add = mpl,
                  xlim = c(0, xmax), xlab = xlbl, ylab = ylbl)
-  #
-  names(rawdt)<-c("XC", "YC")
-  rawdt<-as.data.frame(rawdt)
+  # set headers for output variable to be returned
+  names(rawdt) <- c("XC", "YC")
+  # convert output to dataframe variable
+  rawdt <- as.data.frame(rawdt)
+  # make data available to user
   invisible(rawdt)
 }

@@ -15,26 +15,29 @@
 ####################################################################################################################
 AQSearch.CAS <- function(db, ChemString, ...){
   #
-  #names(db) <- c("CAS.CODE", "CHEM.NAME", "CHEM.COMMON")
+  # names(db) <- c("CAS.CODE", "CHEM.NAME", "CHEM.COMMON")
+  # Checks if variable db is corretly formatted. See AQSearchUtils.R for more details.
   db.check(db)
+  # Initialization of ans, which will be used to return results.
   ans <- data.frame()
-  #
+  # Check if search parameter is not null.
   if (is.null(ChemString) == FALSE){
-    db.grep <- grep(toupper(ChemString), toupper(db$db.cas[,2]))
-    #
+    # convert both input String and db string to uppercase and compare them.
+    # function fetch data from chem name and common name.
+    db.grep <- unique(c(grep(toupper(ChemString), toupper(db$db.cas[,2])), 
+                       grep(toupper(ChemString), toupper(db$db.cas[,3]))))
+    # check if search returned any result
     if ((length(db.grep) != 0) & (db.grep[1] != 0)){
-      db <- db$db.cas[db.grep, ]
-    }else{
-      db.grep <- grep(toupper(ChemString), toupper(db$db.cas[,3]))
-    }
-    #
-    if ((length(db.grep) != 0) & (db.grep[1] != 0)){
+      # if yes, store in the output variable
       ans <- db$db.cas[db.grep, ]
-    } else{
+    }else{
+      # if no result was found, it triggers an error (check AQSys.err.R for details)
       AQSys.err("8")
     }
   } else {
+    # if string isn't valid, it triggers an error (check AQSys.err.R for details)
     AQSys.err("4")
   }
+  # return search results
   invisible(ans)
 }

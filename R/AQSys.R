@@ -1,5 +1,7 @@
 ####################################################################################################################
 #' @import rootSolve
+#' @import graphics
+#' @import stats
 ####################################################################################################################
 require(rootSolve)
 ####################################################################################################################
@@ -38,18 +40,21 @@ AQSys <- function(XYdt,...) UseMethod("AQSys")
 #' #Fitting XYdt using Merchuk's function
 #' AQSys(XYdt)
 AQSys.default <- function(XYdt, mathDesc="merchuk",...){
+  # each switch option calls a correspondent equation to fit XYdt
+  # equations are functions declared in AQSysFormulas.R
   switch(mathDesc,
          merchuk={
-           ans<-mrchk(XYdt)
+           ans <- mrchk(XYdt)
          },
          murugesan={
-           ans<-mrgsn(XYdt)
+           ans <- mrgsn(XYdt)
          },
          tello={
-           ans<-tello(XYdt)
+           ans <- tello(XYdt)
          },
          AQSys.err("0")
   )
+  # return fitting parameters ans statistical data
   return(ans)
 }
 ####################################################################################################################
@@ -91,29 +96,36 @@ AQSys.plot <- function  (XYdt, xlbl = "", ylbl = "", main = NULL, col = "blue", 
                          cex = 1, cexlab = 1, cexaxis = 1, cexmain = 1, cexsub = 1,
                          xmax = 0.4, ymax = 0.5, HR = FALSE, NP = 100, mathDesc = "merchuk",...)
 {
-  #
+  # set graph parameters to export plots in High Quality
   AQSysHR(TRUE)
-  #
+  # select which model will be used to generate the plot
   switch(mathDesc,
          merchuk={
+           # fit data using chosen equation and get coefficients
            CoefSET <- summary(mrchk(XYdt))$coefficients[, 1]
+           # set the equation that will be used to plot the phase diagram
            Fn <- AQSys.mathDesc("merchuk")
          },
          murugesan={
+           # fit data using chosen equation and get coefficients
            CoefSET <- summary(mrgsn(XYdt))$coefficients[, 1]
+           # set the equation that will be used to plot the phase diagram
            Fn <- AQSys.mathDesc("murugesan")
          },
          tello={
+           # fit data using chosen equation and get coefficients
            CoefSET <- summary(tello(XYdt))$coefficients[, 1]
+           # set the equation that will be used to plot the phase diagram
            Fn <- AQSys.mathDesc("tello")
          },
+         # if user selects an option not available, it triggers an error (check AQSys.err.R for details)
         AQSys.err("0")
   )
-  #
+  #plot phase diagram using experimental data and with previously selected parameters
   plot(XYdt, xlab = xlbl, ylab = ylbl, main = main, col = col, type = type,
        cex = cex, cex.lab = cexlab, cex.axis = cexaxis, cex.main = cexmain,
        cex.sub = cexsub, xlim = c(0,xmax), ylim = c(0,ymax))  
-  #
+  # mass fraction range of bottom-rich component (min is 0, max is 1)
   x <- sort(runif(NP,0.001,xmax))
   #
   #SWITCH WORKS ONLY FOR THREE PARAMETER'S EQUATIONS.
@@ -121,10 +133,13 @@ AQSys.plot <- function  (XYdt, xlbl = "", ylbl = "", main = NULL, col = "blue", 
   #Maybe change it to have as input the whole coefficient set?
   #a<-summary(mrchk(peg4kslt[,1:2]))$coefficients[,1]
   #
+  # add curve generated using regression parameters
   rawdt <- curve(Fn(CoefSET,x),
                  add=TRUE, n = NP)
-  names(rawdt)<-c("XC","YC")
-  rawdt<-as.data.frame(rawdt)
+  names(rawdt) <- c("XC","YC")
+  rawdt <- as.data.frame(rawdt)
+  # make available data from fitted curve to user. Function returns it silently
+  # but user can get data using simple assign '<-'
   invisible(rawdt)
 }
 ####################################################################################################################

@@ -1,3 +1,4 @@
+# Each number used as argument triggers an error with its respective message
 AQSys.err <- function (err, ...){
   switch(err,
          "0"={

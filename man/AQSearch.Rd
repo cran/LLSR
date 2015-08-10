@@ -32,7 +32,7 @@ AQSearch(db, ...)
 System's index (when subset = FALSE) or system's parameters (subset = TRUE)
 }
 \description{
-This function allow the user to search the package database to find any ATPS that matches the used criteria.
+This function allow the user to search the LLSR database to find any ATPS that matches the used criteria.
 
 This function allow the user to search the package database to find any ATPS that matches the used criteria.
 }
