@@ -1,5 +1,4 @@
 #' Dataset of experimental binodal data of an ATPS
-#'
 #' A dataset containing the experimental binodal data for a PEG/SALT Aqueous Two-Phases System (ATPS)
 #' @name peg4kslt
 #' @format A data.frame with 116 rows and 2 variables:
@@ -8,7 +7,7 @@
 #'   \item{YC}{Fraction of PEG}
 #'   ...
 #' }
-#' @source \url{http://diegofcoelho.github.io/code/}
+#' @source \url{https://github.com/hutchr/LLSR}
 #' @examples
 #' #
 #' XYdt <- peg4kslt[,1:2]

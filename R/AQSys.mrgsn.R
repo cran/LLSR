@@ -9,7 +9,7 @@ require(rootSolve)
 #' @param TLdt - Tieline Experimental data that will be used in the nonlinear fit
 #' @export AQSysOthmer
 #' @return Parameters K, n and Statistical data
-#' @examples 
+#' @examples
 #' # TLdt is a data.frame which contains series of Tieline's mass fraction
 #' # (upper-rich component, bottom-rich component and water)
 #' # Each column in the data.frame represents a series of one component mass fraction
@@ -24,7 +24,7 @@ require(rootSolve)
 #' \dontrun{
 #' AQSysOthmer(TLdt)
 #'}
-AQSysOthmer <- function(TLdt,...){
+AQSysOthmer <- function(TLdt,...) {
   # store tieline data into a dataframe variable. It might be a better approach check if
   # user stored it in a dataframe and if not trigger an error.
   TLdt <- as.data.frame(TLdt)
@@ -33,12 +33,17 @@ AQSysOthmer <- function(TLdt,...){
   # the line bellow set the dataset header
   names(TLdt) <- c("mfXt","mfYt","mfXb","mfYb","mfWt","mfWb")
   # the system below will calculate n and K for a given set of tielines
-  suppressWarnings(FFn <- nls(
-    log((1-mfYt)/mfYt) ~ log(K*(((1-mfXb)/mfXb))^n),
-    start=list(n=1,K=1), 
-    algorithm="port",
-    lower=10^-10,
-    data=TLdt,na.exclude))
+  suppressWarnings(
+    FFn <- nls(
+      log((1 - mfYt) / mfYt) ~ log(K * (((
+        1 - mfXb
+      ) / mfXb)) ^ n),
+      start = list(n = 1,K = 1),
+      algorithm = "port",
+      lower = 10 ^ -10,
+      data = TLdt,na.exclude
+    )
+  )
   # return all calculated parameters
   FFn
 }
@@ -51,7 +56,7 @@ AQSysOthmer <- function(TLdt,...){
 #' @param ... Additional optional arguments. None are used at present.
 #' @param TLdt - Tieline Experimental data that will be used in the nonlinear fit
 #' @return Parameters K1, r and Statistical data
-#' @examples 
+#' @examples
 #' # TLdt is a data.frame which contains series of Tieline's mass fraction
 #' # (upper-rich component, bottom-rich component and water)
 #' # Each column in the data.frame represents a series of one component mass fraction
@@ -66,7 +71,7 @@ AQSysOthmer <- function(TLdt,...){
 #' \dontrun{
 #' AQSysBancroft(TLdt)
 #'}
-AQSysBancroft <- function(TLdt,...){
+AQSysBancroft <- function(TLdt,...) {
   # store tieline data into a dataframe variable. It might be a better approach check if
   # user stored it in a dataframe and if not trigger an error.
   TLdt <- as.data.frame(TLdt)
@@ -76,12 +81,13 @@ AQSysBancroft <- function(TLdt,...){
   names(TLdt) <- c("mfXt","mfYt","mfXb","mfYb","mfWt","mfWb")
   # the system below will calculate r and K1 for a given set of tielines
   #suppressWarnings(
-    FFn <- nls(
-    log((mfWb/mfXb)) ~ log(K1*((mfWt/mfYt)^r)),
-    start=list(r=1,K1=1),
-    algorithm="port",
-    lower=10^-2,
-    data=TLdt,na.exclude)
+  FFn <- nls(
+    log((mfWb / mfXb)) ~ log(K1 * ((mfWt / mfYt) ^ r)),
+    start = list(r = 1,K1 = 1),
+    algorithm = "port",
+    lower = 10 ^ -2,
+    data = TLdt,na.exclude
+  )
   #)
   # return all calculated parameters
   FFn

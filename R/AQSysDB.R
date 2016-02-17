@@ -1,5 +1,5 @@
 ####################################################################################################################
-options(digits=14)
+options(digits = 14)
 require(XLConnect)
 require(digest)
 ####################################################################################################################
@@ -9,11 +9,12 @@ require(digest)
 #' @rdname AQSysDB
 #' @name AQSysDB
 #' @title AQSysDB
+#' @description Import DB data from an Excel Worksheet.
 #' @export
 #' @param path String containing the full path to the XLS or XLSX file.
 #' @param order Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.
 #' @param CAS The user has the option to identify the component's cells in the worksheet with the CAS (CAS = TRUE) or with the row number that matches a CAS entry in the CASDB worksheet (CAS = FALSE)
-#' @examples 
+#' @examples
 #' \dontrun{
 #' AQSysDB("C:/data.xls", order = "xy", CAS = FALSE)
 #'}
@@ -21,9 +22,9 @@ require(digest)
 # AQSysDB() is a simple approach that is ready to use any three-parameter equation
 # and thus
 #
-AQSysDB <- function(path, order = "xy", CAS = FALSE){
+AQSysDB <- function(path, order = "xy", CAS = FALSE) {
   # path must point to a xlsx or xls file
-  if (grepl(".xlsx",path) | grepl(".xls", path)){
+  if (grepl(".xlsx",path) | grepl(".xls", path)) {
     # load file
     wrbk <- loadWorkbook(path)
     # load sheets
@@ -31,17 +32,19 @@ AQSysDB <- function(path, order = "xy", CAS = FALSE){
     # initiate refdb - dataframe that will get reference data
     refdb <- data.frame()
     # find a sheet with the "REFDB" fragment in its name and load it
-    refdb <- readWorksheet(wrbk, grep("REFDB", sheets), header = FALSE)
+    refdb <-
+      readWorksheet(wrbk, grep("REFDB", sheets), header = FALSE)
     # initiate its second column
     refdb[, 2] <- NA
     # define refdb headers
     names(refdb) <- c("REF.NAME", "REF.MD5")
     # encrypt entries found in the file using md5 and store it in refdb
-    refdb[, 2] <- sapply(refdb[, 1], digest, algo="md5")
+    refdb[, 2] <- sapply(refdb[, 1], digest, algo = "md5")
     # initiate casdb - dataframe that will get CAS data
     casdb <- data.frame()
     # find a sheet with the "CASDB" fragment in its name and load it
-    casdb <- readWorksheet(wrbk, grep("CASDB", sheets), header = FALSE)
+    casdb <-
+      readWorksheet(wrbk, grep("CASDB", sheets), header = FALSE)
     #define casdb headers
     names(casdb) <- c("CAS.CODE", "CHEM.NAME", "CHEM.COMMON")
     #
@@ -60,13 +63,13 @@ AQSysDB <- function(path, order = "xy", CAS = FALSE){
     wsdt <- AQSys.merge(wrbk, sheets)
     # Each system have two columns, thus the total number of columns divided by two
     # gives the number of systems
-    nSys <- ncol(wsdt)/2
+    nSys <- ncol(wsdt) / 2
     # set llsrb as a datafram which data are not converted automatically to factors
-    llsrdb <- data.frame(stringsAsFactors=FALSE)
+    llsrdb <- data.frame(stringsAsFactors = FALSE)
     # System's info location starts in the row below
     db.info <- 1
-    # System's data location starts in the row below    
-    db.data <- 6 
+    # System's data location starts in the row below
+    db.data <- 6
     #
   } else {
     # if an invalid path is loaded, it triggers an error
@@ -78,24 +81,24 @@ AQSysDB <- function(path, order = "xy", CAS = FALSE){
   cat(paste("Analysing ", nSys," systems. \n\n", collapse = NULL))
   # the experimental phase diagram data fetched in the lines above will be used
   # to calculate the nonlinear parameters for all equations in AQSysList()
-  for (i in AQSysList()){
+  for (i in AQSysList()) {
     # print in the prompt which equations is being used in the systems
     cat(i,": ", sep = "")
     # verify if llsrdb already have data and how many lines already were added
     db.n.row <- nrow(llsrdb)
     # If this is the first run for the dataset under analysis, initialize llsrdb
-    if(db.n.row == 0){
+    if (db.n.row == 0) {
       db.first.row <- 1
       db.last.row <- nSys
-    # if not, shift first and last rows indexes
+      # if not, shift first and last rows indexes
     }else{
       db.first.row <- db.n.row + 1
       db.last.row <- db.n.row + nSys
     }
     # populate llsrdb based in the number of systems loaded from file
-    for (j in db.first.row:db.last.row){
+    for (j in db.first.row:db.last.row) {
       # c1 e c2 are the index for the systems unders analysis at the momment
-      c1 <- 2*(j - db.n.row) - 1
+      c1 <- 2 * (j - db.n.row) - 1
       c2 <- c1 + 1
       # get the data length of system under analysis
       lSys <- length(wsdt[, c1])
@@ -106,7 +109,7 @@ AQSysDB <- function(path, order = "xy", CAS = FALSE){
         # add Component's CAS directly to llsrdb
         llsrdb[j, 2] <- wsdt[db.info + 2, c1]
         llsrdb[j, 3] <- wsdt[db.info + 2, c2]
-      # if cas field in sysdb in filled with an index refering to casdb
+        # if cas field in sysdb in filled with an index refering to casdb
       } else{
         # Cross reference indexes and add only the Component's CAS
         llsrdb[j,2] <- casdb[wsdt[db.info + 2, c1], 1]
@@ -122,19 +125,23 @@ AQSysDB <- function(path, order = "xy", CAS = FALSE){
       # remove NA entries and convert to dataframe
       db.Sys <- as.data.frame(na.exclude(rawSys))
       # checkinf if all entries are numbers and uses dot as decimal
-      if (is.numeric(db.Sys[1,1])){
+      if (is.numeric(db.Sys[1,1])) {
+        
       } else{
         db.first.col <- as.numeric(sub(",", ".", db.Sys[,1], fixed = TRUE))
-        db.second.col <- as.numeric(sub(",", ".", db.Sys[,2], fixed = TRUE))
+        db.second.col <-
+          as.numeric(sub(",", ".", db.Sys[,2], fixed = TRUE))
       }
       # When calling AQSysDB the user can use as input the order the data is in the sheet
       # if XY, analyse it normally
-      if (tolower(order)=="xy"){
-        resSys <- summary(AQSys(LLSRxy(db.first.col,db.second.col),mathDesc=i))
+      if (tolower(order) == "xy") {
+        resSys <-
+          summary(AQSys(LLSRxy(db.first.col,db.second.col),mathDesc = i))
       }
       else{
         # if YX, invert columns
-        resSys<-summary(AQSys(LLSRxy(db.second.col,db.first.col),mathDesc=i))
+        resSys <-
+          summary(AQSys(LLSRxy(db.second.col,db.first.col),mathDesc = i))
       }
       # populate llsrdb with the appropriated parameters from the nonlinear regression
       #
@@ -142,7 +149,7 @@ AQSysDB <- function(path, order = "xy", CAS = FALSE){
       llsrdb[j,9] <- resSys$parameters[2,1]
       llsrdb[j,10] <- resSys$parameters[3,1]
       llsrdb[j,11] <- resSys$sigma
-      llsrdb[j,12] <- sum(resSys$residuals^2)
+      llsrdb[j,12] <- sum(resSys$residuals ^ 2)
       llsrdb[j,13] <- resSys$parameters[1,2]
       llsrdb[j,14] <- resSys$parameters[2,2]
       llsrdb[j,15] <- resSys$parameters[3,2]
@@ -158,14 +165,16 @@ AQSysDB <- function(path, order = "xy", CAS = FALSE){
     #
   }
   # set llsrdb header
-  names(llsrdb) <- c("REF.MD5", "UP.Rich", "LP.Rich", "Sys.pH", "Sys.Additive",
-                     "Sys.Additive.Conc", "Sys.Temp","P1", "P2", "P3",  "Res.Std.Err",
-                     "SSR",	"P1.Std.Err",	"P2.Std.Err",	"P3.Std.Err",
-                    "P1.tValue",	"P2.tValue",	"P3.tValue", "Ach.Conv.Tol",
-                    "n.Points", "math.Desc")
+  names(llsrdb) <-
+    c(
+      "REF.MD5", "UP.Rich", "LP.Rich", "Sys.pH", "Sys.Additive",
+      "Sys.Additive.Conc", "Sys.Temp","P1", "P2", "P3",  "Res.Std.Err",
+      "SSR",	"P1.Std.Err",	"P2.Std.Err",	"P3.Std.Err",
+      "P1.tValue",	"P2.tValue",	"P3.tValue", "Ach.Conv.Tol",
+      "n.Points", "math.Desc"
+    )
   # return silently all data obtained from the worksheet in a list of three dataframes
-  invisible(list("db.ref" = refdb, "db.sys" = llsrdb, "db.cas" = casdb))
+  invisible(list(
+    "db.ref" = refdb, "db.sys" = llsrdb, "db.cas" = casdb
+  ))
 }
-
-
-

@@ -13,12 +13,12 @@
 #' Ydt<-peg4kslt[,1]
 #' #
 #' LLSRxy(Xdt,Ydt)
-LLSRxy <- function(XC,YC){
+LLSRxy <- function(XC,YC) {
   # convert variables into vectors
   xc <- as.vector(XC)
   yc <- as.vector(YC)
   # and combine them into a dataframe
-  XYdt <- data.frame(XC=xc,YC=yc)
+  XYdt <- data.frame(XC = xc,YC = yc)
   #return data silently - should it be Visible or hidden?
   invisible(XYdt)
 }
