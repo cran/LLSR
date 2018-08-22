@@ -9,4 +9,3 @@ AQSysList()
 \description{
 The function returns a list of all mathematical descriptors available at the time.
 }
-

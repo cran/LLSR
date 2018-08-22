@@ -6,8 +6,9 @@
 \usage{
 \method{AQSys}{plot}(XYdt, xlbl = "", ylbl = "", main = NULL,
   col = "blue", type = "p", cex = 1, cexlab = 1, cexaxis = 1,
-  cexmain = 1, cexsub = 1, xmax = 0.4, ymax = 0.5, HR = FALSE,
-  NP = 100, mathDesc = "merchuk", clwd = NULL, save = FALSE, ...)
+  cexmain = 1, cexsub = 1, xmax = "", ymax = "", HR = FALSE,
+  NP = 100, mathDesc = "merchuk", clwd = NULL, filename = NULL,
+  wdir = NULL, save = FALSE, silent = FALSE, ...)
 }
 \arguments{
 \item{XYdt}{Binodal Experimental data that will be used in the nonlinear fit}
@@ -45,7 +46,13 @@ Merchuk's equation. Other possibilities can be seen in AQSysList().}
 
 \item{clwd}{Plot's axis line width}
 
+\item{filename}{A filename chosen by the user to save a given plot}
+
+\item{wdir}{A directory in which the plot file will be saved}
+
 \item{save}{Optimize Plot's elements to be compatible with High Resolution size [type:Boulean]}
+
+\item{silent}{save the file without the user input}
 
 \item{...}{Additional optional arguments. None are used at present.}
 }
@@ -66,4 +73,3 @@ XYdt <- peg4kslt[,1:2]
 AQSys.plot(XYdt)
 #
 }
-

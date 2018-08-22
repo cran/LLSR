@@ -46,4 +46,3 @@ AQSys(XYdt)
 \item \code{\link{AQSysBancroft}}
 }
 }
-

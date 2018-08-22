@@ -8,8 +8,8 @@
 AQSearch(db, ...)
 
 \method{AQSearch}{default}(db = NULL, db.ph = NULL, db.upper = NULL,
-  db.lower = NULL, db.temp = NULL, db.additive = NULL, subset = FALSE,
-  ...)
+  db.lower = NULL, db.temp = NULL, db.additive = NULL,
+  subset = FALSE, ...)
 }
 \arguments{
 \item{db}{A list of three data.frame variables within all systems data are stored.}
@@ -44,4 +44,3 @@ The function return the systems that matches the criteria submit by the user. Be
 AQSearch(db,db.upper="85100-78-3", subset = TRUE)
 }
 }
-

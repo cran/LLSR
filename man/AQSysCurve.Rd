@@ -70,4 +70,3 @@ to return a plot which represent the chosen model.
 AQSysCurve("murugesan", as.data.frame(c(0.90, -3.48, 2.92)), mpl = TRUE, col = "red")
 }
 }
-

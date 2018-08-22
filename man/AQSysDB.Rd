@@ -21,4 +21,3 @@ Import DB data from an Excel Worksheet.
 AQSysDB("C:/data.xls", order = "xy", CAS = FALSE)
 }
 }
-

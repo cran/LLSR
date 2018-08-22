@@ -53,4 +53,3 @@ dyb <- peg4kslt[2,8]
 #
 AQSys.gsnchk(XYdt,Xm,Ym,Vt,Vb,dyt,dyb)
 }
-

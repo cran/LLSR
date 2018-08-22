@@ -32,4 +32,3 @@ calculate the critical composition.
 AQSys.crpt(XYdt,tldata)
 }
 }
-
