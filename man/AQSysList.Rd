@@ -4,7 +4,10 @@
 \alias{AQSysList}
 \title{Aqueous Systems Descriptors already implemented}
 \usage{
-AQSysList()
+AQSysList(npars = FALSE)
+}
+\arguments{
+\item{npars}{Logic option to return a List variable containing the number of required parameters for each equation.}
 }
 \description{
 The function returns a list of all mathematical descriptors available at the time.

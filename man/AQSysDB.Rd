@@ -4,12 +4,12 @@
 \alias{AQSysDB}
 \title{AQSysDB}
 \usage{
-AQSysDB(path, order = "xy", CAS = FALSE)
+AQSysDB(path, ColDis = "xy", CAS = FALSE)
 }
 \arguments{
 \item{path}{String containing the full path to the XLS or XLSX file.}
 
-\item{order}{Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.}
+\item{ColDis}{Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.}
 
 \item{CAS}{The user has the option to identify the component's cells in the worksheet with the CAS (CAS = TRUE) or with the row number that matches a CAS entry in the CASDB worksheet (CAS = FALSE)}
 }
@@ -18,6 +18,6 @@ Import DB data from an Excel Worksheet.
 }
 \examples{
 \dontrun{
-AQSysDB("C:/data.xls", order = "xy", CAS = FALSE)
+AQSysDB("C:/data.xls", ColDis = "xy", CAS = FALSE)
 }
 }

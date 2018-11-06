@@ -43,6 +43,11 @@ AQSys.err <- function (err, ...) {
       errmsg <- "Your search had no results."
       stop(errmsg, call. = FALSE)
     },
+    "9" = {
+      errmsg <-
+        "A valid data set has multiple two-columns data for calculations but an odd number of columns was observed in the input file"
+      stop(errmsg, call. = FALSE)
+    },
     {
       errmsg <- "An Unknown error ocourred."
       stop(errmsg, call. = FALSE)

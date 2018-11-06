@@ -4,10 +4,10 @@
 \alias{AQSys.tielines}
 \title{Merchuk's Method - Tieline's Composition Calculation}
 \usage{
-\method{AQSys}{tielines}(XYdt, Xm, Ym, Vt, Vb, dyt, dyb, ...)
+\method{AQSys}{tielines}(dataSET, Xm, Ym, Vt, Vb, dyt, dyb, ...)
 }
 \arguments{
-\item{XYdt}{- Binodal Experimental data that will be used in the nonlinear fit}
+\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit}
 
 \item{Xm}{- Component X's concentration in the tieline's global composition.}
 
@@ -37,6 +37,6 @@ phase density and volume)
 }
 \examples{
 \dontrun{
-AQSys.tielines(XYdt,Xm,Ym,Vt,Vb,dyt,dyb)
+AQSys.tielines(dataSET,Xm,Ym,Vt,Vb,dyt,dyb)
 }
 }

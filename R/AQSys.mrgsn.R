@@ -1,5 +1,4 @@
 #' @import rootSolve
-require(rootSolve)
 #' @rdname AQSysOthmer
 #' @title Othmer's Equation - Tieline's correlation
 #' @description Othmer's equation to correlate tieline's data applying the lever's rule.

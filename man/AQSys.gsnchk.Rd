@@ -4,10 +4,10 @@
 \alias{AQSys.gsnchk}
 \title{Merchuk's Method of calculating phase's composition in a Tieline applied to Murugesan Binodal Function}
 \usage{
-\method{AQSys}{gsnchk}(XYdt, Xm, Ym, Vt, Vb, dyt, dyb, ...)
+\method{AQSys}{gsnchk}(dataSET, Xm, Ym, Vt, Vb, dyt, dyb, ...)
 }
 \arguments{
-\item{XYdt}{- Standard bidimensional data.frame used in most of functions available in this package.}
+\item{dataSET}{- Standard bidimensional data.frame used in most of functions available in this package.}
 
 \item{Xm}{- Component X's concentration in the tieline's global composition.}
 
@@ -34,15 +34,13 @@ However, other researchers relate to have achieved better fitting results using 
 This method offers Merchul's ways o calculate Tieline's composition but using the equation proposed by Murugesan.
 }
 \details{
-Merchuk's Method of calculating phase's composition in a Tieline applied to Murugesan Binodal Function
-
 Using the binodal data, the global composition of a chosen tieline and its phases properties (more precisely
 each phase density and volume). Using the data included in LLSR package the function couldn't achieve steady-state and
 consecutively have a poor convergence tolerance. Use for your own risk.
 }
 \examples{
 #
-XYdt <- peg4kslt[,1:2]
+dataSET <- peg4kslt[,1:2]
 #
 Xm <- peg4kslt[2,3]
 Ym <- peg4kslt[2,4]
@@ -51,5 +49,5 @@ Vb <- peg4kslt[2,6]
 dyt <- peg4kslt[2,7]
 dyb <- peg4kslt[2,8]
 #
-AQSys.gsnchk(XYdt,Xm,Ym,Vt,Vb,dyt,dyb)
+AQSys.gsnchk(dataSET,Xm,Ym,Vt,Vb,dyt,dyb)
 }

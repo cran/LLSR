@@ -3,18 +3,18 @@
 \name{AQSys}
 \alias{AQSys}
 \alias{AQSys.default}
-\title{Merchuk's Equation to fit Binodal Experimental Data}
+\title{Merchuk's nonlinear Equation}
 \usage{
-AQSys(XYdt, ...)
+AQSys(dataSET, ...)
 
-\method{AQSys}{default}(XYdt, mathDesc = "merchuk", ...)
+\method{AQSys}{default}(dataSET, modelName = "merchuk", ...)
 }
 \arguments{
-\item{XYdt}{- Binodal Experimental data that will be used in the nonlinear fit}
+\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit}
 
 \item{...}{Additional optional arguments. None are used at present.}
 
-\item{mathDesc}{- Character String specifying the nonlinear empirical equation to fit data.
+\item{modelName}{- Character String specifying the nonlinear empirical equation to fit data.
 The default method uses Merchuk's equation. Other mathematical descriptors can be listed using AQSysList().}
 }
 \value{
@@ -31,10 +31,10 @@ equation's parameters.
 The function returns functions parameters after fitting experimental data to the equations listed in AQSysList().
 }
 \examples{
-#Populating variable XYdt with binodal data
-XYdt <- peg4kslt[,1:2]
-#Fitting XYdt using Merchuk's function
-AQSys(XYdt)
+#Populating variable dataSET with binodal data
+dataSET <- peg4kslt[,1:2]
+#Fitting dataSET using Merchuk's function
+AQSys(dataSET)
 }
 \seealso{
 \itemize{

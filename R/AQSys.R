@@ -1,9 +1,7 @@
 if(getRversion() >= "3.5")
   utils::globalVariables(
     c(
-      "x",
       "Series",
-      "y",
       "xlab",
       "ylab",
       "geom_point",
@@ -17,21 +15,12 @@ if(getRversion() >= "3.5")
     )
   )
 ####################################################################################################################
-#' @import rootSolve
-#' @import graphics
-#' @import stats
-#' @import svDialogs
-#' @import ggplot2
+#' @import rootSolve graphics stats svDialogs ggplot2 svglite
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices png
-####################################################################################################################
-require(rootSolve)
-require(svglite)
-require(svDialogs)
-require(ggplot2)
 # options(warn = 1)
 ####################################################################################################################
-#'Merchuk's Equation to fit Binodal Experimental Data
+# Merchuk's Equation to fit Binodal Experimental Data
 #' @rdname AQSys
 #' @name AQSys
 #' @description .
@@ -45,7 +34,7 @@ require(ggplot2)
 #' \item \code{\link{AQSysBancroft}}
 #' }
 ####################################################################################################################
-AQSys <- function(XYdt, ...)
+AQSys <- function(dataSET, ...)
   UseMethod("AQSys")
 ####################################################################################################################
 #' @rdname AQSys
@@ -53,35 +42,27 @@ AQSys <- function(XYdt, ...)
 #' @description Perform a nonlinear regression fit using several mathemmatical descriptors in order to determine the
 #' equation's parameters.
 #' @details The function returns functions parameters after fitting experimental data to the equations listed in AQSysList().
-#' @param mathDesc - Character String specifying the nonlinear empirical equation to fit data.
+#' @param modelName - Character String specifying the nonlinear empirical equation to fit data.
 #' The default method uses Merchuk's equation. Other mathematical descriptors can be listed using AQSysList().
-#' @param XYdt - Binodal Experimental data that will be used in the nonlinear fit
+#' @param dataSET - Binodal Experimental data that will be used in the nonlinear fit
 #' @param ... Additional optional arguments. None are used at present.
 #' @method AQSys default
 #' @export
 #' @return A list containing three data.frame variables with all data parsed from the worksheet and parameters calculated
 #' through the available mathematical descriptions.
 #' @examples
-#' #Populating variable XYdt with binodal data
-#' XYdt <- peg4kslt[,1:2]
-#' #Fitting XYdt using Merchuk's function
-#' AQSys(XYdt)
-AQSys.default <- function(XYdt, mathDesc = "merchuk", ...) {
-  # each switch option calls a correspondent equation to fit XYdt
+#' #Populating variable dataSET with binodal data
+#' dataSET <- peg4kslt[,1:2]
+#' #Fitting dataSET using Merchuk's function
+#' AQSys(dataSET)
+AQSys.default <- function(dataSET, modelName = "merchuk", ...) {
+  # each switch option calls a correspondent equation to fit dataSET
   # equations are functions declared in AQSysFormulas.R
-  switch(
-    mathDesc,
-    merchuk = {
-      ans <- mrchk(XYdt)
-    },
-    murugesan = {
-      ans <- mrgsn(XYdt)
-    },
-    tello = {
-      ans <- tello(XYdt)
-    },
+  if (modelName %in% names(AQSysList(TRUE))) {
+    ans <- do.call(modelName, list(dataSET))
+  } else{
     AQSys.err("0")
-  )
+  }
   # return fitting parameters ans statistical data
   return(ans)
 }
@@ -95,13 +76,11 @@ AQSys.default <- function(XYdt, mathDesc = "merchuk", ...) {
 #' @method AQSys plot
 #' @export AQSys.plot
 #' @export
-#' @param mathDesc - Character String specifying the nonlinear empirical equation to fit data. The default method uses
-#' Merchuk's equation. Other possibilities can be seen in AQSysList().
-#' @param ... Additional optional arguments. None are used at present.
-#' @param XYdt Binodal Experimental data that will be used in the nonlinear fit
+#' @param dataSET - Binodal Experimental data that will be used in the nonlinear fit. It might hold multiple systems stacked side-by-side. [type:data.frame]
 #' @param xlbl Plot's Horizontal axis label.
 #' @param ylbl Plot's Vertical axis label.
 #' @param main Legacy from plot package. For more details, see \code{\link{plot.default}}
+#' 
 #' @param col Legacy from plot package. For more details, see \code{\link{plot.default}}
 #' @param type Legacy from plot package. For more details, see \code{\link{plot.default}}
 #' @param cex Legacy from plot package. For more details, see \code{\link{plot.default}}
@@ -109,25 +88,29 @@ AQSys.default <- function(XYdt, mathDesc = "merchuk", ...) {
 #' @param cexaxis Legacy from plot package. For more details, see \code{\link{plot.default}}
 #' @param cexmain Legacy from plot package. For more details, see \code{\link{plot.default}}
 #' @param cexsub Legacy from plot package. For more details, see \code{\link{plot.default}}
+#' 
+#' @param modelName - Character String specifying the nonlinear empirical equation to fit data. The default method uses
+#' Merchuk's equation. Other possibilities can be seen in AQSysList().
+#' @param NP Number of points used to build the fitted curve. Default is 100. [type:Integer]
 #' @param xmax Maximum value for the Horizontal axis' value
 #' @param ymax Maximum value for the Vertical axis' value
-#' @param filename A filename chosen by the user to save a given plot
-#' @param wdir A directory in which the plot file will be saved
-#' @param silent save the file without the user input
-#' @param HR Magnify Plot's text to be compatible with High Resolution size [type:Boulean]
-#' @param NP Number of points used to build the fitted curve. Default is 100. [type:Integer]
-#' @param clwd Plot's axis line width
-#' @param save Optimize Plot's elements to be compatible with High Resolution size [type:Boulean]
+#' @param colDis Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.
+#' @param save Save the generated plot in the disk using path and filename provided by the user. [type:Boulean]
+#' @param HR Adjust Plot's text to be compatible with High Resolution size [type:Boulean]
+#' @param filename Filename provided by the user to save a given plot. [type:String]
+#' @param wdir The directory in which the plot file will be saved. [type:String]
+#' @param silent save plot file without actually showing it to the user. [type:Boulean]
+#' @param ... Additional optional arguments. None are used at present.
 #' @return A plot containing the experimental data, the correspondent curve for the binodal in study and the curve's raw XY data.
 #' @examples
-#' #Populating variable XYdt with binodal data
-#' XYdt <- peg4kslt[,1:2]
-#' #Plot XYdt using Merchuk's function
+#' #Populating variable dataSET with binodal data
+#' dataSET <- peg4kslt[,1:2]
+#' #Plot dataSET using Merchuk's function
 #' #
-#' AQSys.plot(XYdt)
+#' AQSys.plot(dataSET)
 #' #
 AQSys.plot <-
-  function  (XYdt,
+  function  (dataSET,
              xlbl = "",
              ylbl = "",
              main = NULL,
@@ -138,120 +121,53 @@ AQSys.plot <-
              cexaxis = 1,
              cexmain = 1,
              cexsub = 1,
+             modelName = "merchuk",
+             NP = 100,
              xmax = "",
              ymax = "",
+             colDis = "xy",
+             save = FALSE,
              HR = FALSE,
-             NP = 100,
-             mathDesc = "merchuk",
-             clwd = NULL,
              filename = NULL,
              wdir = NULL,
-             save = FALSE,
              silent = FALSE,
              ...)
   {
     #
     plot_image = NULL
-    #
+    # verify and adjust data.frame names
     if (xlbl == "") {
-      xlbl <- names(XYdt)[1]
+      xlbl <- names(dataSET)[1]
     }
     if (ylbl == "") {
-      ylbl <- names(XYdt)[2]
+      ylbl <- names(dataSET)[2]
     }
-    names(XYdt) <- c('x', 'y')
-    #
-    if ((xmax == "") ||
-        (xmax > 1) || (xmax < round(max(XYdt[1]) / 0.92, 1))) {
-      xmax <- round(max(XYdt[1]) / 0.92, 1)
+    # guarantee all lines are valid (non-na and numeric)
+    dataSET <- toNumeric(dataSET, colDis)
+    # Calculate aesthetically better xmax and ymax
+    if ((xmax == "") | (xmax > 1) | (xmax < round(max(dataSET[1]) / 0.92, 1))) {
+      xmax <- ceiling(round(max(dataSET[1]) / 0.92, 1)/5)*5
     }
-    if ((ymax == "") ||
-        (ymax > 1) || (ymax < round(max(XYdt[2]) / 0.92, 1))) {
-      ymax <- round(max(XYdt[2]) / 0.92, 1)
+    if ((ymax == "") | (ymax > 1) | (ymax < round(max(dataSET[2]) / 0.92, 1))) {
+      ymax <- ceiling(round(max(dataSET[2]) / 0.92, 1)/5)*5
     }
-    #
-    #
-    if (save == TRUE) {
-      if (HR == TRUE) {
-        image_format <- ".svg"
-      } else{
-        image_format <- ".png"
-      }
-      #
-      if (is.null(filename)) {
-        # Get user choice for a filename to save the plot
-        filename <-
-          dlgInput(message = "Enter the figure filename:")$res
-      }
-      # complete filename with the appropriated extension
-      filename <- paste(filename, image_format, sep = "")
-      # Check if filename is invalid and quite if so
-      if (filename == image_format) {
-        stop("Filename is NULL or INVALID.", call. = TRUE)
-      }
-      #
-      #
-      if (is.null(wdir)) {
-        # Get user choice for a directory to save the plot
-        wdir <- dlgDir()$res
-      }
-      # Check if path is invalid and quite if so
-      if ((wdir == "") && (silent == FALSE)) {
-        #
-        stop("Path is NULL or INVALID.", call. = TRUE)
-        #
-      } else if ((wdir == "") && (silent == TRUE)) {
-        #
-        wdir <- getwd()
-        wdir <- paste(wdir, filename, sep = .Platform$file.sep)
-        #
-      } else{
-        #
-        wdir <- paste(wdir, filename, sep = .Platform$file.sep)
-        #
-      }
-    }
-    #
-    #
-    #
-    # Select which model will be used to generate the plot
-    # SWITCH WORKS ONLY FOR THREE PARAMETER'S EQUATIONS.
-    # IF NECESSARY A HIGHER NUMBER, INSERT CONDITIONAL BELOW.
-    switch(
-      mathDesc,
-      merchuk = {
-        # fit data using chosen equation and get coefficients
-        CoefSET <- summary(mrchk(XYdt))$coefficients[, 1]
-        # set the equation that will be used to plot the phase diagram
-        Fn <- AQSys.mathDesc("merchuk")
-      },
-      murugesan = {
-        # fit data using chosen equation and get coefficients
-        CoefSET <- summary(mrgsn(XYdt))$coefficients[, 1]
-        # set the equation that will be used to plot the phase diagram
-        Fn <- AQSys.mathDesc("murugesan")
-      },
-      tello = {
-        # fit data using chosen equation and get coefficients
-        CoefSET <- summary(tello(XYdt))$coefficients[, 1]
-        # set the equation that will be used to plot the phase diagram
-        Fn <- AQSys.mathDesc("tello")
-      },
-      # if user selects an option not available, it triggers an error (check AQSys.err.R for details)
-      AQSys.err("0")
-    )
-    #
-    #
-    #
+    # If save=TRUE adjust variables and parameters to save plot
+    wdir <- saveConfig(save, HR, filename, wdir, silent)
+    # Select which model will be used to generate the plot. Function return list of plots and respective number of parameters
+    models_npars <- AQSysList(TRUE)
+    # calculate coefficients using the non-linear regression
+    CoefSET <- summary(AQSys(dataSET, modelName))$coefficients[, 1]
+    # choose model based in the user choice or standard value
+    Fn <- ifelse(modelName %in% names(models_npars), AQSys.mathDesc(modelName), AQSys.err("0"))
     #plot phase diagram using experimental data and with previously calculated parameters
-    plot_image <-
-      ggplot(data = XYdt, aes(x, y)) + geom_point(shape = 8, size = 2) +
-      theme_light() + xlab(xlbl) + ylab(ylbl) + theme(validate = FALSE,
+    plot_image <- ggplot(data = dataSET, aes_string(x = "XC", y = "YC")) + geom_point(shape = 8, size = 2) +
+      theme_light() + xlab(paste(xlbl, "(%, m/m)")) + ylab(paste(ylbl, "(%, m/m)")) + theme(
+        validate = FALSE,
         plot.margin = unit(c(1, 1, 1, 1), "cm"),
-        text = element_text(size = 18),
+        text = element_text(size = 16),
         legend.position = "top",
-        axis.title.y = element_text(vjust = 1.4),
-        axis.title.x = element_text(vjust = 0),
+        axis.title.y = element_text(vjust = 5),
+        axis.title.x = element_text(vjust = -2),
         panel.grid.major = element_line(size = .70, colour = "black"),
         panel.grid.minor = element_line(size = .70),
         panel.border = element_rect(size = .5, colour = "white"),
@@ -273,8 +189,8 @@ AQSys.plot <-
       scale_y_continuous(
         expand = c(0, 0),
         limits = c(0.001, ymax),
-        breaks = seq(0, ymax, by = ymax / 10),
-        labels = seq(0, ymax, by = ymax / 10)
+        breaks = seq(0, ymax, by = 5),
+        labels = seq(0, ymax, by = 5)
       ) +
       scale_x_continuous(
         expand = c(0, 0),
@@ -284,12 +200,12 @@ AQSys.plot <-
       )
     #
     # add curve generated using regression parameters
-    rawdt <- data.frame(XYdt[1], Fn(CoefSET, XYdt[1]))
-    names(rawdt) <- c("x", "y")
+    rawdt <- data.frame(dataSET[1], Fn(CoefSET, dataSET[1]))
+    names(rawdt) <- c("XC", "YC")
     plot_image <-
       plot_image + geom_line(
         data = rawdt,
-        aes(x = x, y = y),
+        aes_string(x = "XC", y = "YC"),
         color = "red",
         linetype = 2,
         size = 1.1
@@ -303,16 +219,13 @@ AQSys.plot <-
         height = 14.39 / 2
       )
     }
-    #
     # make available data from fitted curve to user. Function returns it silently
     # but user can get data using simple assign '<-'
-    #
     if (silent == FALSE) {
       print(plot_image)
       invisible(rawdt)
     } else {
       invisible(plot_image)
     }
-    #
   }
 ####################################################################################################################

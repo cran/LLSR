@@ -4,10 +4,10 @@
 \alias{AQSys.crpt}
 \title{Merchuk's Method - Critical Point Calculation}
 \usage{
-\method{AQSys}{crpt}(XYdt, tldata, ...)
+\method{AQSys}{crpt}(dataSET, tldata, ...)
 }
 \arguments{
-\item{XYdt}{- Binodal Experimental data that will be used in the nonlinear fit}
+\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit}
 
 \item{tldata}{- A data.frame with two columns containing a set of Tieline's Slopes (S)
 and its bottom-rich component composition in the bottom phase (XB).}
@@ -29,6 +29,6 @@ calculate the critical composition.
 }
 \examples{
 \dontrun{
-AQSys.crpt(XYdt,tldata)
+AQSys.crpt(dataSET,tldata)
 }
 }

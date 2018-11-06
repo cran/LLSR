@@ -1,5 +1,3 @@
-
-
 #' @rdname AQSys.tielines
 #' @title Merchuk's Method - Tieline's Composition Calculation
 #' @description Merchuk et al. described a very straightforward method to calculate the concentration of each component in the
@@ -9,7 +7,7 @@
 #' @method AQSys tielines
 #' @export AQSys.tielines
 #' @export
-#' @param XYdt - Binodal Experimental data that will be used in the nonlinear fit
+#' @param dataSET - Binodal Experimental data that will be used in the nonlinear fit
 #' @param Xm - Component X's concentration in the tieline's global composition.
 #' @param Ym - Component Y's concentration in the tieline's global composition.
 #' @param Vt - Tieline's TOP phase volume.
@@ -21,11 +19,11 @@
 #' and Tieline's Slope.
 #' @examples
 #' \dontrun{
-#' AQSys.tielines(XYdt,Xm,Ym,Vt,Vb,dyt,dyb)
+#' AQSys.tielines(dataSET,Xm,Ym,Vt,Vb,dyt,dyb)
 #' }
-AQSys.tielines <- function(XYdt,Xm,Ym,Vt,Vb,dyt,dyb,...) {
-  # Fit XYdt data to Merchuk's equation and store it in Smmry
-  Smmry <- summary(mrchk(XYdt))
+AQSys.tielines <- function(dataSET,Xm,Ym,Vt,Vb,dyt,dyb,...) {
+  # Fit dataSET data to Merchuk's equation and store it in Smmry
+  Smmry <- summary(merchuk(dataSET))
   # extract regression parameters from Smmry
   P1 <- Smmry$coefficients[1]
   P2 <- Smmry$coefficients[2]
@@ -87,16 +85,16 @@ AQSys.tielines <- function(XYdt,Xm,Ym,Vt,Vb,dyt,dyb,...) {
 #' @export
 #' @param tldata - A data.frame with two columns containing a set of Tieline's Slopes (S)
 #' and its bottom-rich component composition in the bottom phase (XB).
-#' @param XYdt - Binodal Experimental data that will be used in the nonlinear fit
+#' @param dataSET - Binodal Experimental data that will be used in the nonlinear fit
 #' @param ... Additional optional arguments. None are used at present.
 #' @return (XCrit,YCrit) - The function returns Tieline's Critical Point Composition
 #' @examples
 #' \dontrun{
-#' AQSys.crpt(XYdt,tldata)
+#' AQSys.crpt(dataSET,tldata)
 #' }
-AQSys.crpt <- function(XYdt, tldata,...) {
-  # Fit XYdt data to Merchuk's equation and store it in Smmry
-  Smmry <- summary(mrchk(XYdt))
+AQSys.crpt <- function(dataSET, tldata,...) {
+  # Fit dataSET data to Merchuk's equation and store it in Smmry
+  Smmry <- summary(merchuk(dataSET))
   # store tieline data into a dataframe variable. It might be a better approach check if
   # user stored it in a dataframe and if not trigger an error.
   tldata <- as.data.frame(tldata)
@@ -105,21 +103,16 @@ AQSys.crpt <- function(XYdt, tldata,...) {
   # solve a system of equations using Merchuk's equation and the
   # polynomial from tieline regression
   fitC <- function(x) {
-    F1 = -x[1] + Smmry$coefficients[1] * exp(Smmry$coefficients[2] * x[2] ^
-                                               0.5 - Smmry$coefficients[3] * x[2] ^ 3) * ((Smmry$coefficients[2] / (2 *
-                                                                                                                      x[2] ^ 0.5)) - 3 * Smmry$coefficients[3] * x[2] ^ 2)
-    F2 = -x[1] + resTLLfit$coefficients[1] + resTLLfit$coefficients[2] *
-      x[2] + resTLLfit$coefficients[3] * x[2] ^ 2
-    c(F1 = F1,F2 = F2)
+    F1 = -x[1] + Smmry$coefficients[1] * exp(Smmry$coefficients[2] * x[2] ^ 0.5 - Smmry$coefficients[3] * x[2] ^ 3) * ((Smmry$coefficients[2] / (2 * x[2] ^ 0.5)) - 3 * Smmry$coefficients[3] * x[2] ^ 2)
+    F2 = -x[1] + resTLLfit$coefficients[1] + resTLLfit$coefficients[2] * x[2] + resTLLfit$coefficients[3] * x[2] ^ 2
+    return(c(F1 = F1,F2 = F2))
   }
   # solve the system of equation for a given set of guess
   (sres <- multiroot(f = fitC, start = c(.1,.1)))
   # store calculated heavy-component concentration at global composition
   XCrit <- sres$root[2]
   # store calculated light-component concentration at global composition
-  YCrit <-
-    Smmry$coefficients[1] * exp(Smmry$coefficients[2] * (XCrit ^ (0.5)) - Smmry$coefficients[3] *
-                                  (XCrit ^ 3))
+  YCrit <- Smmry$coefficients[1] * exp(Smmry$coefficients[2] * (XCrit ^ (0.5)) - Smmry$coefficients[3] * (XCrit ^ 3))
   # include critical concentration in the output of the system of equations result
   sres$XCrit <- XCrit
   sres$YCrit <- YCrit

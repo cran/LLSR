@@ -4,12 +4,14 @@
 \alias{LLSRxy}
 \title{Dataset aggregation Function}
 \usage{
-LLSRxy(XC, YC)
+LLSRxy(FirstCol, SecondCol, ColDis = "xy")
 }
 \arguments{
-\item{XC}{- Component X's concentration in the BOTTOM X-rich phase.}
+\item{FirstCol}{- Component X's concentration in the TOP Y-rich phase.}
 
-\item{YC}{- Component Y's concentration in the TOP Y-rich phase.}
+\item{SecondCol}{- Component Y's concentration in the BOTTOM X-rich phase.}
+
+\item{ColDis}{Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.}
 }
 \value{
 XYdt - Standard bidimensional data.frame used in most of functions available in this package.

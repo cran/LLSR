@@ -4,21 +4,22 @@
 \alias{AQSysCurve}
 \title{This functions plot a curve based in the chosen model and its parameters.}
 \usage{
-AQSysCurve(mathDesc, param, xlbl = "", ylbl = "", main = NULL,
-  col = "black", type = "p", cex = 1, cexlab = 1, cexaxis = 1,
-  cexmain = 1, cexsub = 1, xmax = 0.4, mpl = FALSE, HR = FALSE,
-  NP = 100, clwd = NULL, save = FALSE)
+AQSysCurve(modelName, modelPars, seriesNames = NULL, xlbl = "",
+  ylbl = "", col = "black", type = "p", cex = 1, cexlab = 1,
+  cexaxis = 1, cexmain = 1, cexsub = 1, xmax = 35, HR = FALSE,
+  NP = 100, filename = NULL, wdir = NULL, save = FALSE,
+  silent = FALSE, ...)
 }
 \arguments{
-\item{mathDesc}{Equation to be used: merchuk, murugesan [type:string]}
+\item{modelName}{Equation to be used: merchuk, murugesan [type:string]}
 
-\item{param}{Model's parameters [type::data.frame]}
+\item{modelPars}{Model's parameters [type::data.frame]}
+
+\item{seriesNames}{A list of sequential names which will identify each system provided by the user in the dataSET variable. [type:List]}
 
 \item{xlbl}{Plot's Horizontal axis label.}
 
 \item{ylbl}{Plot's Vertical axis label.}
-
-\item{main}{a main title for the plot, see also \code{\link{title}}.}
 
 \item{col}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
 
@@ -44,15 +45,20 @@ AQSysCurve(mathDesc, param, xlbl = "", ylbl = "", main = NULL,
 
 \item{xmax}{Maximum value for the Horizontal axis' value (bottom-rich component)  [type:double]}
 
-\item{mpl}{Multiples curves overlayed in a single plot. Default is FALSE. [type::LOGIC]}
-
-\item{HR}{Magnify Plot's text to be compatible with High Resolution size [type:Boulean]}
+\item{HR}{Adjust Plot's text to be compatible with High Resolution size [type:Logical]}
 
 \item{NP}{Number of points used to build the fitted curve. Default is 100. [type:Integer]}
 
-\item{clwd}{Plot's axis line width}
+\item{filename}{Filename provided by the user to save a given plot. [type:String]}
 
-\item{save}{Optimize Plot's elements to be compatible with High Resolution size [type:Boulean]}
+\item{wdir}{The directory in which the plot file will be saved. [type:String]}
+
+\item{save}{Save the generated plot in the disk using path and filename provided by the user. [type:Logical]}
+
+\item{silent}{save plot file without actually showing it to the user. [type:Logical]}
+
+\item{...}{other \link{graphical parameters} (see \code{\link{par}} and
+    section \sQuote{Details} below).}
 }
 \value{
 A plot using the input model within the chosen interval and the curve's raw XY data.
@@ -67,6 +73,6 @@ to return a plot which represent the chosen model.
 }
 \examples{
 \dontrun{
-AQSysCurve("murugesan", as.data.frame(c(0.90, -3.48, 2.92)), mpl = TRUE, col = "red")
+AQSysCurve("murugesan", as.data.frame(c(0.90, -3.48, 2.92)), col = "red")
 }
 }
