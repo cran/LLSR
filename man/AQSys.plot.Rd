@@ -67,7 +67,7 @@ This version uses the plot function and return a regular bidimensional plot.
 }
 \examples{
 #Populating variable dataSET with binodal data
-dataSET <- peg4kslt[,1:2]
+dataSET <- llsr_data$db.data[6:23,1:2]
 #Plot dataSET using Merchuk's function
 #
 AQSys.plot(dataSET)

@@ -12,7 +12,7 @@ options(digits = 14)
 #' @param dataSET - Binodal Experimental data that will be used in the nonlinear fit
 #' @param xmax Maximum value for the Horizontal axis' value (bottom-rich component). [type:double]
 #' @param NP Number of points used to build the fitted curve. Default is 100. [type:Integer]
-#' @param TLSlope The method assumes all tielines for a given ATPS are parallel, thus only one slope is required. [type:double]
+#' @param slope The method assumes all tielines for a given ATPS are parallel, thus only one slope is required. [type:double]
 #' @param modelName Character String specifying the nonlinear empirical equation to fit data.
 #' The default method uses Merchuk's equation. Other mathematical descriptors can be listed using AQSysList(). [type:string]
 #' @param convrgnceLines Magnify Plot's text to be compatible with High Resolution size [type:Logical]
@@ -45,9 +45,9 @@ options(digits = 14)
 #dataSET <- dados[["db.data"]][, 93:104]
 #
 AQSysEval <- function(dataSET,
-                      xmax = 30,
+                      xmax = NULL,
                       NP = 100,
-                      TLSlope = -1.846924,
+                      slope = NULL,
                       modelName = "merchuk",
                       convrgnceLines = FALSE,
                       nTL = 3,
@@ -60,7 +60,13 @@ AQSysEval <- function(dataSET,
                       HR = FALSE,
                       autoname = FALSE,
                       wdir = NULL,
-                      silent = FALSE) {
+                      silent = TRUE) {
+  #
+  if (is.null(slope)){
+    slope = findSlope(dataSET)
+  } else if (!((ncol(dataSET) / 2) == length(slope))){
+    AQSys.err("11")
+  }
   # Select which model will be used to generate the plot. Function return list of plots and respective number of parameters
   models_npars <- AQSysList(TRUE)
   # Divides the number of columns of the data set per two to calculate how many systems it hold. result must be even.
@@ -91,14 +97,14 @@ AQSysEval <- function(dataSET,
           AQSys.err("0")
         )
       # define a straight line EQ
-      Gn <- function (yMin, TLSlope, xMAX, x) {
-          yMin + TLSlope * (x - xMAX)
+      Gn <- function (yMin, AngCoeff, xMAX, x) {
+          yMin + AngCoeff * (x - xMAX)
         }
       # Add constant variable values to the equations
       modelFn <- function(x) Fn(model_pars, x)
-      modelTl <- function(x) Gn(yMin, TLSlope, xMAX, x)
+      modelTl <- function(x) Gn(yMin, slope[i], xMAX, x)
       # Decide whether xmax will be calculated or use the provided value
-      xMAX <- ifelse(is.null(xmax), max(SysData[, 1]), xmax)
+      xMAX <- ifelse(is.null(xmax), max(SysData[, seq(1, ncol(SysData), 2)]*1.1), xmax)
       yMAX <- max(SysData[, 2]) # get ymax from the dataset
       SysList[[i]] <- list()
       SysL <- list()
@@ -132,7 +138,7 @@ AQSysEval <- function(dataSET,
         # Bind the calculated tieline's data.frame to the output data.frame variable
         BNDL <- rbind(BNDL,  SysL[[TL]])
         # A monod-base equation to help convergence
-        dt <- abs(SysL[[TL]][2, 1] - modelFn(SysL[[TL]][2, 1])) / ((25 * TL) / (xMAX / 2))
+        dt <- abs(SysL[[TL]][2, 1] - modelFn(SysL[[TL]][2, 1])) / ((5 * TL) / (xMAX / 2))
         xMAX <- xMAX - dt
       }
       # data.frame holding data regarding Critical Point convergence
@@ -147,39 +153,46 @@ AQSysEval <- function(dataSET,
       # Note that the criteria for the loops above means that at the end, all compositions are equal. Thus, the last tieline found
       # essentially satisfy the definition of critical point. The lines below add such point in a specific dataframe for the system
       # under study/calculation
-      XC <- SysL[[length(SysL)]][["X"]][1]
-      YC <- SysL[[length(SysL)]][["Y"]][1]
+      XC <- SysL[[length(SysL) - 1]][["X"]][1]
+      YC <- SysL[[length(SysL) - 1]][["Y"]][1]
       SysCvP <- setNames(data.frame(XC, YC), c("XC", "YC"))
       SysL$ConvergencePoint <- SysCvP
       # Print tieline's convergence data for the system
       # print(round(cbind(SysCvP, output_res), 4))
       # Max Tieline will be the first 'viable' tieline, i.e., which xmax yield a ymax within the experimental range
       maxTL <- SysL[[1]]
+      SysL$maxTL <- maxTL
       # A procedure to find the minimum tieline was written as a standalone function
-      minTL <- FindMinTL(SysCvP, GlobalPoints[1, ], max(maxTL["X"]), TLSlope, modelFn, tol)
+      minTL <- FindMinTL(SysCvP, GlobalPoints[1, ], max(maxTL["X"]), slope[i], modelFn, tol)
       SysL$minTL <- minTL
       # when desired, a experimental design matrix with n tielines and m points is provided
-      SysL$DOE <- seqTL(minTL, maxTL, TLSlope, modelFn, nTL, nPoints)
+      SysL$DOE <- seqTL(minTL, maxTL, slope[i], modelFn, nTL, nPoints)
+      # when desired, a experimental design matrix with n tielines and m points is provided
+      SysL$TLL <- TLL(minTL, maxTL)
       # a hypothetical X=Y critical point is calculate -> probably deprecated and removed soon
-      rootCritical <- uniroot(function(x)(modelFn(x) - x), c(0, xMAX))$root
-      SysL$CriticalPoint <- rootCritical
+      # rootCritical <- uniroot(function(x)(modelFn(x) - x), c(0, xMAX))$root
+      # SysL$CriticalPoint <- rootCritical
+      # add the Empirical Model parameters to the list, in order to allow subsequent use with no re-calculation
+      SysL$PARs <- model_pars
+      # add the Empirical Model's name for further use
+      SysL$modelName <- modelName
       # prepare a plot with the system curve and all tielines. Convergence lines are included if requested.
       output_plot <- bndOrthPlot(subset(BNDL, BNDL$System == seriesNames[i]), xlbl, ylbl) 
       if (convrgnceLines){
-        output_plot <- output_plot +
-          geom_point(
-            data = subset(BNDL, BNDL$System != seriesNames[i]),
-            aes_string(x = "X", y = "Y"),
-            colour = "red",
-            size = 1,
-            alpha = 0.4
-          ) +
+        output_plot <- output_plot + 
           geom_line(
             data = subset(BNDL, BNDL$System != seriesNames[i]),
             aes_string(x = "X", y = "Y", group = "System"),
             colour = "red",
             alpha = 0.4
-          )
+          ) +
+          geom_point(
+            data = subset(BNDL, BNDL$System != seriesNames[i]),
+            aes_string(x = "X", y = "Y"),
+            colour = "black",
+            size = 1,
+            alpha = 1
+          ) 
       } else 
         {
         output_plot <- output_plot  +
@@ -249,7 +262,7 @@ AQSysEval <- function(dataSET,
       SysList[[i]] <- SysL
     }
     # return silently data.frame to the user
-    invisible(list("data" = SysList, "plot" = output_plot))
+    invisible(list("data" = SysList, "plot" = PlotList))
   } else{
     # Return an error if an invalid dataset is provided.
     AQSys.err(9)

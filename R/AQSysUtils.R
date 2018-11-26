@@ -129,10 +129,19 @@ insertRow <- function(existingDF, newrow, r) {
   existingDF
 }
 
-saveDATA <- function(){
-  #createSheet(workBook, name = "chickSheet")
-  #writeWorksheet(workBook, ExperimentalDATA, sheet = "chickSheet", startRow = 1, startCol = 1)
-  #saveWorkbook(workBook)
+saveDATA <- function(path, data){
+  workBook <- loadWorkbook(path)
+  sheets <- getSheets(workBook)
+  #
+  if (any(grepl("results", sheets))){
+    res_idx <- grep("results", sheets)
+    clearSheet(workBook, sheet = res_idx) 
+  } else {
+    createSheet(workBook, name = "results")
+  }
+  #
+  writeWorksheet(workBook, data, sheet = "results", startRow = 1, startCol = 1)
+  saveWorkbook(workBook)
   #return()
 }
 
@@ -151,7 +160,7 @@ getTL <- function(workBook, sheets) {
   names(sys.temp) <- c("REF.MD5", "XY", "PH", "T", "X", "Y", "Y1", "Y2", "X1", 
                        "X2", "G1", "G2", "W", "Y3", "X3", "Z", "Y4", "X4", "TLSlope")
   #
-  sys.temp[, 19] <- ((sys.temp[, 8] - sys.temp[, 7]) / (sys.temp[, 10] - sys.temp[, 9]))
+  sys.temp[, 19] <- ((sys.temp[, 9] - sys.temp[, 7]) / (sys.temp[, 10] - sys.temp[, 8]))
   #
   uniqeKeys <- count_(sys.temp, vars = c('PH', 'T', 'X', 'Y'))
   #
@@ -227,8 +236,7 @@ toBNDL <- function(workBook, sheets) {
         )
         names(XYdt) <- c('COLUMN_1', 'COLUMN_2')
       } else{
-        dFF <-
-          data.frame(
+        dFF <-data.frame(
             c(system_data[tieline, 9], system_data[tieline, 10]),
             c(system_data[tieline, 7], system_data[tieline, 8]),
             stringsAsFactors = FALSE

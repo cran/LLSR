@@ -32,7 +32,7 @@ The function returns functions parameters after fitting experimental data to the
 }
 \examples{
 #Populating variable dataSET with binodal data
-dataSET <- peg4kslt[,1:2]
+dataSET <- llsr_data$db.data[6:23,1:2]
 #Fitting dataSET using Merchuk's function
 AQSys(dataSET)
 }
@@ -41,7 +41,6 @@ AQSys(dataSET)
 \item \code{\link{AQSys.default}}
 \item \code{\link{AQSys.plot}}
 \item \code{\link{AQSys.tielines}}
-\item \code{\link{AQSys.crpt}}
 \item \code{\link{AQSysOthmer}}
 \item \code{\link{AQSysBancroft}}
 }

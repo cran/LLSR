@@ -17,10 +17,10 @@ llsr_colors <- c(
   `dark mustard`  = "#948B3D"
 )
 #
-#' Function to extract llsr colors as hex codes
-#'
-#' @param ... Character names of llsr_colors 
-#'
+# Function to extract llsr colors as hex codes
+#
+# @param ... Character names of llsr_colors 
+#
 llsr_cols <- function(...) {
   cols <- c(...)
   
@@ -50,14 +50,14 @@ llsr_pal <- function(palette = "main", reverse = FALSE, ...) {
   colorRampPalette(pal, ...)
 }
 #
-#' Color scale constructor for llsr colors
-#'
-#' @param palette Character name of palette in llsr_palettes
-#' @param discrete Boolean indicating whether color aesthetic is discrete or not
-#' @param reverse Boolean indicating whether the palette should be reversed
-#' @param ... Additional arguments passed to discrete_scale() or
-#'            scale_color_gradientn(), used respectively when discrete is TRUE or FALSE
-#'
+# Color scale constructor for llsr colors
+#
+# @param palette Character name of palette in llsr_palettes
+# @param discrete Boolean indicating whether color aesthetic is discrete or not
+# @param reverse Boolean indicating whether the palette should be reversed
+# @param ... Additional arguments passed to discrete_scale() or
+#            scale_color_gradientn(), used respectively when discrete is TRUE or FALSE
+#
 scale_color_llsr <-
   function(palette = "main",
            discrete = TRUE,
@@ -72,14 +72,14 @@ scale_color_llsr <-
     }
   }
 
-#' Fill scale constructor for llsr colors
-#'
-#' @param palette Character name of palette in llsr_palettes
-#' @param discrete Boolean indicating whether color aesthetic is discrete or not
-#' @param reverse Boolean indicating whether the palette should be reversed
-#' @param ... Additional arguments passed to discrete_scale() or
-#'            scale_fill_gradientn(), used respectively when discrete is TRUE or FALSE
-#'
+# Fill scale constructor for llsr colors
+#
+# @param palette Character name of palette in llsr_palettes
+# @param discrete Boolean indicating whether color aesthetic is discrete or not
+# @param reverse Boolean indicating whether the palette should be reversed
+# @param ... Additional arguments passed to discrete_scale() or
+#            scale_fill_gradientn(), used respectively when discrete is TRUE or FALSE
+#
 scale_fill_llsr <-
   function(palette = "main",
            discrete = TRUE,

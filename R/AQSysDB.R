@@ -65,10 +65,14 @@ AQSysDB <- function(path, ColDis = "xy", CAS = FALSE) {
         lSys <- length(XPData[, COLUMN_1])
         # select phase diagram's data only
         rawSys <- XPData[db.data:lSys, COLUMN_1:COLUMN_2]
+        #naMAtrix <- as.data.frame(matrix(ncol = 2, nrow = (lSys - db.data +1)))
+        #XPData[db.data:lSys, COLUMN_1:COLUMN_2] <- naMAtrix
         # remove NA entries and convert to dataframe
         db.Sys <- as.data.frame(na.exclude(rawSys), stringsAsFactors = FALSE)
+        numData <- LLSRxy(db.Sys[, 1], db.Sys[, 2], XPData[4, COLUMN_2])
+        #XPData[db.data:nrow(numData), COLUMN_1:COLUMN_2] <- numData
         # Adjust parameters according to data
-        regData <- AQSys(LLSRxy(db.Sys[, 1], db.Sys[, 2], XPData[4, COLUMN_2]), mathDesc = i)
+        regData <- AQSys(numData, mathDesc = i)
         #
         if (!is.null(regData)) {
           resSys <- summary(regData)

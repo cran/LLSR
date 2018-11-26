@@ -4,11 +4,11 @@
 \alias{AQSysEval}
 \title{AQSysEval}
 \usage{
-AQSysEval(dataSET, xmax = 30, NP = 100, TLSlope = -1.846924,
+AQSysEval(dataSET, xmax = NULL, NP = 100, slope = NULL,
   modelName = "merchuk", convrgnceLines = FALSE, nTL = 3,
   nPoints = 3, tol = 1e-05, xlbl = "", ylbl = "",
   seriesNames = NULL, save = FALSE, HR = FALSE, autoname = FALSE,
-  wdir = NULL, silent = FALSE)
+  wdir = NULL, silent = TRUE)
 }
 \arguments{
 \item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit}
@@ -17,7 +17,7 @@ AQSysEval(dataSET, xmax = 30, NP = 100, TLSlope = -1.846924,
 
 \item{NP}{Number of points used to build the fitted curve. Default is 100. [type:Integer]}
 
-\item{TLSlope}{The method assumes all tielines for a given ATPS are parallel, thus only one slope is required. [type:double]}
+\item{slope}{The method assumes all tielines for a given ATPS are parallel, thus only one slope is required. [type:double]}
 
 \item{modelName}{Character String specifying the nonlinear empirical equation to fit data.
 The default method uses Merchuk's equation. Other mathematical descriptors can be listed using AQSysList(). [type:string]}

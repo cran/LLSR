@@ -1,3 +1,8 @@
+## quiets concerns of R CMD check re: the .'s that appear in pipelines
+##if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
+
+options(digits = 14)
+
 #'  @rdname LLSR.info
 #'  @export LLSR.info
 #'  @title .
@@ -41,11 +46,104 @@ FindMinTL <- function(SysCP, maxGP, xMax, slope, BLFn, tol, dfr = 0.2){
   # Initiate a generic line function but using calculated X, Y and provided Slope (assuming all tielines are parallel)
   TLFn <- function(x) { Y + slope * (x - X) }
   # find the intersections between the minTL and the binodal
-  xRoots <- uniroot.all(function(x) (BLFn(x) - TLFn(x)), c(0, xMax), tol = 0.1) # REPLACE XMAX TO THE LIMIT OF SOLUBILITY?
+  xRoots <- uniroot.all(function(x) (BLFn(x) - TLFn(x)), c(0, xMax * 1.5), tol = 0.1) # REPLACE XMAX TO THE LIMIT OF SOLUBILITY?
   # Creates an array containing all Xs which characterizes minTL
   xTL <- c(min(xRoots), sum(xRoots) / 2, max(xRoots))
   # return a data.frame containing all Xs and Ys for minTL
   return(setNames(data.frame(xTL, TLFn(xTL)), c("X", "Y")))
+}
+
+dPoints <- function(P1, P2){
+  d <- sqrt(((P1$X - P2$X) ^ 2) + ((P1$Y - P2$Y) ^ 2))
+  return(d)
+}
+
+TLL <- function(minTL, maxTL){
+  TLL <- list()
+  #
+  P1Min <- minTL[1, 1:2]
+  P2Min <- minTL[3, 1:2]
+  #
+  TLL$MinTLL <- dPoints(P1Min, P2Min)
+  #
+  P1Max <- maxTL[1, 1:2]
+  P2Max <- maxTL[3, 1:2]
+  #
+  TLL$MaxTLL <- dPoints(P1Max, P2Max)
+  #
+  return(TLL)
+}
+
+findTL <- function(dTLL, SysTLL, BLFn, slope){
+  # If the target TLL is smaller than the minimum calculated TLL, throw an error.
+  if ((dTLL < SysTLL$TLL$MinTLL) | (dTLL > SysTLL$TLL$MaxTLL)){
+    #AQSys.err("10")
+    print(c(dTLL, SysTLL$TLL$MinTLL, SysTLL$TLL$MaxTLL))
+  }
+  # Initial guess for the tieline, calculated using the tieline length proportions
+  X <- (dTLL / SysTLL$TLL$MaxTLL)*max(SysTLL$maxTL$X)
+  # Initializing variables
+  TL <- setNames(as.data.frame(matrix(nrow = 3, ncol = 2)), c("X", "Y"))
+  OUTPUT <- list()
+  dt <- 1
+  #
+  while (dt > 1e-7){
+    Y <- BLFn(X)
+    TLFn <- function(x) { Y + slope * (x - X) }
+    xRoots <- uniroot.all(function(x) (BLFn(x) - TLFn(x)), c(0, X), tol = 0.1) 
+    #
+    TL[1, 1] <- min(xRoots)
+    TL[3, 1] <- max(xRoots)
+    TL[1, 2] <- unname(BLFn(TL[1, 1]))
+    TL[3, 2] <- unname(BLFn(TL[3, 1]))
+    #
+    TLL <- dPoints(TL[1, ], TL[3, ])
+    dt <- abs(TLL - dTLL)
+    #
+    X <- X + dt * ( -(TLL - dTLL) / abs(TLL - dTLL)) / 10
+  }
+  TL[2, 1] <- (TL[1, 1] + TL[3, 1]) / 2
+  TL[2, 2] <- (TL[1, 2] + TL[3, 2]) / 2
+  #
+  OUTPUT$TL <- TL
+  OUTPUT$TLL <- TLL
+  #
+  return(OUTPUT)
+}
+
+findSlope <- function(dataSET){
+  # iterate through multiple columns and return a list of slopes
+  slope <- c()
+  # check how many systems were provided
+  nSys <- (ncol(dataSET) / 2)
+  if ((ncol(dataSET) %% 2) == 0) {
+    for (sys in seq(1, nSys)){
+      # Get the system characterization variables
+      idx_Y <- dataSET[3, sys * 2 - 1]
+      idx_X <- dataSET[3, sys * 2]
+      idx_PH <- dataSET[1, sys * 2 - 1]
+      idx_T <- dataSET[2, sys * 2 - 1]
+      #
+      # CAS_db <- llsr_data[["db.cas"]]
+      #print(c(idx_Y, idx_X, idx_PH, idx_T) )
+      #print(c(TL_db$Y, TL_db$X, TL_db$PH, TL_db$T) )
+      TL_db <- LLSR::llsr_data[["db.tielines"]]
+      slope[sys] <- TL_db[which(
+        (TL_db$PH == idx_PH | is.na(TL_db$PH)) &
+          TL_db$T == idx_T &
+          TL_db$X == idx_X &
+          TL_db$Y == idx_Y ), "TLSlope"]
+      #
+    }
+    if (length(slope)==0) {
+      AQSys.err("12")
+    } else {
+      return(slope)
+    }
+  } else{
+    # Return an error if an invalid dataset is provided.
+    AQSys.err("9")
+  }
 }
 
 seqTL <- function(minTL, maxTL, slope, BLFn, nTL = 3, nSYS = 3) {
@@ -55,7 +153,7 @@ seqTL <- function(minTL, maxTL, slope, BLFn, nTL = 3, nSYS = 3) {
   xMax <- max(maxTL["X"])
   # Bottom Phase Compositions
   xRange <- seq(xMin, xMax, (xMax - xMin) / (nTL - 1))
-  oDATA <- setNames(data.frame(xRange, BLFn(xRange), seq(1, nTL), "B"), dataNames) 
+  oDATA <- setNames(data.frame(xRange, BLFn(xRange), seq(1, nTL), "B", row.names = NULL), dataNames) 
   #
   for (p in seq(1, nrow(oDATA))) {
     X <- oDATA[p, "X"]
@@ -126,4 +224,28 @@ saveConfig <- function (plot_obj, save, HR, filename, wdir, silent) {
     )
   }
   return(wdir)
+}
+
+
+LLSRxy <- function(FirstCol, SecondCol, ColDis = 'xy') {
+  # convert and name variables accordingly into vectors
+  if (tolower(ColDis) == "xy") {
+    xc <- as.vector(as.numeric(sub(",", ".", FirstCol, fixed = TRUE)))
+    yc <-
+      as.vector(as.numeric(sub(",", ".", SecondCol, fixed = TRUE)))
+  } else{
+    xc <- as.vector(as.numeric(sub(",", ".", SecondCol, fixed = TRUE)))
+    yc <-
+      as.vector(as.numeric(sub(",", ".", FirstCol, fixed = TRUE)))
+  }
+  # and combine them into a dataframe
+  XYdt <- data.frame(XC = xc, YC = yc)
+  # Remove NA's
+  XYdt <- XYdt[complete.cases(XYdt),]
+  #
+  if ((nrow(XYdt) > 0) && (max(XYdt) <= 1)) {
+    XYdt <- XYdt * 100
+  }
+  #return data silently - should it be Visible or hidden?
+  invisible(XYdt)
 }

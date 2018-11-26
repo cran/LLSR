@@ -2,15 +2,15 @@ library(LLSR)
 
 
 test_that("Mechuk's Coefficients", {
-  expect_equal(summary(merchuk(peg4kslt))$coefficients[1], 0.94926887081, tolerance=1e-7)
-  expect_equal(summary(merchuk(peg4kslt))$coefficients[2], -5.08275261773, tolerance=1e-7)
-  expect_equal(summary(merchuk(peg4kslt))$coefficients[3], 787.55369595231, tolerance=1e-7)
+  expect_equal(summary(AQSys(llsr_data$db.data[6:23,1:2], modelName = "merchuk"))$coefficients[1], 42.474498616297, tolerance=1e-7)
+  expect_equal(summary(AQSys(llsr_data$db.data[6:23,1:2], modelName = "merchuk"))$coefficients[2], -0.22650610100248, tolerance=1e-7)
+  expect_equal(summary(AQSys(llsr_data$db.data[6:23,1:2], modelName = "merchuk"))$coefficients[3], 1.4832633921089e-05, tolerance=1e-7)
 })
 
 test_that("Murugesan's Coefficients", {
-  expect_equal(summary(murugesan(peg4kslt))$coefficients[1], 0.90388691803, tolerance=1e-7)
-  expect_equal(summary(murugesan(peg4kslt))$coefficients[2], -3.48971940000, tolerance=1e-7)
-  expect_equal(summary(murugesan(peg4kslt))$coefficients[3], 2.92380736863, tolerance=1e-7)
+  expect_equal(summary(AQSys(llsr_data$db.data[6:23,1:2], modelName = "murugesan"))$coefficients[1], 37.738759239178, tolerance=1e-7)
+  expect_equal(summary(AQSys(llsr_data$db.data[6:23,1:2], modelName = "murugesan"))$coefficients[2], -5.56344729455, tolerance=1e-7)
+  expect_equal(summary(AQSys(llsr_data$db.data[6:23,1:2], modelName = "murugesan"))$coefficients[3], 0.036141267637225, tolerance=1e-7)
 })
 
 # AQSys.gsnchk(peg4kslt[1:2],peg4kslt[2,3],peg4kslt[2,4],peg4kslt[2,5],

@@ -1,3 +1,23 @@
+#'
+#' DESCRIBE
+#' DESCRIBE
+#' @name llsr_data
+#' @format DESCRIBE
+#' \describe{
+#'   \item{XC}{Fraction of Salt}
+#'   \item{YC}{Fraction of PEG}
+#'   ...
+#' }
+#' @source \url{https://github.com/hutchr/LLSR}
+#' @examples
+#' #
+#' XYdt <- llsr_data[["db.data"]][, 93:104]
+#' #
+#' Xdt <- llsr_data[["db.data"]][, 93]
+#' #
+#' Ydt <- llsr_data[["db.data"]][, 94]
+NULL
+#'
 #' Dataset of experimental binodal data of an ATPS
 #' A dataset containing the experimental binodal data for a PEG/SALT Aqueous Two-Phases System (ATPS)
 #' @name peg4kslt
@@ -16,4 +36,3 @@
 #' #
 #' Ydt<-peg4kslt[,1]
 NULL
-#'

@@ -29,7 +29,6 @@ if(getRversion() >= "3.5")
 #' \item \code{\link{AQSys.default}}
 #' \item \code{\link{AQSys.plot}}
 #' \item \code{\link{AQSys.tielines}}
-#' \item \code{\link{AQSys.crpt}}
 #' \item \code{\link{AQSysOthmer}}
 #' \item \code{\link{AQSysBancroft}}
 #' }
@@ -52,10 +51,12 @@ AQSys <- function(dataSET, ...)
 #' through the available mathematical descriptions.
 #' @examples
 #' #Populating variable dataSET with binodal data
-#' dataSET <- peg4kslt[,1:2]
+#' dataSET <- llsr_data$db.data[6:23,1:2]
 #' #Fitting dataSET using Merchuk's function
 #' AQSys(dataSET)
 AQSys.default <- function(dataSET, modelName = "merchuk", ...) {
+  # arrange data and guarantee R converted it to numbers but dont switch columns to prevent incompatibility with pre-existent functions 
+  dataSET <- toNumeric(dataSET, "xy")
   # each switch option calls a correspondent equation to fit dataSET
   # equations are functions declared in AQSysFormulas.R
   if (modelName %in% names(AQSysList(TRUE))) {
@@ -104,7 +105,7 @@ AQSys.default <- function(dataSET, modelName = "merchuk", ...) {
 #' @return A plot containing the experimental data, the correspondent curve for the binodal in study and the curve's raw XY data.
 #' @examples
 #' #Populating variable dataSET with binodal data
-#' dataSET <- peg4kslt[,1:2]
+#' dataSET <- llsr_data$db.data[6:23,1:2]
 #' #Plot dataSET using Merchuk's function
 #' #
 #' AQSys.plot(dataSET)
