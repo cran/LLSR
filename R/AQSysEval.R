@@ -32,18 +32,11 @@ options(digits = 14)
 #' \dontrun{
 #' AQSysDB("C:/data.xls", ColDis = "xy", CAS = FALSE)
 #'}
-####################################################################################################################
-# AQSysDB() is a simple approach that is ready to use any three-parameter equation
-# and thus
-#
-# GIVEN A CURVE, A LINE SLOPE AND BOTH XMAX AND YMAX - FIND TWO POINTS (A LINE) WHICH LIES WITHIN THE
-# CURVE LIMITS AND HAVE THE SAME SLOPE AS THE TIELINES
-
-# PROCESS WILL BE INTERACTIVE BECAUSE A GIVEN XMAX MIGHT YIELD A YMAX ABOVE THE EXPERIMENTAL DATA OR A YMAX MIGHT YIELD A XMAX
-# ALSO OUTSIDE THE EXPERIMENTAL RANGE
-# SO THE POINT SELECTION WILL RUN UNTIL A SUITABLE PAIR IS FOUND
-#dataSET <- dados[["db.data"]][, 93:104]
-#
+#'
+#' @references 
+#' KAUL, A. The Phase Diagram. In: HATTI-KAUL, R. (Ed.). Aqueous Two-Phase Systems: Methods and Protocols: Humana Press, v.11, 2000. cap. 2, p.11-21.  (Methods in Biotechnology). ISBN 978-0-89603-541-6.
+#' (\href{https://link.springer.com/10.1385/1-59259-028-4:11}{SpringerLink})
+#' 
 AQSysEval <- function(dataSET,
                       xmax = NULL,
                       NP = 100,

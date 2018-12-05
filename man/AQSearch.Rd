@@ -5,31 +5,30 @@
 \alias{AQSearch.default}
 \title{Search function for ATPS Systems data}
 \usage{
-AQSearch(db, ...)
+AQSearch(db = LLSR::llsr_data, db.ph = NULL, db.upper = NULL,
+  db.lower = NULL, db.temp = NULL, db.additive = NULL, ...)
 
-\method{AQSearch}{default}(db = NULL, db.ph = NULL, db.upper = NULL,
-  db.lower = NULL, db.temp = NULL, db.additive = NULL,
-  subset = FALSE, ...)
+\method{AQSearch}{default}(db = LLSR::llsr_data, db.ph = NULL,
+  db.upper = NULL, db.lower = NULL, db.temp = NULL,
+  db.additive = NULL, ...)
 }
 \arguments{
-\item{db}{A list of three data.frame variables within all systems data are stored.}
-
-\item{...}{Additional optional arguments. None are used at present.}
+\item{db}{A highly structure db containing data from previously analised data. LLSR database is used by default but user may input his own db if formatted properly.}
 
 \item{db.ph}{A numeric variable containing the pH to be searched within DB.}
 
-\item{db.upper}{A String variable containing the CAS of the lower's phase component to be searched within DB.}
+\item{db.upper}{A String variable containing either the CAS, chemical formula or name of the upper phase enriched component..}
 
-\item{db.lower}{A String variable containing the CAS of the lower's phase component to be searched within DB.}
+\item{db.lower}{A String variable containing either the CAS, chemical formula or name of the lower phase component.}
 
 \item{db.temp}{A numeric variable containing the Temperature (in Kelvin) to be searched within DB.}
 
-\item{db.additive}{A String variable containing the CAS of the additive component to be searched within DB.}
+\item{db.additive}{A String variable containing either the CAS, chemical formula or name of the additive component.}
 
-\item{subset}{If FALSE, the function returns the index of the systems that matches the search. If TRUE, the function returns a subset with all system data.}
+\item{...}{Additional optional arguments. None are used at present.}
 }
 \value{
-System's index (when subset = FALSE) or system's parameters (subset = TRUE)
+Returns a data.frame containing system's parameters which match searched conditions
 }
 \description{
 This function allow the user to search the LLSR database to find any ATPS that matches the used criteria.
@@ -37,10 +36,10 @@ This function allow the user to search the LLSR database to find any ATPS that m
 This function allow the user to search the package database to find any ATPS that matches the used criteria.
 }
 \details{
-The function return the systems that matches the criteria submit by the user. Beware that using it with subset = FALSE will return the system's entry reference as a MD5 encoded string.
+The function return the systems that matches the criteria submit by the user.
 }
 \examples{
 \dontrun{
-AQSearch(db,db.upper="85100-78-3", subset = TRUE)
+AQSearch(db.upper="85100-78-3")
 }
 }

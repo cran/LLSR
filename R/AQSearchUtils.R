@@ -1,7 +1,7 @@
 ####################################################################################################################
-undigest <- function(db, str.md5) {
+undigest <- function(str.md5) {
   #using a given db, the function search for a md5 match nd return the correspondent plain string
-  ans <- db$db.ref[grep(str.md5, db$db.ref[,2], fixed = TRUE), 1]
+  ans <- LLSR::llsr_data$db.ref[grep(str.md5, LLSR::llsr_data$db.ref[, 3], fixed = TRUE), 2]
   ans
 }
 ####################################################################################################################

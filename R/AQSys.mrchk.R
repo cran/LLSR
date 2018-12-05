@@ -1,5 +1,5 @@
 #' @rdname AQSys.tielines
-#' @title Merchuk's Method - Tieline's Composition Calculation
+#' @title Merchuk's Method - tie-line's Composition Calculation
 #' @description Merchuk et al. described a very straightforward method to calculate the concentration of each component in the
 #' tieline giving only its global composition and phase's properties (such as volume and density).
 #' @details Using the binodal data, the global composition of a chosen tieline and its phases properties (more precisely each
@@ -19,8 +19,12 @@
 #' and Tieline's Slope.
 #' @examples
 #' \dontrun{
-#' AQSys.tielines(dataSET,Xm,Ym,Vt,Vb,dyt,dyb)
+#' AQSys.tielines(dataSET, Xm, Ym, Vt, Vb, dyt, dyb)
 #' }
+#' @references 
+#' MERCHUK, J. C.; ANDREWS, B. A.; ASENJO, J. A. Aqueous two-phase systems for protein separation: Studies on phase inversion. Journal of Chromatography B: Biomedical Sciences and Applications, v. 711, n. 1-2, p. 285-293,  1998. ISSN 0378-4347.
+#' (\href{https://www.doi.org/10.1016/s0378-4347(97)00594-x}{ScienceDIrect})
+#' 
 AQSys.tielines <- function(dataSET,Xm,Ym,Vt,Vb,dyt,dyb,...) {
   # Fit dataSET data to Merchuk's equation and store it in Smmry
   Smmry <- summary(merchuk(dataSET))
@@ -49,24 +53,25 @@ AQSys.tielines <- function(dataSET,Xm,Ym,Vt,Vb,dyt,dyb,...) {
   # solve the system of equation for a given set of guess and restricting of positive
   # only results
   (sysres <- multiroot(
-    f = sys, start = c(1,0,0,1),positive = TRUE
+    f = sys, start = c(1, 0, 0, 1), positive = TRUE
   ))
   # Calculate the tieline length and store it in sysres under the TLL alias
-  sysres$TLL <-
-    sqrt((sysres$root[1] - sysres$root[3]) ^ 2 + (sysres$root[2] - sysres$root[4]) ^
-           2)
+  sysres$TLL <- sqrt((sysres$root[1] - sysres$root[3]) ^ 2 + (sysres$root[2] - sysres$root[4]) ^2)
+  #
+  # REMOVE
+  #
   # set alfa to 0.5 to calculate concentration at equivolume point
-  alfaVRe2o <- 0.5
+  # alfaVRe2o <- 0.5
   # calculate the system composition at equivolume
-  sysres$yVRe2o <-
-    alfaVRe2o * (sysres$root[1] + sysres$root[3] * ((1 - alfaVRe2o) / alfaVRe2o))
-  sysres$xVRe2o <-
-    alfaVRe2o * (sysres$root[2] + sysres$root[4] * ((1 - alfaVRe2o) / alfaVRe2o))
+  # sysres$yVRe2o <- alfaVRe2o * (sysres$root[1] + sysres$root[3] * ((1 - alfaVRe2o) / alfaVRe2o))
+  # sysres$xVRe2o <- alfaVRe2o * (sysres$root[2] + sysres$root[4] * ((1 - alfaVRe2o) / alfaVRe2o))
+  #
+  #
+  #
   # set var name for root results (phase's composition for a given tieline)
   names(sysres$root) <- c("YT","XT","YB","XB")
-  # calculate and store tieline's slope
-  sysres$S <-
-    (sysres$root["YT"] - sysres$root["YB"]) / (sysres$root["XT"] - sysres$root["XB"])
+  # calculate and store tie-line's slope
+  sysres$S <- (sysres$root["YT"] - sysres$root["YB"]) / (sysres$root["XT"] - sysres$root["XB"])
   # removing Slope's header to make easier its retrieve
   names(sysres$S) <- NULL
   # return all calculated parameters

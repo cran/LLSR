@@ -2,12 +2,13 @@
 #' @rdname AQSysOthmer
 #' @title Othmer's Equation - Tieline's correlation
 #' @description Othmer's equation to correlate tieline's data applying the lever's rule.
-#' @references Othmer, D.F. and P.E. Tobias, Liquid -Liquid Extraction Data -Toluene and
-#' Acetaldehyde Systems. Industrial & Engineering Chemistry, 1942. 34(6): p. 690-692.
 #' @param ... Additional optional arguments. None are used at present.
 #' @param TLdt - Tieline Experimental data that will be used in the nonlinear fit
 #' @export AQSysOthmer
 #' @return Parameters K, n and Statistical data
+#' @references 
+#' OTHMER, D.; TOBIAS, P. Liquid-Liquid Extraction Data - The Line Correlation. Industrial & Engineering Chemistry, v. 34, n. 6, p. 693-696, 1942/06/01 1942. ISSN 0019-7866. 
+#' (\href{https://pubs.acs.org/doi/abs/10.1021/ie50390a600}{ACS Publications})
 #' @examples
 #' # TLdt is a data.frame which contains series of Tieline's mass fraction
 #' # (upper-rich component, bottom-rich component and water)
@@ -30,27 +31,27 @@ AQSysOthmer <- function(TLdt,...) {
   # tieline data is a set of mass fractions of all systems components obtained
   # experimentally for the system's upper and bottom phase.
   # the line bellow set the dataset header
-  names(TLdt) <- c("mfXt","mfYt","mfXb","mfYb","mfWt","mfWb")
+  names(TLdt) <- c("mfXt", "mfYt", "mfXb", "mfYb", "mfWt", "mfWb")
   # the system below will calculate n and K for a given set of tielines
   suppressWarnings(
     FFn <- nls(
-      log((1 - mfYt) / mfYt) ~ log(K * (((
-        1 - mfXb
-      ) / mfXb)) ^ n),
-      start = list(n = 1,K = 1),
+      log((1 - mfYt) / mfYt) ~ log(K * (((1 - mfXb) / mfXb)) ^ n),
+      start = list(n = 1, K = 1),
       algorithm = "port",
       lower = 10 ^ -10,
-      data = TLdt,na.exclude
+      data = TLdt,
+      na.exclude
     )
   )
   # return all calculated parameters
   FFn
 }
 #' @name AQSysBancroft
-#' @title Bancroft's Potential Equation - Tieline's correlation
-#' @description Bancroft's equation to correlate tieline's data.
-#' @references Othmer, D.F. and P.E. Tobias, Liquid-Liquid Extraction Data -Toluene and
-#' Acetaldehyde Systems. Industrial & Engineering Chemistry, 1942. 34(6): p. 690-692.
+#' @title Bancroft's Potential Equation - tie-line's correlation
+#' @description Bancroft's equation to correlate tie-line's data.
+#' @references 
+#' TUBIO, G.  et al. Liquid-liquid equilibrium of the Ucon 50-HB5100/sodium citrate aqueous two-phase systems. Separation and Purification Technology, v. 65, n. 1, p. 3-8,  2009. ISSN 1383-5866. 
+#' (\href{https://www.sciencedirect.com/science/article/pii/S1383586608000361}{ScienceDirect})
 #' @export AQSysBancroft
 #' @param ... Additional optional arguments. None are used at present.
 #' @param TLdt - Tieline Experimental data that will be used in the nonlinear fit
@@ -71,10 +72,10 @@ AQSysOthmer <- function(TLdt,...) {
 #' AQSysBancroft(TLdt)
 #'}
 AQSysBancroft <- function(TLdt,...) {
-  # store tieline data into a dataframe variable. It might be a better approach check if
+  # store tie-line data into a dataframe variable. It might be a better approach check if
   # user stored it in a dataframe and if not trigger an error.
   TLdt <- as.data.frame(TLdt)
-  # tieline data is a set of mass fractions of all systems components obtained
+  # tie-line data is a set of mass fractions of all systems components obtained
   # experimentally for the system's upper and bottom phase.
   # the line bellow set the dataset header
   names(TLdt) <- c("mfXt","mfYt","mfXb","mfYb","mfWt","mfWb")

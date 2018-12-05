@@ -2,19 +2,17 @@
 % Please edit documentation in R/datasets.R
 \name{llsr_data}
 \alias{llsr_data}
-\title{DESCRIBE
-DESCRIBE}
+\title{DESCRIBE}
 \format{DESCRIBE
 \describe{
-  \item{XC}{Fraction of Salt}
-  \item{YC}{Fraction of PEG}
+  \item{XC}{Fraction of the component enriched in the lower phase}
+  \item{YC}{Fraction of the component enriched in the upper phase}
   ...
 }}
 \source{
 \url{https://github.com/hutchr/LLSR}
 }
 \description{
-DESCRIBE
 DESCRIBE
 }
 \examples{

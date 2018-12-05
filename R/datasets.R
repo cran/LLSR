@@ -1,11 +1,10 @@
 #'
 #' DESCRIBE
-#' DESCRIBE
 #' @name llsr_data
 #' @format DESCRIBE
 #' \describe{
-#'   \item{XC}{Fraction of Salt}
-#'   \item{YC}{Fraction of PEG}
+#'   \item{XC}{Fraction of the component enriched in the lower phase}
+#'   \item{YC}{Fraction of the component enriched in the upper phase}
 #'   ...
 #' }
 #' @source \url{https://github.com/hutchr/LLSR}

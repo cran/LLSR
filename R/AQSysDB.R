@@ -72,7 +72,7 @@ AQSysDB <- function(path, ColDis = "xy", CAS = FALSE) {
         numData <- LLSRxy(db.Sys[, 1], db.Sys[, 2], XPData[4, COLUMN_2])
         #XPData[db.data:nrow(numData), COLUMN_1:COLUMN_2] <- numData
         # Adjust parameters according to data
-        regData <- AQSys(numData, mathDesc = i)
+        regData <- AQSys(numData, modelName = i)
         #
         if (!is.null(regData)) {
           resSys <- summary(regData)

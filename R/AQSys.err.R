@@ -23,12 +23,14 @@ AQSys.err <- function (err, ...) {
       stop(errmsg, call. = FALSE)
     },
     "5" = {
-      errmsg <- "Your search had no results. Try removing a few parameters during your next search."
-      stop(errmsg, call. = FALSE)
+      errmsg <- "Your search had no results. Try removing a few parameters and search again."
+      print(errmsg)
+      #stop(errmsg, call. = FALSE)
     },
     "6" = {
       errmsg <- "At least one of the parameters (pH, Temp, additive, UP.Rich or LP.Rich) must be not NULL."
-      stop(errmsg, call. = FALSE)
+      print(errmsg)
+      #stop(errmsg, call. = FALSE)
     },
     "7" = {
       errmsg <- "Input variable db must be a list coontaining three data.frame variables (db.cas, db.ref and db.sys)."
@@ -36,7 +38,8 @@ AQSys.err <- function (err, ...) {
     },
     "8" = {
       errmsg <- "Your search had no results."
-      stop(errmsg, call. = FALSE)
+      print(errmsg)
+      #stop(errmsg, call. = FALSE)
     },
     "9" = {
       errmsg <- "A valid data set has multiple two-columns data for calculations but an odd number of columns was observed in the input file."

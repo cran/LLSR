@@ -2,7 +2,7 @@
 % Please edit documentation in R/AQSys.mrchk.R
 \name{AQSys.tielines}
 \alias{AQSys.tielines}
-\title{Merchuk's Method - Tieline's Composition Calculation}
+\title{Merchuk's Method - tie-line's Composition Calculation}
 \usage{
 \method{AQSys}{tielines}(dataSET, Xm, Ym, Vt, Vb, dyt, dyb, ...)
 }
@@ -37,6 +37,10 @@ phase density and volume)
 }
 \examples{
 \dontrun{
-AQSys.tielines(dataSET,Xm,Ym,Vt,Vb,dyt,dyb)
+AQSys.tielines(dataSET, Xm, Ym, Vt, Vb, dyt, dyb)
 }
+}
+\references{
+MERCHUK, J. C.; ANDREWS, B. A.; ASENJO, J. A. Aqueous two-phase systems for protein separation: Studies on phase inversion. Journal of Chromatography B: Biomedical Sciences and Applications, v. 711, n. 1-2, p. 285-293,  1998. ISSN 0378-4347.
+(\href{https://www.doi.org/10.1016/s0378-4347(97)00594-x}{ScienceDIrect})
 }

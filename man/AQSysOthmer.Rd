@@ -34,6 +34,6 @@ AQSysOthmer(TLdt)
 }
 }
 \references{
-Othmer, D.F. and P.E. Tobias, Liquid -Liquid Extraction Data -Toluene and
-Acetaldehyde Systems. Industrial & Engineering Chemistry, 1942. 34(6): p. 690-692.
+OTHMER, D.; TOBIAS, P. Liquid-Liquid Extraction Data - The Line Correlation. Industrial & Engineering Chemistry, v. 34, n. 6, p. 693-696, 1942/06/01 1942. ISSN 0019-7866. 
+(\href{https://pubs.acs.org/doi/abs/10.1021/ie50390a600}{ACS Publications})
 }

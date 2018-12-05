@@ -2,7 +2,7 @@
 % Please edit documentation in R/AQSys.mrgsn.R
 \name{AQSysBancroft}
 \alias{AQSysBancroft}
-\title{Bancroft's Potential Equation - Tieline's correlation}
+\title{Bancroft's Potential Equation - tie-line's correlation}
 \usage{
 AQSysBancroft(TLdt, ...)
 }
@@ -15,7 +15,7 @@ AQSysBancroft(TLdt, ...)
 Parameters K1, r and Statistical data
 }
 \description{
-Bancroft's equation to correlate tieline's data.
+Bancroft's equation to correlate tie-line's data.
 }
 \examples{
 # TLdt is a data.frame which contains series of Tieline's mass fraction
@@ -34,6 +34,6 @@ AQSysBancroft(TLdt)
 }
 }
 \references{
-Othmer, D.F. and P.E. Tobias, Liquid-Liquid Extraction Data -Toluene and
-Acetaldehyde Systems. Industrial & Engineering Chemistry, 1942. 34(6): p. 690-692.
+TUBIO, G.  et al. Liquid-liquid equilibrium of the Ucon 50-HB5100/sodium citrate aqueous two-phase systems. Separation and Purification Technology, v. 65, n. 1, p. 3-8,  2009. ISSN 1383-5866. 
+(\href{https://www.sciencedirect.com/science/article/pii/S1383586608000361}{ScienceDirect})
 }
