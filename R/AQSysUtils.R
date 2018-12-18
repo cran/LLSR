@@ -124,8 +124,8 @@ getREF <- function(workBook, sheets) {
 }
 
 insertRow <- function(existingDF, newrow, r) {
-  existingDF[seq(r+1,nrow(existingDF)+1),] <- existingDF[seq(r,nrow(existingDF)),]
-  existingDF[r,] <- newrow
+  existingDF[seq(r + 1, nrow(existingDF) + 1), ] <- existingDF[seq(r, nrow(existingDF)), ]
+  existingDF[r, ] <- newrow
   existingDF
 }
 
@@ -160,7 +160,16 @@ getTL <- function(workBook, sheets) {
   names(sys.temp) <- c("REF.MD5", "XY", "PH", "T", "X", "Y", "Y1", "Y2", "X1", 
                        "X2", "G1", "G2", "W", "Y3", "X3", "Z", "Y4", "X4", "TLSlope")
   #
-  sys.temp[, 19] <- ((sys.temp[, 9] - sys.temp[, 7]) / (sys.temp[, 10] - sys.temp[, 8]))
+  for (tlr in seq(1, nrow(sys.temp))){
+    if (sys.temp[tlr, "Y1"] < sys.temp[tlr, "Y2"]){
+      sys.temp[tlr, "TLSlope"] <- ((sys.temp[tlr, "X1"] - sys.temp[tlr, "Y1"]) / (sys.temp[tlr, "X2"] - sys.temp[tlr, "Y2"]))
+      sys.temp[tlr, "XY"] <- "XY"
+    } else {
+      sys.temp[tlr, "TLSlope"] <- ((sys.temp[tlr, "X2"] - sys.temp[tlr, "Y2"])/(sys.temp[tlr, "X1"] - sys.temp[tlr, "Y1"]))
+      sys.temp[tlr, "XY"] <- "YX"
+    }
+  }
+  #sys.temp[, 19] <- ((sys.temp[, 9] - sys.temp[, 7]) / (sys.temp[, 10] - sys.temp[, 8]))
   #
   uniqeKeys <- count_(sys.temp, vars = c('PH', 'T', 'X', 'Y'))
   #

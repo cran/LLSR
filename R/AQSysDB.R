@@ -35,6 +35,7 @@ AQSysDB <- function(path, ColDis = "xy", CAS = FALSE) {
     casdb <- getCAS(workBook, sheets)
     #
     tldb <- TLAnalysis(workBook, sheets)
+    tldb.raw <- getTL(workBook, sheets)[["systems"]]
     # AQSys.getBNDL and to AQSys.toBNDL collect data from the specified data and return a datastream ready for processing
     # Check AQSysUtils.R for details.
     bndlDATA <- getBNDL(workBook, sheets)
@@ -134,7 +135,15 @@ AQSysDB <- function(path, ColDis = "xy", CAS = FALSE) {
       #
     }
     # return silently all data obtained from the worksheet in a list of three dataframes
-    invisible(list("db.ref" = refdb, "db.sys" = llsr_db, "db.cas" = casdb, "db.data" = XPData, "db.tielines" = tldb))
+    invisible(
+      list(
+        "db.ref" = refdb,
+        "db.sys" = llsr_db,
+        "db.cas" = casdb,
+        "db.data" = XPData,
+        "db.tielines" = list("data" = tldb.raw, "slopes" = tldb)
+      )
+    )
   } else {
     # if an invalid path is loaded, it triggers an error
     # (check AQSys.err.R for details)

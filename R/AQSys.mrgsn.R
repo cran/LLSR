@@ -1,11 +1,11 @@
-#' @import rootSolve
+#' @import rootSolve minpack.lm
 #' @rdname AQSysOthmer
 #' @title Othmer's Equation - Tieline's correlation
 #' @description Othmer's equation to correlate tieline's data applying the lever's rule.
 #' @param ... Additional optional arguments. None are used at present.
 #' @param TLdt - Tieline Experimental data that will be used in the nonlinear fit
 #' @export AQSysOthmer
-#' @return Parameters K, n and Statistical data
+#' @return Parameters A, B and Statistical data
 #' @references 
 #' OTHMER, D.; TOBIAS, P. Liquid-Liquid Extraction Data - The Line Correlation. Industrial & Engineering Chemistry, v. 34, n. 6, p. 693-696, 1942/06/01 1942. ISSN 0019-7866. 
 #' (\href{https://pubs.acs.org/doi/abs/10.1021/ie50390a600}{ACS Publications})
@@ -19,7 +19,7 @@
 #' # "mfXt","mfYt","mfXb","mfYb","mfWt","mfWb"
 #' # In which: mf stands for mass fraction; X and Y for the component
 #' # rich in bottom and upper phase, respectively; t or b for top and
-#' # bottom phases and W for water.
+#' # bottom phases.
 #' # Then you just need to load the data.frame in the function:
 #' \dontrun{
 #' AQSysOthmer(TLdt)
@@ -31,16 +31,18 @@ AQSysOthmer <- function(TLdt,...) {
   # tieline data is a set of mass fractions of all systems components obtained
   # experimentally for the system's upper and bottom phase.
   # the line bellow set the dataset header
-  names(TLdt) <- c("mfXt", "mfYt", "mfXb", "mfYb", "mfWt", "mfWb")
+  names(TLdt) <- c("mfXt", "mfYt", "mfXb", "mfYb")
+  # Check what range (0-1 or 0-100) is used and standardize
+  if ((nrow(TLdt) > 0) && (max(TLdt[1, ]) <= 1)) {
+    TLdt <- TLdt * 100
+  }
   # the system below will calculate n and K for a given set of tielines
   suppressWarnings(
-    FFn <- nls(
-      log((1 - mfYt) / mfYt) ~ log(K * (((1 - mfXb) / mfXb)) ^ n),
-      start = list(n = 1, K = 1),
-      algorithm = "port",
-      lower = 10 ^ -10,
+    FFn <- nlsLM(
+      log((100 - mfXb) / mfXb) ~ A + B * log((100 - mfYt) / mfYt),
+      start = list(A = 1, B = 1),
       data = TLdt,
-      na.exclude
+      control = nls.lm.control(maxiter = 25)
     )
   )
   # return all calculated parameters
@@ -55,7 +57,7 @@ AQSysOthmer <- function(TLdt,...) {
 #' @export AQSysBancroft
 #' @param ... Additional optional arguments. None are used at present.
 #' @param TLdt - Tieline Experimental data that will be used in the nonlinear fit
-#' @return Parameters K1, r and Statistical data
+#' @return Parameters k1, r and Statistical data
 #' @examples
 #' # TLdt is a data.frame which contains series of Tieline's mass fraction
 #' # (upper-rich component, bottom-rich component and water)
@@ -78,15 +80,18 @@ AQSysBancroft <- function(TLdt,...) {
   # tie-line data is a set of mass fractions of all systems components obtained
   # experimentally for the system's upper and bottom phase.
   # the line bellow set the dataset header
-  names(TLdt) <- c("mfXt","mfYt","mfXb","mfYb","mfWt","mfWb")
+  names(TLdt) <- c("mfXt","mfYt","mfXb","mfYb")
+  # Check what range (0-1 or 0-100) is used and standardize
+  if ((nrow(TLdt) > 0) && (max(TLdt[1, ]) <= 1)) {
+    TLdt <- TLdt * 100
+  }
   # the system below will calculate r and K1 for a given set of tielines
   #suppressWarnings(
-  FFn <- nls(
-    log((mfWb / mfXb)) ~ log(K1 * ((mfWt / mfYt) ^ r)),
-    start = list(r = 1,K1 = 1),
-    algorithm = "port",
-    lower = 10 ^ -2,
-    data = TLdt,na.exclude
+  FFn <- nlsLM(
+    log(((100 - mfXb - mfYb) / mfXb)) ~ log(k1 * (((100 - mfXt - mfYt) / mfYt) ^ r)), 
+    start = list(r = 1, k1 = 1), 
+    data = TLdt,
+    control = nls.lm.control(maxiter = 25)
   )
   #)
   # return all calculated parameters

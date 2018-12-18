@@ -12,7 +12,7 @@ AQSysOthmer(TLdt, ...)
 \item{...}{Additional optional arguments. None are used at present.}
 }
 \value{
-Parameters K, n and Statistical data
+Parameters A, B and Statistical data
 }
 \description{
 Othmer's equation to correlate tieline's data applying the lever's rule.
@@ -27,7 +27,7 @@ TLdt<-matrix(NA,nrow=4,ncol=6)
 # "mfXt","mfYt","mfXb","mfYb","mfWt","mfWb"
 # In which: mf stands for mass fraction; X and Y for the component
 # rich in bottom and upper phase, respectively; t or b for top and
-# bottom phases and W for water.
+# bottom phases.
 # Then you just need to load the data.frame in the function:
 \dontrun{
 AQSysOthmer(TLdt)

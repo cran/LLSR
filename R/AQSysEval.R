@@ -89,7 +89,7 @@ AQSysEval <- function(dataSET,
           AQSys.mathDesc(modelName),
           AQSys.err("0")
         )
-      # define a straight line EQ
+      # define a straight line EQUATION
       Gn <- function (yMin, AngCoeff, xMAX, x) {
           yMin + AngCoeff * (x - xMAX)
         }
@@ -120,7 +120,7 @@ AQSysEval <- function(dataSET,
           xMin <- min(xRoots) # As we started from the biggest root, we select the smallest
           yMAXTL <- modelFn(xMin) # calculate the y-value for the root found
           if (yMAXTL > yMAX) { # compare to the highest value allowed (it must be smaller than the maximum experimental Y)
-            xMAX <- (xMAX - 0.001) # if bigger than possible, decrease xmax and recalculate
+            xMAX <- (xMAX - 0.001) # if bigger than physically possible, decrease xmax and recalculate
           }
         }
         # create and name a data.frame containing coordinates for the tieline calculated above
@@ -130,8 +130,8 @@ AQSysEval <- function(dataSET,
         CrptFnd <- is.equal(SysL[[TL]], tol)
         # Bind the calculated tieline's data.frame to the output data.frame variable
         BNDL <- rbind(BNDL,  SysL[[TL]])
-        # A monod-base equation to help convergence
-        dt <- abs(SysL[[TL]][2, 1] - modelFn(SysL[[TL]][2, 1])) / ((5 * TL) / (xMAX / 2))
+        # A monod-base equation to help convergence - 
+        dt <- abs(SysL[[TL]][2, 1] - modelFn(SysL[[TL]][2, 1])) / ((5 * TL) / (xMAX / 25))
         xMAX <- xMAX - dt
       }
       # data.frame holding data regarding Critical Point convergence
@@ -149,12 +149,12 @@ AQSysEval <- function(dataSET,
       XC <- SysL[[length(SysL) - 1]][["X"]][1]
       YC <- SysL[[length(SysL) - 1]][["Y"]][1]
       SysCvP <- setNames(data.frame(XC, YC), c("XC", "YC"))
-      SysL$ConvergencePoint <- SysCvP
+      SysL$CriticalPoint <- SysCvP
       # Print tieline's convergence data for the system
       # print(round(cbind(SysCvP, output_res), 4))
       # Max Tieline will be the first 'viable' tieline, i.e., which xmax yield a ymax within the experimental range
       maxTL <- SysL[[1]]
-      SysL$maxTL <- maxTL
+      SysL$maxTL <- maxTL[, 1:2]
       # A procedure to find the minimum tieline was written as a standalone function
       minTL <- FindMinTL(SysCvP, GlobalPoints[1, ], max(maxTL["X"]), slope[i], modelFn, tol)
       SysL$minTL <- minTL

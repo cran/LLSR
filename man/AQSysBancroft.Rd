@@ -12,7 +12,7 @@ AQSysBancroft(TLdt, ...)
 \item{...}{Additional optional arguments. None are used at present.}
 }
 \value{
-Parameters K1, r and Statistical data
+Parameters k1, r and Statistical data
 }
 \description{
 Bancroft's equation to correlate tie-line's data.

@@ -35,7 +35,7 @@ is.equal <- function(TLData, tol) {
     ) < tol) == TRUE))
 }
 
-FindMinTL <- function(SysCP, maxGP, xMax, slope, BLFn, tol, dfr = 0.2){
+FindMinTL <- function(SysCP, maxGP, xMax, slope, BLFn, tol, dfr = 0.05){
   # Calculate distance between the critical point (SysCP) and the furthest viable TL's Global Point (maxGP)
   DMaxTL <- sqrt((maxGP[1] - SysCP[1]) ^ 2 + (maxGP[2] - SysCP[2]) ^ 2)
   # Establishes that the distance between the critical point and the closest viable tieline is a fraction (dfr) of the distance to MaxTL
@@ -127,7 +127,7 @@ findSlope <- function(dataSET){
       # CAS_db <- llsr_data[["db.cas"]]
       #print(c(idx_Y, idx_X, idx_PH, idx_T) )
       #print(c(TL_db$Y, TL_db$X, TL_db$PH, TL_db$T) )
-      TL_db <- LLSR::llsr_data[["db.tielines"]]
+      TL_db <- LLSR::llsr_data[["db.tielines"]][["slopes"]]
       slope[sys] <- TL_db[which(
         (TL_db$PH == idx_PH | is.na(TL_db$PH)) &
           TL_db$T == idx_T &
