@@ -1,9 +1,9 @@
 Package: LLSR
 Type: Package
 Title: Data Analysis of Liquid-Liquid Systems
-Version: 0.0.2.5
-Date: 2018-12-18
-Author: Diego F Coelho <diegofcoelho@gmail.com> [aut, cre], Pedro V O Menezes <pedrod841@hotmail.com> [dtc], Carla Corina <carlacorina@hotmail.com.br> [dtc], Jon G Huddleston <Jonathan.Huddleston@brunel.ac.uk> [rev]
+Version: 0.0.2.6
+Date: 2019-01-13
+Author: Diego F Coelho <diegofcoelho@gmail.com> [aut, cre], Pedro Vitor Oliveira Menezes <pedrod841@hotmail.com> [dtc], Carla Corina dos Santos Porto <carlacorina@hotmail.com.br> [dtc], Jon George Huddleston <Jonathan.Huddleston@brunel.ac.uk> [rev], Elias Basile Tambourgi <eliastam@feq.unicamp.br> [rev]
 Maintainer: Diego F Coelho <diegofcoelho@gmail.com>
 Description: Analyses experimental data from liquid-liquid phase diagrams and
     provide a simple way to obtain its parameters, producing a simplified report. Designed
@@ -19,8 +19,8 @@ Imports: rootSolve, XLConnect, digest, svDialogs, minpack.lm, ggplot2,
 URL: http://diegofcoelho.github.io/LLSR/
 BugReports: https://github.com/diegofcoelho/LLSR/issues
 Suggests: testthat
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 NeedsCompilation: no
-Packaged: 2018-12-18 19:56:35 UTC; dfcoelho
+Packaged: 2019-01-14 01:22:23 UTC; dfcoelho
 Repository: CRAN
-Date/Publication: 2018-12-18 21:10:03 UTC
+Date/Publication: 2019-01-14 05:10:03 UTC

@@ -4,7 +4,8 @@
 \alias{AQSys.tielines}
 \title{Merchuk's Method - tie-line's Composition Calculation}
 \usage{
-\method{AQSys}{tielines}(dataSET, Xm, Ym, Vt, Vb, dyt, dyb, ...)
+\method{AQSys}{tielines}(dataSET, Xm, Ym, Vt = NULL, Vb = NULL,
+  dyt = NULL, dyb = NULL, Wt = NULL, Wb = NULL, byW = TRUE, ...)
 }
 \arguments{
 \item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit}
@@ -20,6 +21,12 @@
 \item{dyt}{- Tieline's TOP phase density}
 
 \item{dyb}{- Tieline's BOTTOM phase density}
+
+\item{Wt}{- ATPS upper phase weight}
+
+\item{Wb}{- ATPS bottom phase weight}
+
+\item{byW}{- Use weight (TRUE) or volume and density (FALSE) during lever arm rule calculation.}
 
 \item{...}{Additional optional arguments. None are used at present.}
 }
@@ -37,7 +44,7 @@ phase density and volume)
 }
 \examples{
 \dontrun{
-AQSys.tielines(dataSET, Xm, Ym, Vt, Vb, dyt, dyb)
+AQSys.tielines(dataSET, Xm, Ym, Vt, Vb, dyt, dyb, wt, wb, byW = FALSE)
 }
 }
 \references{

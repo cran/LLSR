@@ -218,7 +218,7 @@ AQSysEval <- function(dataSET,
             alpha = 1
           ) + 
           geom_line(
-            data = subset(SysL$DOE, SysL$DOE$Point %in% c("U", "G", "B")),
+            data = subset(SysL$DOE, SysL$DOE$Point %in% c("T", "M", "B")),
             aes_string(x = "X", y = "Y", group = "System"),
             colour = "#d11141",
             size = 3,

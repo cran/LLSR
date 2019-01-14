@@ -2,6 +2,8 @@ if(getRversion() >= "3.5")
   utils::globalVariables(
     c(
       "Series",
+      "wt",
+      "wb",
       "xlab",
       "ylab",
       "geom_point",
@@ -72,7 +74,7 @@ AQSys <- function(dataSET, ...)
 # XUEQIAO, X.  et al. Measurement and Correlation of the Phase Diagram Data for PPG400 + (K3PO4, K2CO3, and K2HPO4) + H2O Aqueous Two-Phase Systems at T = 298.15 K. Journal of Chemical & Engineering Data, v. 55, n. 11, p. 4741-4745, 2010/11/11 2010. ISSN 0021-9568. 
 # (\href{https://pubs.acs.org/doi/full/10.1021/je100356s?src=recsys}{ACS Publications})
 # 
-# XIE, X.  et al. Liquid− liquid equilibrium of aqueous two-phase systems of PPG400 and biodegradable salts at temperatures of (298.15, 308.15, and 318.15) K. Journal of Chemical & Engineering Data, v. 55, n. 8, p. 2857-2861,  2010. ISSN 0021-9568. 
+# XIE, X.  et al. Liquidb liquid equilibrium of aqueous two-phase systems of PPG400 and biodegradable salts at temperatures of (298.15, 308.15, and 318.15) K. Journal of Chemical & Engineering Data, v. 55, n. 8, p. 2857-2861,  2010. ISSN 0021-9568. 
 # (\href{https://pubs.acs.org/doi/abs/10.1021/je901019t}{ACS Publications})
 AQSys.default <- function(dataSET, modelName = "merchuk", ...) {
   # arrange data and guarantee R converted it to numbers but dont switch columns to prevent incompatibility with pre-existent functions 

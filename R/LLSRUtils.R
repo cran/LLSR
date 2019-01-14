@@ -1,15 +1,6 @@
 ## quiets concerns of R CMD check re: the .'s that appear in pipelines
 ##if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
-
-options(digits = 14)
-
-#'  @rdname LLSR.info
-#'  @export LLSR.info
-#'  @title .
-#'  @description .
-LLSR.info <- function() {
-  print("info Test")
-}
+#
 is.odd <- function(x)
   x %% 2 != 0
 #
@@ -24,7 +15,7 @@ to.numeric <- function(x) {
     as.double(sub(",", ".", x))
   }
 }
-
+#
 is.equal <- function(TLData, tol) {
   # Verify if all Xs and Ys are equal among themselves
   return ((all((
@@ -34,7 +25,7 @@ is.equal <- function(TLData, tol) {
       max(TLData[, 2]) - min(TLData[, 2])
     ) < tol) == TRUE))
 }
-
+#
 FindMinTL <- function(SysCP, maxGP, xMax, slope, BLFn, tol, dfr = 0.05){
   # Calculate distance between the critical point (SysCP) and the furthest viable TL's Global Point (maxGP)
   DMaxTL <- sqrt((maxGP[1] - SysCP[1]) ^ 2 + (maxGP[2] - SysCP[2]) ^ 2)
@@ -52,12 +43,12 @@ FindMinTL <- function(SysCP, maxGP, xMax, slope, BLFn, tol, dfr = 0.05){
   # return a data.frame containing all Xs and Ys for minTL
   return(setNames(data.frame(xTL, TLFn(xTL)), c("X", "Y")))
 }
-
+#
 dPoints <- function(P1, P2){
   d <- sqrt(((P1$X - P2$X) ^ 2) + ((P1$Y - P2$Y) ^ 2))
   return(d)
 }
-
+#
 TLL <- function(minTL, maxTL){
   TLL <- list()
   #
@@ -73,7 +64,7 @@ TLL <- function(minTL, maxTL){
   #
   return(TLL)
 }
-
+#
 findTL <- function(dTLL, SysTLL, BLFn, slope){
   # If the target TLL is smaller than the minimum calculated TLL, throw an error.
   if ((dTLL < SysTLL$TLL$MinTLL) | (dTLL > SysTLL$TLL$MaxTLL)){
@@ -110,7 +101,7 @@ findTL <- function(dTLL, SysTLL, BLFn, slope){
   #
   return(OUTPUT)
 }
-
+#
 findSlope <- function(dataSET){
   # iterate through multiple columns and return a list of slopes
   slope <- c()
@@ -145,7 +136,7 @@ findSlope <- function(dataSET){
     AQSys.err("9")
   }
 }
-
+#
 seqTL <- function(minTL, maxTL, slope, BLFn, nTL = 3, nSYS = 3) {
   dataNames <- c("X", "Y", "System", "Point")
   #
@@ -163,7 +154,7 @@ seqTL <- function(minTL, maxTL, slope, BLFn, nTL = 3, nSYS = 3) {
     xRoots <- uniroot.all(function(x) (BLFn(x) - TLFn(x)), c(0, X*2), tol = 0.1) # REPLACE XMAX TO THE LIMIT OF SOLUBILITY?
     xTL <- c(min(xRoots), sum(xRoots) / 2)
     #
-    temp.TLC <- setNames(data.frame(xTL, TLFn(xTL), rep(oDATA[p, "System"], 2), c("U", "G")), dataNames)
+    temp.TLC <- setNames(data.frame(xTL, TLFn(xTL), rep(oDATA[p, "System"], 2), c("T", "M")), dataNames)
     #
     xSYS <- seq(min(xRoots), X, (X - min(xRoots)) / (nSYS + 1))
     #
@@ -174,7 +165,7 @@ seqTL <- function(minTL, maxTL, slope, BLFn, nTL = 3, nSYS = 3) {
   }
   return(oDATA)
 }
-
+#
 saveConfig <- function (plot_obj, save, HR, filename, wdir, silent) {
   if (save == TRUE) {
     #
@@ -225,8 +216,7 @@ saveConfig <- function (plot_obj, save, HR, filename, wdir, silent) {
   }
   return(wdir)
 }
-
-
+#
 LLSRxy <- function(FirstCol, SecondCol, ColDis = 'xy') {
   # convert and name variables accordingly into vectors
   if (tolower(ColDis) == "xy") {
@@ -249,3 +239,4 @@ LLSRxy <- function(FirstCol, SecondCol, ColDis = 'xy') {
   #return data silently - should it be Visible or hidden?
   invisible(XYdt)
 }
+

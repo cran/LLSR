@@ -14,26 +14,52 @@
 #' @param Vb - Tieline's BOTTOM phase volume.
 #' @param dyt - Tieline's TOP phase density
 #' @param dyb - Tieline's BOTTOM phase density
+#' @param Wt - ATPS upper phase weight
+#' @param Wb - ATPS bottom phase weight
+#' @param byW - Use weight (TRUE) or volume and density (FALSE) during lever arm rule calculation.
 #' @param ... Additional optional arguments. None are used at present.
 #' @return The function returns the Critical Point (X,Y), Tieline Length (TLL), Tieline's Equivolume point (xVRe2o,yVRe2o),
 #' and Tieline's Slope.
 #' @examples
 #' \dontrun{
-#' AQSys.tielines(dataSET, Xm, Ym, Vt, Vb, dyt, dyb)
+#' AQSys.tielines(dataSET, Xm, Ym, Vt, Vb, dyt, dyb, wt, wb, byW = FALSE)
 #' }
 #' @references 
 #' MERCHUK, J. C.; ANDREWS, B. A.; ASENJO, J. A. Aqueous two-phase systems for protein separation: Studies on phase inversion. Journal of Chromatography B: Biomedical Sciences and Applications, v. 711, n. 1-2, p. 285-293,  1998. ISSN 0378-4347.
 #' (\href{https://www.doi.org/10.1016/s0378-4347(97)00594-x}{ScienceDIrect})
 #' 
-AQSys.tielines <- function(dataSET,Xm,Ym,Vt,Vb,dyt,dyb,...) {
+AQSys.tielines <-
+  function(dataSET,
+           Xm,
+           Ym,
+           Vt = NULL,
+           Vb = NULL,
+           dyt = NULL,
+           dyb = NULL,
+           Wt = NULL,
+           Wb = NULL,
+           byW = TRUE,
+           ...) {
   # Fit dataSET data to Merchuk's equation and store it in Smmry
   Smmry <- summary(merchuk(dataSET))
   # extract regression parameters from Smmry
   P1 <- Smmry$coefficients[1]
   P2 <- Smmry$coefficients[2]
   P3 <- Smmry$coefficients[3]
-  # Calculate alfa for a given system composition
-  alfa <- Vt * dyt / (Vt * dyt + Vb * dyb)
+  #
+  if (byW & !is.null(c(Wt, Wb))) {
+    # Calculate alfa for a given system composition
+    alfa <- wt / (wt + wb)
+  } else{
+    AQSys.err("13")
+  }
+  #
+  if (!byW & !is.null(c(Vt, Vb, dyt, dyb))) {
+    # Calculate alfa for a given system composition
+    alfa <- Vt * dyt / (Vt * dyt + Vb * dyb)
+  } else{
+    AQSys.err("14")
+  }
   # the system of equations below was uses the method described by Merchuk
   # in the manuscript Merchuk, J.C., B.A. Andrews, and J.A. Asenjo. (1998),
   # Aqueous two-phase systems for protein separation: Studies on phase inversion.
@@ -46,30 +72,19 @@ AQSys.tielines <- function(dataSET,Xm,Ym,Vt,Vb,dyt,dyb,...) {
     F3 <- (Ym / alfa) - ((1 - alfa) / alfa) * x[3] - x[1]
     F4 <- (Xm / alfa) - ((1 - alfa) / alfa) * x[4] - x[2]
     #
-    c(
-      F1 = F1, F2 = F2, F3 = F3, F4 = F4
-    )
+    c(F1 = F1, F2 = F2, F3 = F3, F4 = F4)
   }
   # solve the system of equation for a given set of guess and restricting of positive
   # only results
   (sysres <- multiroot(
-    f = sys, start = c(1, 0, 0, 1), positive = TRUE
+    f = sys,
+    start = c(1, 0, 0, 1),
+    positive = TRUE
   ))
   # Calculate the tieline length and store it in sysres under the TLL alias
-  sysres$TLL <- sqrt((sysres$root[1] - sysres$root[3]) ^ 2 + (sysres$root[2] - sysres$root[4]) ^2)
-  #
-  # REMOVE
-  #
-  # set alfa to 0.5 to calculate concentration at equivolume point
-  # alfaVRe2o <- 0.5
-  # calculate the system composition at equivolume
-  # sysres$yVRe2o <- alfaVRe2o * (sysres$root[1] + sysres$root[3] * ((1 - alfaVRe2o) / alfaVRe2o))
-  # sysres$xVRe2o <- alfaVRe2o * (sysres$root[2] + sysres$root[4] * ((1 - alfaVRe2o) / alfaVRe2o))
-  #
-  #
-  #
+  sysres$TLL <- sqrt((sysres$root[1] - sysres$root[3]) ^ 2 + (sysres$root[2] - sysres$root[4])^2)
   # set var name for root results (phase's composition for a given tieline)
-  names(sysres$root) <- c("YT","XT","YB","XB")
+  names(sysres$root) <- c("YT", "XT", "YB", "XB")
   # calculate and store tie-line's slope
   sysres$S <- (sysres$root["YT"] - sysres$root["YB"]) / (sysres$root["XT"] - sysres$root["XB"])
   # removing Slope's header to make easier its retrieve

@@ -9,17 +9,18 @@ options(digits = 14)
 #' @description Import DB data from an Excel Worksheet.
 #' @export
 #' @param path String containing the full path to the XLS or XLSX file.
-#' @param ColDis Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.
-#' @param CAS The user has the option to identify the component's cells in the worksheet with the CAS (CAS = TRUE) or with the row number that matches a CAS entry in the CASDB worksheet (CAS = FALSE)
+# @ param ColDis Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.
+# @param CAS The user has the option to identify the component's cells in the worksheet with the CAS (CAS = TRUE) or with the row number that matches a CAS entry in the CASDB worksheet (CAS = FALSE)
 #' @examples
 #' \dontrun{
-#' AQSysDB("C:/data.xls", ColDis = "xy", CAS = FALSE)
+#' AQSysDB("C:/data.xls")
 #'}
 ####################################################################################################################
 # AQSysDB() is a simple approach that is ready to use any three-parameter equation
 # and thus
 #
-AQSysDB <- function(path, ColDis = "xy", CAS = FALSE) {
+# AQSysDB <- function(path, ColDis = "xy", CAS = FALSE) {
+AQSysDB <- function(path) {
   # path must point to a xlsx or xls file
   if (grepl(".xlsx", path) | grepl(".xls", path)) {
     # Clean terminal and load the specified file
@@ -39,9 +40,16 @@ AQSysDB <- function(path, ColDis = "xy", CAS = FALSE) {
     # AQSys.getBNDL and to AQSys.toBNDL collect data from the specified data and return a datastream ready for processing
     # Check AQSysUtils.R for details.
     bndlDATA <- getBNDL(workBook, sheets)
-    tlDATA <- toBNDL(workBook, sheets)
-    #return(tlDATA)
-    XPData <- bindDATA(list('SET1'=bndlDATA, 'SET2'=tlDATA))
+    #
+    #
+    # EXTRAPOLATE TIELINES INTO BINODAL CURVES
+    # tlDATA <- toBNDL(workBook, sheets)
+    # BINDS EXTRAPOLATED TIE-LINES AND BINODAL DATA
+    # DISABLED TEMPORARILY
+    # XPData <- nameIT(bindDATA(list('SET1' = bndlDATA, 'SET2' = tlDATA)))
+    #
+    #
+    XPData <- nameIT(bndlDATA)
     # Each system have two columns, thus the total number of columns divided by two
     # gives the number of systems
     nSys <- ncol(XPData) / 2
@@ -66,12 +74,12 @@ AQSysDB <- function(path, ColDis = "xy", CAS = FALSE) {
         lSys <- length(XPData[, COLUMN_1])
         # select phase diagram's data only
         rawSys <- XPData[db.data:lSys, COLUMN_1:COLUMN_2]
-        #naMAtrix <- as.data.frame(matrix(ncol = 2, nrow = (lSys - db.data +1)))
-        #XPData[db.data:lSys, COLUMN_1:COLUMN_2] <- naMAtrix
+        # naMAtrix <- as.data.frame(matrix(ncol = 2, nrow = (lSys - db.data +1)))
+        # XPData[db.data:lSys, COLUMN_1:COLUMN_2] <- naMAtrix
         # remove NA entries and convert to dataframe
         db.Sys <- as.data.frame(na.exclude(rawSys), stringsAsFactors = FALSE)
         numData <- LLSRxy(db.Sys[, 1], db.Sys[, 2], XPData[4, COLUMN_2])
-        #XPData[db.data:nrow(numData), COLUMN_1:COLUMN_2] <- numData
+        # XPData[db.data:nrow(numData), COLUMN_1:COLUMN_2] <- numData
         # Adjust parameters according to data
         regData <- AQSys(numData, modelName = i)
         #
@@ -80,49 +88,61 @@ AQSysDB <- function(path, ColDis = "xy", CAS = FALSE) {
           # populate sysDATA with the appropriated parameters from the nonlinear regression
           summary_nrow <- nrow(resSys$parameters)
           summary_ncol <- ncol(resSys$parameters)
-          sysDATA <- data.frame(matrix(nrow = 1, ncol = summary_nrow * summary_ncol + 12), stringsAsFactors = FALSE)
+          sysDATA <- data.frame(matrix(nrow = 1, ncol = summary_nrow * summary_ncol + 13), stringsAsFactors = FALSE)
           # add md5 encoded ref to model_db
-          sysDATA[1, 1] <- refdb[which(refdb$REF.INDEX == to.numeric(XPData[db.info + 3, COLUMN_1])), 3] # to.numeric(XPData[db.info + 3, COLUMN_1]) #to.numeric(XPData[db.info + 3, COLUMN_1]) #
+          sysDATA[1, db.info] <- refdb[which(refdb$REF.INDEX == to.numeric(XPData[db.info + 3, COLUMN_1])), 3] # to.numeric(XPData[db.info + 3, COLUMN_1]) #to.numeric(XPData[db.info + 3, COLUMN_1]) #
           # if cas field in sysdb is filled with the cas
-          C1.CAS.INDEX <- to.numeric(XPData[db.info + 2, COLUMN_1])
-          C2.CAS.INDEX <- to.numeric(XPData[db.info + 2, COLUMN_2])
-          if (CAS == TRUE) {
-            # add Component's CAS directly to sysDATA
-            sysDATA[1, 2] <- casdb[which(casdb$CAS.INDEX == C1.CAS.INDEX), 2]
-            sysDATA[1, 3] <- casdb[which(casdb$CAS.INDEX == C2.CAS.INDEX), 2]
-            # if cas field in sysdb in filled with an index refering to casdb
-          } else{
-            # Cross reference indexes and add only the Component's NAME
-            sysDATA[1, 2] <- casdb[which(casdb$CAS.INDEX == C1.CAS.INDEX), 3]
-            sysDATA[1, 3] <- casdb[which(casdb$CAS.INDEX == C2.CAS.INDEX), 3]
+          CA.CAS.INDEX <- to.numeric(XPData[db.info + 2, COLUMN_1])
+          CB.CAS.INDEX <- to.numeric(XPData[db.info + 2, COLUMN_2])
+          #
+          #
+          if (XPData[4, COLUMN_2] == "XY") {
+            TP.IDX <- (db.info + 2)
+            BT.IDX <- (db.info + 1)
+          } else if (XPData[4, COLUMN_2] == "YX"){
+            TP.IDX <- (db.info + 1)
+            BT.IDX <- (db.info + 2)
           }
+          #
+          #
+          # if (CAS == TRUE) {
+          # add Component's CAS directly to sysDATA
+          # sysDATA[1, TP.IDX] <- casdb[which(casdb$CAS.INDEX == CA.CAS.INDEX), 2]
+          # sysDATA[1, BT.IDX] <- casdb[which(casdb$CAS.INDEX == CB.CAS.INDEX), 2]
+          # if cas field in sysdb in filled with an index refering to casdb
+          # } else{
+          # Cross reference indexes and add only the Component's NAME
+          sysDATA[1, TP.IDX] <- casdb[which(casdb$CAS.INDEX == CA.CAS.INDEX), 3]
+          sysDATA[1, BT.IDX] <- casdb[which(casdb$CAS.INDEX == CB.CAS.INDEX), 3]
+          # }
           # populate db with system's pH, additive, additive conc and temperature
-          sysDATA[1, 4] <- to.numeric(XPData[db.info, COLUMN_1])
-          sysDATA[1, 5] <- XPData[db.info, COLUMN_2]
-          sysDATA[1, 6] <- to.numeric(XPData[db.info + 1, COLUMN_2])
-          sysDATA[1, 7] <- to.numeric(XPData[db.info + 1, COLUMN_1])
-          ParamNames <- c("REF.MD5", "UP.Rich", "LP.Rich", "PH", "Additive", "Additive.Conc", "Temperature")
+          sysDATA[1, (db.info + 3)] <- XPData[4, COLUMN_2]
+          sysDATA[1, (db.info + 4)] <- to.numeric(XPData[db.info, COLUMN_1])
+          sysDATA[1, (db.info + 5)] <- to.numeric(XPData[db.info + 1, COLUMN_1])
+          sysDATA[1, (db.info + 6)] <- XPData[db.info, COLUMN_2]
+          sysDATA[1, (db.info + 7)] <- to.numeric(XPData[db.info + 1, COLUMN_2])
+          ParamNames <- c("REF.MD5", "A", "B", "ORDER","PH", "TEMP", "C", "GLB.C")
           # The loop below accounts for models with different number of parameters
           idx <- 0
           for (col in 1:summary_ncol) {
             for (row in 1:summary_nrow) {
               idx <- idx + 1
-              sysDATA[1, idx + 7] <- resSys$parameters[row, col]
+              sysDATA[1, idx + (db.info + 8)] <- resSys$parameters[row, col]
               sysColName <-gsub(' ', '', paste(rownames(resSys$parameters)[row], colnames(resSys$parameters)[col], sep = '-'))
               ParamNames <- c(ParamNames, sysColName)
             }
           }
           # add NLS error-related analysis data to the data.frame
-          sysDATA[1, summary_nrow * summary_ncol + 8] <- resSys$sigma
-          sysDATA[1, summary_nrow * summary_ncol + 9] <- sum(resSys$residuals ^ 2)
-          sysDATA[1, summary_nrow * summary_ncol + 10] <- resSys$convInfo$finTol
-          sysDATA[1, summary_nrow * summary_ncol + 11] <- length(db.Sys[, 1])
-          sysDATA[1, summary_nrow * summary_ncol + 12] <- i
+          sysDATA[1, summary_nrow * summary_ncol + (db.info + 9)] <- resSys$sigma
+          sysDATA[1, summary_nrow * summary_ncol + (db.info + 10)] <- sum(resSys$residuals ^ 2)
+          sysDATA[1, summary_nrow * summary_ncol + (db.info + 11)] <- resSys$convInfo$finTol
+          sysDATA[1, summary_nrow * summary_ncol + (db.info + 12)] <- length(db.Sys[, 1])
+          sysDATA[1, summary_nrow * summary_ncol + (db.info + 13)] <- i
           # name the above acessed parameters
           ParamNames <- c(ParamNames, "Res.Std.Err", "SSR", "Ach.Conv.Tol", "n.Points", "math.Desc")
           colnames(sysDATA) <- ParamNames
           # Add the results for a given model to the output data.frame
-          model_db <- rbind(model_db, sysDATA)
+          model_db <- rbind(model_db, UIDGen(sysDATA))
         } else{
           # account for the exception
           xcpt <- xcpt + 1
@@ -140,8 +160,11 @@ AQSysDB <- function(path, ColDis = "xy", CAS = FALSE) {
         "db.ref" = refdb,
         "db.sys" = llsr_db,
         "db.cas" = casdb,
-        "db.data" = XPData,
-        "db.tielines" = list("data" = tldb.raw, "slopes" = tldb)
+        "db.data" = SysIdxToRef(refdb, casdb, XPData),
+        "db.tielines" = list(
+          "data" = IdxToRef(refdb, tldb.raw, casdb),
+          "slopes" = IdxToRef(refdb, tldb, casdb)
+          )
       )
     )
   } else {

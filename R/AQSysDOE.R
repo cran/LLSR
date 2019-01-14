@@ -63,7 +63,7 @@ AQSysDOE <- function(dataSET,
       modelFn <- function(x) Fn(SysCharData[[idx]]$PARs, x)
       data <- findTL(seqTLL[TLL], SysCharData[[idx]], modelFn, slope[idx])
       #
-      temp.TLC <- setNames(data.frame(data$TL, rep(idx, 3), rep(data$TLL, 3), c("T", "G", "B")), dataNames)
+      temp.TLC <- setNames(data.frame(data$TL, rep(idx, 3), rep(data$TLL, 3), c("T", "M", "B")), dataNames)
       X <- mean(data$TL$X)
       Y <- mean(data$TL$Y)
       #
