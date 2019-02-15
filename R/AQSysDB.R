@@ -9,7 +9,8 @@ options(digits = 14)
 #' @description Import DB data from an Excel Worksheet.
 #' @export
 #' @param path String containing the full path to the XLS or XLSX file.
-# @ param ColDis Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.
+# ' @param maxiter	- A positive integer specifying the maximum number of iterations allowed.
+# @ param Order Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.
 # @param CAS The user has the option to identify the component's cells in the worksheet with the CAS (CAS = TRUE) or with the row number that matches a CAS entry in the CASDB worksheet (CAS = FALSE)
 #' @examples
 #' \dontrun{
@@ -19,7 +20,7 @@ options(digits = 14)
 # AQSysDB() is a simple approach that is ready to use any three-parameter equation
 # and thus
 #
-# AQSysDB <- function(path, ColDis = "xy", CAS = FALSE) {
+# AQSysDB <- function(path, Order = "xy", CAS = FALSE) {
 AQSysDB <- function(path) {
   # path must point to a xlsx or xls file
   if (grepl(".xlsx", path) | grepl(".xls", path)) {
@@ -127,17 +128,17 @@ AQSysDB <- function(path) {
           for (col in 1:summary_ncol) {
             for (row in 1:summary_nrow) {
               idx <- idx + 1
-              sysDATA[1, idx + (db.info + 8)] <- resSys$parameters[row, col]
+              sysDATA[1, idx + (db.info + 7)] <- resSys$parameters[row, col]
               sysColName <-gsub(' ', '', paste(rownames(resSys$parameters)[row], colnames(resSys$parameters)[col], sep = '-'))
               ParamNames <- c(ParamNames, sysColName)
             }
           }
           # add NLS error-related analysis data to the data.frame
-          sysDATA[1, summary_nrow * summary_ncol + (db.info + 9)] <- resSys$sigma
-          sysDATA[1, summary_nrow * summary_ncol + (db.info + 10)] <- sum(resSys$residuals ^ 2)
-          sysDATA[1, summary_nrow * summary_ncol + (db.info + 11)] <- resSys$convInfo$finTol
-          sysDATA[1, summary_nrow * summary_ncol + (db.info + 12)] <- length(db.Sys[, 1])
-          sysDATA[1, summary_nrow * summary_ncol + (db.info + 13)] <- i
+          sysDATA[1, summary_nrow * summary_ncol + (db.info + 8)] <- resSys$sigma
+          sysDATA[1, summary_nrow * summary_ncol + (db.info + 9)] <- sum(resSys$residuals ^ 2)
+          sysDATA[1, summary_nrow * summary_ncol + (db.info + 10)] <- resSys$convInfo$finTol
+          sysDATA[1, summary_nrow * summary_ncol + (db.info + 11)] <- length(db.Sys[, 1])
+          sysDATA[1, summary_nrow * summary_ncol + (db.info + 12)] <- i
           # name the above acessed parameters
           ParamNames <- c(ParamNames, "Res.Std.Err", "SSR", "Ach.Conv.Tol", "n.Points", "math.Desc")
           colnames(sysDATA) <- ParamNames

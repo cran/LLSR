@@ -64,18 +64,18 @@ matchUID <- function(UIDList, UIDMatrix) {
   return(db.binodals.index)
 }
 #
-matchBNDL <- function(matchingList, matchingMatrix) {
-  matchingUIDs <- as.character(unique(matchingList))
-  #
-  db.binodals.index <-
-    as.numeric(setNames(na.exclude(sapply(matchingUIDs, function(uid) {
-      which(matchingMatrix == uid, TRUE)[2]
-    })), NULL))
-  #
-  db.binodals.index <- sort(c(db.binodals.index, db.binodals.index + 1))
-  #
-  return(db.binodals.index)
-}
+# matchBNDL <- function(matchingList, matchingMatrix) {
+#   matchingUIDs <- as.character(unique(matchingList))
+#   #
+#   db.binodals.index <-
+#     as.numeric(setNames(na.exclude(sapply(matchingUIDs, function(uid) {
+#       which(matchingMatrix == uid, TRUE)[2]
+#     })), NULL))
+#   #
+#   db.binodals.index <- sort(c(db.binodals.index, db.binodals.index + 1))
+#   #
+#   return(db.binodals.index)
+# }
 #
 matchTpH<- function(TpH, BinodalMatrix, pH) {
   #
@@ -100,17 +100,21 @@ matchTpH<- function(TpH, BinodalMatrix, pH) {
   return(db.binodals.index)
 }
 #
-matchBNDL2<- function(compNameList, BinodalMatrix) {
+matchBNDL<- function(compNameList, BinodalMatrix) {
+  #
+  if (length(compNameList)==0){return(c())}
   #
   req_results <- sapply(compNameList, function(compName) {
     unlist(which(BinodalMatrix == compName, TRUE))
   })
   #
   if (is.list(req_results)){
-    db.binodals.index <- do.call(rbind, req_results)[, 2]
+    db.binodals.index <- as.numeric(do.call(rbind, req_results)[, 2])
   } else {
     db.binodals.index <- req_results[(1 + length(req_results) / 2):length(req_results)]
   }
+  #
+  if (length(db.binodals.index)==0){return(c())}
   #
   db.binodals.index <-
     sapply(db.binodals.index, function(idx) {
@@ -127,7 +131,7 @@ matchBNDL2<- function(compNameList, BinodalMatrix) {
 }
 #
 idx2name <- function(idx, casdb) {
-  casdb[casdb$CAS.INDEX == idx,]$CHEM.NAME
+  casdb[casdb$CAS.INDEX == idx,]$CAS.NAME
 }
 #
 commaReplacer <- function(str) {
@@ -195,7 +199,7 @@ getCAS <- function(workBook, sheets) {
     readWorksheet(workBook, grep("CASDB", sheets), header = TRUE)
   #define casdb headers
   names(casdb) <-
-    c("CAS.INDEX", "CAS.CODE", "CHEM.NAME", "CHEM.COMMON")
+    c("CAS.INDEX", "CAS.CODE", "CAS.NAME", "CAS.COMMON")
   return(casdb)
 }
 #
@@ -219,8 +223,8 @@ getREF <- function(workBook, sheets) {
 SysIdxToRef <- function(refSheet, db.cas, db.data) {
   sysNum <- ncol(db.data) / 2
   for (i in seq(1, sysNum)) {
-    db.data[3, i * 2] <- db.cas[db.data[3, i * 2], "CHEM.NAME"]
-    db.data[3, i * 2 - 1] <- db.cas[db.data[3, i * 2 - 1], "CHEM.NAME"]
+    db.data[3, i * 2] <- db.cas[db.data[3, i * 2], "CAS.NAME"]
+    db.data[3, i * 2 - 1] <- db.cas[db.data[3, i * 2 - 1], "CAS.NAME"]
     db.data[4, i * 2 - 1] <- refSheet[db.data[4, i * 2 - 1], 3]
   }
   db.data[6:nrow(db.data),] <- sapply(db.data[6:nrow(db.data),], commaReplacer)
@@ -323,7 +327,8 @@ getTL <- function(workBook, sheets) {
 }
 #
 XLSCheck <- function(workBook, sheets) {
-  req_sheets <- c("BINODAL", "TIELINE", "PAR", "REFDB", "CAS")
+  #req_sheets <- c("BINODAL", "TIELINE", "PAR", "REFDB", "CAS")
+  req_sheets <- c("BINODAL", "TIELINE", "REFDB", "CAS")
   cat("Checking XLS file integrity...\n\n")
   for (sheet in req_sheets) {
     cat(sheet, " worksheet", ": ", sep = "")
@@ -547,9 +552,9 @@ TLAnalysis <- function(workBook, sheets) {
   return(sys.slopes)
 }
 #
-toNumeric <- function(XYData, ColDis) {
+toNumeric <- function(XYData, Order) {
   # convert and name variables accordingly into vectors
-  if (tolower(ColDis) == "xy") {
+  if (tolower(Order) == "xy") {
     xc <-
       as.vector(as.numeric(sub(",", ".", XYData[, 1], fixed = TRUE)))
     yc <-
@@ -580,7 +585,7 @@ UIDGen <- function(db.data) {
     UID <- sapply(paste(db.data[, "REF.MD5"],
                         db.data[, "A"],
                         db.data[, "B"],
-                        # db.data[, "PH"],
+                        db.data[, "PH"],
                         db.data[, "TEMP"],
                         sep = "_"),
                   digest,
@@ -603,4 +608,25 @@ UIDGen <- function(db.data) {
     OUTPUT.DATA <- db.data
   }
   return(OUTPUT.DATA)
+}
+#
+ChckBndrs <- function(BNFn, slope, BNDL, xmax){
+  #
+  yMin <- BNFn(xmax)
+  Gn <- function (yMin, slope, xmax, x) {
+    yMin + slope * (x - xmax)
+  }
+  #
+  x_min_b <- min(uniroot.all(function(x) (BNFn(x) - Gn(yMin, slope, xmax, x)), c(0, xmax), tol = 0.001)) 
+  y_max_b <- max(BNDL["Y"])
+  ymax <- BNFn(x_min_b)
+  #
+  while (ymax > y_max_b) {
+    xmax <- xmax - 0.01
+    yMin <- BNFn(xmax)
+    x_min_b <- min(uniroot.all(function(x) (BNFn(x) - Gn(yMin, slope, xmax, x)), c(0, xmax), tol = 0.001)) 
+    ymax <- BNFn(x_min_b)
+  }
+  return(xmax)
+  
 }

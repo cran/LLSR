@@ -27,6 +27,7 @@
 #' @param filename Filename provided by the user to save a given plot. [type:String]
 #' @param wdir The directory in which the plot file will be saved. [type:String]
 #' @param silent save plot file without actually showing it to the user. [type:Logical]
+# ' @param maxiter	- A positive integer specifying the maximum number of iterations allowed.
 #' @inheritParams graphics::plot.default
 #' @return A plot using the input model within the chosen interval and the curve's raw XY data.
 #' If no interval is selected, xmax = 0.4.
@@ -101,7 +102,7 @@ AQSysCurve <- function  (
     }
   }
   else{
-    AQSys.err(9)
+    AQSys.err("9")
   }
 }
 

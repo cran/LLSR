@@ -7,7 +7,7 @@
 \method{AQSys}{plot}(dataSET, xlbl = "", ylbl = "", main = NULL,
   col = "blue", type = "p", cex = 1, cexlab = 1, cexaxis = 1,
   cexmain = 1, cexsub = 1, modelName = "merchuk", NP = 100,
-  xmax = "", ymax = "", colDis = "xy", save = FALSE, HR = FALSE,
+  xmax = "", ymax = "", Order = "xy", save = FALSE, HR = FALSE,
   filename = NULL, wdir = NULL, silent = FALSE, ...)
 }
 \arguments{
@@ -42,7 +42,7 @@ Merchuk's equation. Other possibilities can be seen in AQSysList().}
 
 \item{ymax}{Maximum value for the Vertical axis' value}
 
-\item{colDis}{Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.}
+\item{Order}{Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.}
 
 \item{save}{Save the generated plot in the disk using path and filename provided by the user. [type:Boulean]}
 

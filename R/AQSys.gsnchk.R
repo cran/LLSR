@@ -25,6 +25,7 @@
 #' @param Vb - Tieline's BOTTOM phase volume.
 #' @param dyt - Tieline's TOP phase density
 #' @param dyb - Tieline's BOTTOM phase density
+# ' @param maxiter	- A positive integer specifying the maximum number of iterations allowed.
 #' @param ... Additional optional arguments. None are used at present.
 #' @return sysres - The function returns the Critical Point (X,Y), Tieline Length (TLL), Tieline's Equivolume point (xVRe2o,yVRe2o),
 #'and Tieline's Slope.

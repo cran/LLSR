@@ -48,10 +48,10 @@ AQSearch.default <-
     # if all parameters are null, the search is not valid and it triggers an error (check AQSys.err.R for details)
     if (all(unlist(lapply(db.params, is.null)))) AQSys.err("6")
     #
-    parameters <- AQSearch.Parameter(db = LLSR::llsr_data, db.CompA, db.CompB, db.CompC, db.Temp, db.ph, db.uid, stacked = TRUE)
-    tielines <- AQSearch.Tieline(db = LLSR::llsr_data, db.CompA, db.CompB, db.CompC, db.Temp, db.ph, db.uid, stacked = TRUE)
-    binodals <- AQSearch.Binodal(db = LLSR::llsr_data, db.CompA, db.CompB, db.CompC, db.Temp, db.ph, db.uid, stacked = TRUE)
-    slope <- AQSearch.Slope(db = LLSR::llsr_data, db.CompA, db.CompB, db.CompC, db.Temp, db.ph, db.uid, stacked = TRUE)
+    parameters <- AQSearch.Parameter(db = db, db.CompA, db.CompB, db.CompC, db.Temp, db.ph, db.uid, stacked = TRUE)
+    tielines <- AQSearch.Tieline(db = db, db.CompA, db.CompB, db.CompC, db.Temp, db.ph, db.uid, stacked = TRUE)
+    binodals <- AQSearch.Binodal(db = db, db.CompA, db.CompB, db.CompC, db.Temp, db.ph, db.uid, stacked = TRUE)
+    slope <- AQSearch.Slope(db = db, db.CompA, db.CompB, db.CompC, db.Temp, db.ph, db.uid, stacked = TRUE)
     #
     db.ans <-c(parameters, tielines, binodals, slope)
     # If search isn't null, evaluate data

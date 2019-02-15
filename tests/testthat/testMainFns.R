@@ -1,10 +1,10 @@
 library(LLSR)
-
+options(digits = 14)
 
 test_that("Mechuk's Coefficients", {
-  expect_equal(summary(AQSys(llsr_data$db.data[6:23,1:2], modelName = "merchuk"))$coefficients[1], 42.474498616297, tolerance=1e-7)
-  expect_equal(summary(AQSys(llsr_data$db.data[6:23,1:2], modelName = "merchuk"))$coefficients[2], -0.22650610100248, tolerance=1e-7)
-  expect_equal(summary(AQSys(llsr_data$db.data[6:23,1:2], modelName = "merchuk"))$coefficients[3], 1.4832633921089e-05, tolerance=1e-7)
+  expect_equal(summary(AQSys(llsr_data$db.data[6:23,1:2], modelName = "merchuk"))$coefficients[1], 42.474492579386, tolerance = 1e-7)
+  expect_equal(summary(AQSys(llsr_data$db.data[6:23,1:2], modelName = "merchuk"))$coefficients[2], -0.22650605259699, tolerance = 1e-7)
+  expect_equal(summary(AQSys(llsr_data$db.data[6:23,1:2], modelName = "merchuk"))$coefficients[3], 1.4832637124294e-05, tolerance = 1e-7)
 })
 
 test_that("Murugesan's Coefficients", {

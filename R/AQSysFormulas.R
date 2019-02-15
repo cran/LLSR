@@ -8,17 +8,19 @@ merchuk <- function(XYdt, P1 = 10, P2 = 1, P3 = 0, ...) {
     # define header
     names(XYdt) <- c("XC", "YC")
     # define nonlinear system and solve it
-    FFn <- tryCatch({
-      nls(
-        YC ~ P1 * exp(P2 * (XC ^ (0.5)) - P3 * (XC ^ 3)),
-        start = list(P1 = P1, P2 = P2, P3 = P3),
-        data = XYdt,
-        na.action = na.exclude
-      )
-    },
-    error = function(e) {
-      return(NULL)
-    })
+    suppressWarnings(
+      FFn <- tryCatch({
+        nlsLM(
+          YC ~ P1 * exp(P2 * (XC ^ (0.5)) - P3 * (XC ^ 3)),
+          start = list(P1 = P1, P2 = P2, P3 = P3),
+          data = XYdt,
+          na.action = na.exclude
+        )
+      },
+      error = function(e) {
+        return(NULL)
+      })
+    )
     # return output from anaysis
     FFn
   }
@@ -32,17 +34,19 @@ murugesan <- function(XYdt, ...) {
   ##  tol=1e-10, minFactor = 1/1024,
   ##  printEval = FALSE, warnOnly = FALSE)
   # define nonlinear system and solve it
-  FFn <- tryCatch({
-    nls(
-      YC ~ P1 + P2 * (XC) ^ 0.5 + P3 * XC,
-      start = list(P1 = 50, P2 = 1, P3 = 0),
-      data = XYdt,
-      na.exclude
-    )
-  },
-  error = function(e) {
-    return(NULL)
-  })
+  suppressWarnings(
+    FFn <- tryCatch({
+      nls(
+        YC ~ P1 + P2 * (XC) ^ 0.5 + P3 * XC,
+        start = list(P1 = 50, P2 = 1, P3 = 0),
+        data = XYdt,
+        na.exclude
+      )
+    },
+    error = function(e) {
+      return(NULL)
+    })
+  )
   # return output from anaysis
   FFn
 }
@@ -67,13 +71,15 @@ tello <- function(XYdt, ...) {
     # define header
     names(XYdt) <- c("XC", "YC")
     # define nonlinear system and solve it using estimated parameters as guess
-    FFn <- nlsLM(
-      XC ~ exp((YC - P3) / P1) - P2,
-      #YC ~ P1*log(XC + P2) + P3,
-      start = list(P1 = -100, P2 = 10, P3 = 0),
-      data = XYdt,
-      na.action = na.exclude,
-      control = nls.lm.control(maxiter = 25)
+    suppressWarnings(
+      FFn <- nlsLM(
+        XC ~ exp((YC - P3) / P1) - P2,
+        #YC ~ P1*log(XC + P2) + P3,
+        start = list(P1 = -100, P2 = 10, P3 = 0),
+        data = XYdt,
+        na.action = na.exclude,
+        control = nls.lm.control(maxiter = 25)
+      )
     )
     # return output from anaysis
   },
@@ -90,22 +96,24 @@ tang <- function(XYdt, P1 = 10, P2 = 0, P3 = 0, P4 = 0, ...) {
   # define header
   names(XYdt) <- c("XC", "YC")
   # define nonlinear system and solve it
-  FFn <- tryCatch({
-    nls(
-      YC ~ exp(P1 + P2 * (XC ^ (0.5)) + P3 * XC + P4 * (XC ^ 2)),
-      start = list(
-        P1 = P1,
-        P2 = P2,
-        P3 = P3,
-        P4 = P4
-      ),
-      data = XYdt,
-      na.action = na.exclude
-    )
-  },
-  error = function(e) {
-    return(NULL)
-  })
+  suppressWarnings(
+    FFn <- tryCatch({
+      nls(
+        YC ~ exp(P1 + P2 * (XC ^ (0.5)) + P3 * XC + P4 * (XC ^ 2)),
+        start = list(
+          P1 = P1,
+          P2 = P2,
+          P3 = P3,
+          P4 = P4
+        ),
+        data = XYdt,
+        na.action = na.exclude
+      )
+    },
+    error = function(e) {
+      return(NULL)
+    })
+  )
   # return output from anaysis
   FFn
 }
@@ -116,23 +124,25 @@ chen <- function(XYdt, P1 = 10, P2 = 0, P3 = 0, P4 = 0,P5 = 0, ...) {
   # define header
   names(XYdt) <- c("XC", "YC")
   # define nonlinear system and solve it
-  FFn <- tryCatch({
-    nls(
-      YC ~ exp(P1 + P2 * (XC ^ (0.5)) + P3 * XC + P4 * (XC ^ 2)+ P5 * (XC ^ 3)),
-      start = list(
-        P1 = P1,
-        P2 = P2,
-        P3 = P3,
-        P4 = P4,
-        P5 = P5
-      ),
-      data = XYdt,
-      na.action = na.exclude
-    )
-  },
-  error = function(e) {
-    return(NULL)
-  })
+  suppressWarnings(
+    FFn <- tryCatch({
+      nls(
+        YC ~ exp(P1 + P2 * (XC ^ (0.5)) + P3 * XC + P4 * (XC ^ 2) + P5 * (XC ^ 3)),
+        start = list(
+          P1 = P1,
+          P2 = P2,
+          P3 = P3,
+          P4 = P4,
+          P5 = P5
+        ),
+        data = XYdt,
+        na.action = na.exclude
+      )
+    },
+    error = function(e) {
+      return(NULL)
+    })
+  )
   # return output from anaysis
   FFn
 }

@@ -4,10 +4,12 @@
 \alias{AQSysBancroft}
 \title{Bancroft's Potential Equation - tie-line's correlation}
 \usage{
-AQSysBancroft(TLdt, ...)
+AQSysBancroft(dataSET, Order, ...)
 }
 \arguments{
-\item{TLdt}{- Tieline Experimental data that will be used in the nonlinear fit}
+\item{dataSET}{- Tieline Experimental data that will be used in the nonlinear fit}
+
+\item{Order}{Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.}
 
 \item{...}{Additional optional arguments. None are used at present.}
 }
@@ -18,11 +20,11 @@ Parameters k1, r and Statistical data
 Bancroft's equation to correlate tie-line's data.
 }
 \examples{
-# TLdt is a data.frame which contains series of Tieline's mass fraction
+# dataSET is a data.frame which contains series of Tieline's mass fraction
 # (upper-rich component, bottom-rich component and water)
 # Each column in the data.frame represents a series of one component mass fraction
 # For example, an empty data.frame for four tielines can be obtaining using:
-TLdt<-matrix(NA,nrow=4,ncol=6)
+dataSET <- matrix(NA,nrow=4,ncol=6)
 # Variables order must follows the sequence presented below:
 # "mfXt","mfYt","mfXb","mfYb","mfWt","mfWb"
 # In which: mf stands for mass fraction; X and Y for the component
@@ -30,7 +32,7 @@ TLdt<-matrix(NA,nrow=4,ncol=6)
 # bottom phases and W for water.
 # Then you just need to load the data.frame in the function:
 \dontrun{
-AQSysBancroft(TLdt)
+AQSysBancroft(dataSET, Order="xy")
 }
 }
 \references{

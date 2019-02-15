@@ -4,11 +4,13 @@
 \alias{AQSysDOE}
 \title{AQSysDOE}
 \usage{
-AQSysDOE(dataSET, slope = NULL, xmax = NULL, modelName = "merchuk",
-  nTL = 3, nPoints = 3, tol = 1e-05)
+AQSysDOE(dataSET, db = LLSR::llsr_data, slope = NULL, xmax = NULL,
+  modelName = "merchuk", nTL = 3, nPoints = 3, tol = 1e-05)
 }
 \arguments{
 \item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit.}
+
+\item{db}{A highly structure db containing data from previously analised data. LLSR database is used by default but user may input his own db if formatted properly.}
 
 \item{slope}{The method assumes all tielines for a given ATPS are parallel, thus only one slope is required. [type:double]}
 

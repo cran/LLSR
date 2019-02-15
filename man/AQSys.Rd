@@ -7,7 +7,8 @@
 \usage{
 AQSys(dataSET, ...)
 
-\method{AQSys}{default}(dataSET, modelName = "merchuk", ...)
+\method{AQSys}{default}(dataSET, modelName = "merchuk", Order = "xy",
+  ...)
 }
 \arguments{
 \item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit}
@@ -16,6 +17,8 @@ AQSys(dataSET, ...)
 
 \item{modelName}{- Character String specifying the nonlinear empirical equation to fit data.
 The default method uses Merchuk's equation. Other mathematical descriptors can be listed using AQSysList().}
+
+\item{Order}{Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.}
 }
 \value{
 A list containing three data.frame variables with all data parsed from the worksheet and parameters calculated
@@ -55,7 +58,7 @@ CHEN, Y.  et al. Liquid-liquid equilibria of aqueous biphasic systems composed o
 \itemize{
 \item \code{\link{AQSys.default}}
 \item \code{\link{AQSys.plot}}
-\item \code{\link{AQSys.tielines}}
+\item \code{\link{AQSys.LevArmRule}}
 \item \code{\link{AQSysOthmer}}
 \item \code{\link{AQSysBancroft}}
 }

@@ -4,22 +4,22 @@
 \alias{AQSearch.Binodal}
 \title{Search function for ATPS Systems data}
 \usage{
-\method{AQSearch}{Binodal}(db = LLSR::llsr_data, db.ph = NULL,
-  db.CompA = NULL, db.CompB = NULL, db.Temp = NULL,
-  db.CompC = NULL, db.uid = NULL, stacked = FALSE, ...)
+\method{AQSearch}{Binodal}(db = LLSR::llsr_data, db.CompA = NULL,
+  db.CompB = NULL, db.CompC = NULL, db.Temp = NULL, db.ph = NULL,
+  db.uid = NULL, stacked = FALSE, ...)
 }
 \arguments{
 \item{db}{A highly structure db containing data from previously analised data. LLSR database is used by default but user may input his own db if formatted properly.}
-
-\item{db.ph}{A numeric variable containing the pH to be searched within DB.}
 
 \item{db.CompA}{A String variable containing either the CAS, chemical formula or name of the upper phase enriched component..}
 
 \item{db.CompB}{A String variable containing either the CAS, chemical formula or name of the lower phase component.}
 
+\item{db.CompC}{A String variable containing either the CAS, chemical formula or name of the additive component.}
+
 \item{db.Temp}{A numeric variable containing the Temperature (in Kelvin) to be searched within DB.}
 
-\item{db.CompC}{A String variable containing either the CAS, chemical formula or name of the additive component.}
+\item{db.ph}{A numeric variable containing the pH to be searched within DB.}
 
 \item{db.uid}{An Unique md5 hash Identification. User can retrieve data for a specific system if in possesion of its UID.}
 

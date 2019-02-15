@@ -1,5 +1,5 @@
-## quiets concerns of R CMD check re: the .'s that appear in pipelines
-##if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
+# quiets concerns of R CMD check re: the .'s that appear in pipelines
+# if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
 #
 is.odd <- function(x)
   x %% 2 != 0
@@ -102,7 +102,7 @@ findTL <- function(dTLL, SysTLL, BLFn, slope){
   return(OUTPUT)
 }
 #
-findSlope <- function(dataSET){
+findSlope <- function(db, dataSET){
   # iterate through multiple columns and return a list of slopes
   slope <- c()
   # check how many systems were provided
@@ -115,15 +115,12 @@ findSlope <- function(dataSET){
       idx_PH <- dataSET[1, sys * 2 - 1]
       idx_T <- dataSET[2, sys * 2 - 1]
       #
-      # CAS_db <- llsr_data[["db.cas"]]
-      #print(c(idx_Y, idx_X, idx_PH, idx_T) )
-      #print(c(TL_db$Y, TL_db$X, TL_db$PH, TL_db$T) )
-      TL_db <- LLSR::llsr_data[["db.tielines"]][["slopes"]]
+      TL_db <- db[["db.tielines"]][["slopes"]]
       slope[sys] <- TL_db[which(
         (TL_db$PH == idx_PH | is.na(TL_db$PH)) &
-          TL_db$T == idx_T &
-          TL_db$X == idx_X &
-          TL_db$Y == idx_Y ), "TLSlope"]
+          TL_db$TEMP == idx_T &
+          (TL_db$A == idx_X | TL_db$B == idx_X) &
+          (TL_db$A == idx_Y | TL_db$B == idx_Y) ), "TLSlope"]
       #
     }
     if (length(slope)==0) {
@@ -217,16 +214,22 @@ saveConfig <- function (plot_obj, save, HR, filename, wdir, silent) {
   return(wdir)
 }
 #
-LLSRxy <- function(FirstCol, SecondCol, ColDis = 'xy') {
+GenPlotSeries <- function(SysData, xMAX, NP, modelFn, i, seriesNames){
+  min_x <- min(SysData[, 1])
+  x <- seq( min_x, xMAX, ((xMAX - (min_x / 1.5)) / NP))
+  BNDL <- setNames(data.frame(x, modelFn(x)), c("X", "Y"))
+  BNDL["System"] <- seriesNames[i]
+  return(BNDL)
+}
+#
+LLSRxy <- function(FirstCol, SecondCol, Order = 'xy') {
   # convert and name variables accordingly into vectors
-  if (tolower(ColDis) == "xy") {
+  if (tolower(Order) == "xy") {
     xc <- as.vector(as.numeric(sub(",", ".", FirstCol, fixed = TRUE)))
-    yc <-
-      as.vector(as.numeric(sub(",", ".", SecondCol, fixed = TRUE)))
+    yc <- as.vector(as.numeric(sub(",", ".", SecondCol, fixed = TRUE)))
   } else{
     xc <- as.vector(as.numeric(sub(",", ".", SecondCol, fixed = TRUE)))
-    yc <-
-      as.vector(as.numeric(sub(",", ".", FirstCol, fixed = TRUE)))
+    yc <- as.vector(as.numeric(sub(",", ".", FirstCol, fixed = TRUE)))
   }
   # and combine them into a dataframe
   XYdt <- data.frame(XC = xc, YC = yc)
@@ -239,4 +242,48 @@ LLSRxy <- function(FirstCol, SecondCol, ColDis = 'xy') {
   #return data silently - should it be Visible or hidden?
   invisible(XYdt)
 }
-
+#
+Name2Index <- function(chem_name) {
+  db <- LLSR::llsr_data[["db.cas"]]
+  chem_idx <- db[which(db$CAS.NAME == chem_name), "CAS.INDEX"]
+  return(chem_idx)
+}
+#
+####################################################################################################################
+#' @rdname ExportTemplate
+#' @export 
+#' @title LLSR Template Exporter
+#' @description The function makes a copy of LLSR's template file and copy it to the folder pointed by the user.
+export_template <- function() {
+  llsr_path <- system.file("extdata", package = "LLSR")
+  template <- file.path(llsr_path, "template.xlsx")
+  #
+  output_dir <- dlgDir()$res
+  #
+  file.copy(
+    from = template,
+    to = output_dir,
+    copy.mode = TRUE,
+    copy.date = TRUE
+  )
+  #
+}
+#
+####################################################################################################################
+#' @rdname ExportData
+#' @export 
+#' @title LLSR Data Exporter
+#' @description The function saves a copy of a specified variable to a file in the folder pointed by the user.
+#' @param localData A variable existing in R environment and that will be saved locally.
+export_data <- function(localData = NULL) {
+  #
+  if (is.null(localData)) {
+    cat("Error: A variable containing data to be saved must be specified.")
+  } else{
+    output_dir <- dlgDir()$res
+    file_local_database <- file.path(output_dir, "local_data.rda")
+    #
+    save(localData, file = file_local_database)
+  }
+  #
+}

@@ -10,6 +10,7 @@ options(digits = 14)
 #' @export AQSysDOE
 #' 
 #' @param dataSET - Binodal Experimental data that will be used in the nonlinear fit.
+#' @param db A highly structure db containing data from previously analised data. LLSR database is used by default but user may input his own db if formatted properly.
 #' @param slope The method assumes all tielines for a given ATPS are parallel, thus only one slope is required. [type:double]
 #' @param xmax Maximum value for the Horizontal axis' value (bottom-rich component). [type:double]
 #' @param modelName Character String specifying the nonlinear empirical equation to fit data.
@@ -17,7 +18,9 @@ options(digits = 14)
 #' @param nTL Number of tielines plotted for a given ATPS. Default is 3. [type:Integer]
 #' @param nPoints Number of points chosen for a given tieline. Default is 3. [type:Integer]
 #' @param tol limit of tolerance to reach to assume convergence. Default is 1e-5. [type:Integer]
+# ' @param maxiter	- A positive integer specifying the maximum number of iterations allowed.
 AQSysDOE <- function(dataSET,
+                     db = LLSR::llsr_data,
                      slope = NULL,
                      xmax = NULL,
                      modelName = "merchuk",
@@ -26,19 +29,26 @@ AQSysDOE <- function(dataSET,
                      tol = 1e-5) {
   #
   if (is.null(slope)){
-    slope = findSlope(dataSET)
+    slope = findSlope(db, dataSET)
   } else if (!((ncol(dataSET) / 2) == length(slope))){
     AQSys.err("11")
   }
   #
-  SysCharData <- AQSysEval(
+  rawEvalData <- AQSysEval(
     dataSET,
     tol = tol,
     nTL = nTL,
     nPoints = nPoints,
     modelName = modelName,
     slope = slope
-  )$data
+  )
+  #
+  if (length(rawEvalData$data)==length(rawEvalData$plot)) {
+    SysCharData <- rawEvalData$data
+  } else {
+    SysCharData <- list()
+    SysCharData[[1]] <- rawEvalData$data
+  }
   #
   dataNames <- c("X", "Y", "System", "TLL", "Point")
   OUTPUT <- setNames(as.data.frame(matrix(ncol = 5)), dataNames)

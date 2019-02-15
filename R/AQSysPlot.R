@@ -7,6 +7,8 @@
 #' to return a plot which represent the chosen model.
 #' 
 #' @param dataSET - Binodal Experimental data that will be used in the nonlinear fit. It might hold multiple systems stacked side-by-side. [type:data.frame]
+#' @param Order Defines how the data is organized in the Worksheet. 
+#' Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite. [type:string]
 #' @param xlbl Plot's Horizontal axis label.
 #' @param ylbl Plot's Vertical axis label.
 #' @param seriesNames A list of sequential names which will identify each system provided by the user in the dataSET variable. [type:List]
@@ -15,10 +17,12 @@
 #' @param HR  Adjust Plot's text to be compatible with High Resolution size [type:Logical]
 #' @param wdir The directory in which the plot file will be saved. [type:String]
 #' @param silent save plot file without actually showing it to the user. Default is FALSE. [type:Logical]
+# ' @param maxiter	- A positive integer specifying the maximum number of iterations allowed.
 #' @export AQSysPlot
 AQSysPlot <- function (dataSET,
-                       xlbl,
-                       ylbl,
+                       Order = "xy",
+                       xlbl = "",
+                       ylbl = "",
                        seriesNames = NULL,
                        save = FALSE,
                        filename = NULL,
@@ -43,7 +47,7 @@ AQSysPlot <- function (dataSET,
       SysList[[i]]["System"] <- seriesNames[i]
     }
     output <- bind_rows(SysList)
-    output_plot <- bndOrthPlot(output, xlbl, ylbl)
+    output_plot <- bndOrthPlot(output, Order, xlbl, ylbl)
     #
     saveConfig(output_plot, save, HR, filename, wdir, silent)
     #
@@ -59,17 +63,23 @@ AQSysPlot <- function (dataSET,
   }
 }
 
-bndOrthPlot <- function(dataSET, xlbl = "", ylbl = "") {
+bndOrthPlot <- function(dataSET, Order, xlbl = "", ylbl = "") {
+  #
+  dataSET[, 1:2] <- toNumeric(dataSET, Order)
   #
   xmax <- ceiling(round(max(dataSET[, 1]) / 0.92, 1) / 5) * 5
   ymax <- ceiling(round(max(dataSET[, 2]) / 0.92, 1) / 5) * 5
   #
   outputPLOT <- ggplot() + scale_colour_grey() +
-    geom_line(data=dataSET, size = 1, aes_string(color = "System", x = "X", y = "Y")) +
-    geom_point(data=dataSET, size = 2, aes_string(color = "System", x = "X", y = "Y")) + 
+    geom_line(data = dataSET,
+              size = 1,
+              aes_string(color = "System", x = "X", y = "Y")) +
+    geom_point(data = dataSET,
+               size = 2,
+               aes_string(color = "System", x = "X", y = "Y")) +
     xlab(paste(xlbl,  "(%, m/m)")) +
-    ylab(paste(ylbl, "(%, m/m)")) + 
-    theme_light() + 
+    ylab(paste(ylbl, "(%, m/m)")) +
+    theme_light() +
     theme(
       validate = FALSE,
       plot.margin = unit(c(1, 1, 1, 1), "cm"),
@@ -92,7 +102,7 @@ bndOrthPlot <- function(dataSET, xlbl = "", ylbl = "") {
     ) +
     scale_y_continuous(
       expand = c(0, 0),
-      limits = c(-5, ymax),
+      limits = c(0, ymax),
       breaks = seq(0, ymax, by = 5),
       labels = seq(0, ymax, by = 5)
     ) +
