@@ -31,10 +31,10 @@
 Returns a data.frame containing system's parameters which match searched conditions
 }
 \description{
-This function allow the user to search the package database to find any ATPS that matches the used criteria.
+This function allow the user to search the package database to find any ATPS that matches the available criteria.
 }
 \details{
-The function return the systems that matches the criteria submit by the user.
+The function return the systems that matches the criteria submitted by the user.
 }
 \examples{
 \dontrun{

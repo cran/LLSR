@@ -1,10 +1,11 @@
 #' @importFrom dplyr bind_rows
 ####################################################################################################################
 #' @rdname AQSysPlot
-#' @title This functions plot a curve based in the chosen model and its parameters.
-#' @description The function returns a plot after using the parameters and model given by the user.
-#' @details The function owns predefined set of equations that can be seen below and must be used, with adequated parameters,
-#' to return a plot which represent the chosen model.
+#' @title AQSysPlot
+#' @export AQSysPlot
+#' @description This functions plot binodal data as a curve in a pre-defined high quality theme ready for publication.
+#' @details The function have a predefined set of ggplot2 features adjusted to return a high quality picture. 
+#' More suitable for plotting fitted data, once binodal data usually determined through cloudy-phase point will look irregular.
 #' 
 #' @param dataSET - Binodal Experimental data that will be used in the nonlinear fit. It might hold multiple systems stacked side-by-side. [type:data.frame]
 #' @param Order Defines how the data is organized in the Worksheet. 
@@ -17,8 +18,14 @@
 #' @param HR  Adjust Plot's text to be compatible with High Resolution size [type:Logical]
 #' @param wdir The directory in which the plot file will be saved. [type:String]
 #' @param silent save plot file without actually showing it to the user. Default is FALSE. [type:Logical]
+#' @return The plot is returned as a ggplot2 object that can be manupulated accordingly.
 # ' @param maxiter	- A positive integer specifying the maximum number of iterations allowed.
-#' @export AQSysPlot
+#' @examples
+#' # Populating variable dataSET with binodal data
+#' dataSET <- peg4kslt[ , 1:2]
+#' # Fitting dataSET using Merchuk's function
+#' data <- AQSys.data(dataSET, Order = "xy")
+#' AQSysPlot(data)
 AQSysPlot <- function (dataSET,
                        Order = "xy",
                        xlbl = "",

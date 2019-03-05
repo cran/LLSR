@@ -2,7 +2,7 @@
 % Please edit documentation in R/AQSysPlot.R
 \name{AQSysPlot}
 \alias{AQSysPlot}
-\title{This functions plot a curve based in the chosen model and its parameters.}
+\title{AQSysPlot}
 \usage{
 AQSysPlot(dataSET, Order = "xy", xlbl = "", ylbl = "",
   seriesNames = NULL, save = FALSE, filename = NULL, HR = FALSE,
@@ -30,10 +30,20 @@ Use "xy" whether the first column corresponds to the lower phase fraction and "y
 
 \item{silent}{save plot file without actually showing it to the user. Default is FALSE. [type:Logical]}
 }
+\value{
+The plot is returned as a ggplot2 object that can be manupulated accordingly.
+}
 \description{
-The function returns a plot after using the parameters and model given by the user.
+This functions plot binodal data as a curve in a pre-defined high quality theme ready for publication.
 }
 \details{
-The function owns predefined set of equations that can be seen below and must be used, with adequated parameters,
-to return a plot which represent the chosen model.
+The function have a predefined set of ggplot2 features adjusted to return a high quality picture. 
+More suitable for plotting fitted data, once binodal data usually determined through cloudy-phase point will look irregular.
+}
+\examples{
+# Populating variable dataSET with binodal data
+dataSET <- peg4kslt[ , 1:2]
+# Fitting dataSET using Merchuk's function
+data <- AQSys.data(dataSET, Order = "xy")
+AQSysPlot(data)
 }

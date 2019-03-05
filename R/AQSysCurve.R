@@ -33,7 +33,7 @@
 #' If no interval is selected, xmax = 0.4.
 #' @examples
 #' \dontrun{
-#' AQSysCurve("murugesan", as.data.frame(c(0.90, -3.48, 2.92)), col = "red")
+#' AQSysCurve("murugesan", data.frame(90.389, -34.897, 2.924), col = "red")
 #' }
 ####################################################################################################################
 AQSysCurve <- function  (

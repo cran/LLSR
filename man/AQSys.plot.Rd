@@ -60,15 +60,15 @@ Merchuk's equation. Other possibilities can be seen in AQSysList().}
 A plot containing the experimental data, the correspondent curve for the binodal in study and the curve's raw XY data.
 }
 \description{
-The function returns a plot after fitting a dataset to a given equation.
+The function returns a plot after fitting a dataset to the mathematical descriptor chosen by the user.
 }
 \details{
-This version uses the plot function and return a regular bidimensional plot.
+This version uses the plot function and return a regular orthogonal plot.
 }
 \examples{
 #Populating variable dataSET with binodal data
-dataSET <- llsr_data$db.data[6:23,1:2]
-#Plot dataSET using Merchuk's function
+dataSET <- peg4kslt[, 1:2]
+# Plot dataSET using Merchuk's function
 #
 AQSys.plot(dataSET)
 #

@@ -1,6 +1,23 @@
 # quiets concerns of R CMD check re: the .'s that appear in pipelines
 # if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
 #
+#' @importFrom dplyr case_when
+is.valid <- function(y) {
+  caseFun <- function(x) {
+    isTRUE(
+      case_when(
+        (length(x) == 0) && (typeof(x) == "character") ~ FALSE,
+        is.null(x) ~ FALSE,
+        is.na(x) ~ FALSE,
+        is.nan(x) ~ FALSE,
+        (trimws(x) == "") ~ FALSE,
+        TRUE ~ TRUE
+      )
+    )
+  }
+  all(c(unlist(lapply(y, caseFun)),!is.null(y)))
+}
+#
 is.odd <- function(x)
   x %% 2 != 0
 #
@@ -78,7 +95,7 @@ findTL <- function(dTLL, SysTLL, BLFn, slope){
   OUTPUT <- list()
   dt <- 1
   #
-  while (dt > 1e-7){
+  while (dt > 1e-4){
     Y <- BLFn(X)
     TLFn <- function(x) { Y + slope * (x - X) }
     xRoots <- uniroot.all(function(x) (BLFn(x) - TLFn(x)), c(0, X), tol = 0.1) 

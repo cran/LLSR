@@ -6,9 +6,8 @@ options(digits = 14)
 #' @rdname AQSysEval
 #' @name AQSysEval
 #' @title AQSysEval
-#' @description Import DB data from an Excel Worksheet.
+#' @description The function perform a full ATPS characterization (parameters, tie-line boundaries and critical point), generating a brief report.
 #' @export AQSysEval
-#' 
 #' @param dataSET - Binodal Experimental data that will be used in the nonlinear fit. [type:data.frame]
 #' @param db A highly structure db containing data from previously analised data. LLSR database is used by default but user may input his own db if formatted properly.
 #' @param xmax Maximum value for the Horizontal axis' value (bottom-rich component). [type:double]
@@ -33,9 +32,11 @@ options(digits = 14)
 #' 
 #' @examples
 #' \dontrun{
-#' AQSysDB("C:/data.xls")
-#'}
-#'
+#' dataSET <- AQSearch.Binodal(db.uid='56b53a50f500c502fa4a65d197fc6d84')
+#' xLabel <- "Ammonium Sulphate" 
+#' yLabel <- "Poly(ethylene glycol) 2000" 
+#' EvalData <- AQSysEval(dataSET2 , xlbl = xLabel, ylbl = yLabel)
+#' }
 #' @references 
 #' KAUL, A. The Phase Diagram. In: HATTI-KAUL, R. (Ed.). Aqueous Two-Phase Systems: Methods and Protocols: Humana Press, v.11, 2000. cap. 2, p.11-21.  (Methods in Biotechnology). ISBN 978-0-89603-541-6.
 #' (\href{https://link.springer.com/10.1385/1-59259-028-4:11}{SpringerLink})
@@ -165,7 +166,7 @@ AQSysEval <- function(dataSET,
           cat("#")
         }
       }
-      cat("]\n")
+      cat("#]\n")
       # data.frame holding data regarding Critical Point convergence
       output_res <- setNames(data.frame(dt, TL), c("dt", "TL"))
       # Setting up data.frame to hold data from the global points

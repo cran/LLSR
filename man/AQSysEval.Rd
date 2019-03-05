@@ -51,13 +51,15 @@ The default method uses Merchuk's equation. Other mathematical descriptors can b
 \item{silent}{save plot file without actually showing it to the user. Default is FALSE. [type:Logical]}
 }
 \description{
-Import DB data from an Excel Worksheet.
+The function perform a full ATPS characterization (parameters, tie-line boundaries and critical point), generating a brief report.
 }
 \examples{
 \dontrun{
-AQSysDB("C:/data.xls")
+dataSET <- AQSearch.Binodal(db.uid='56b53a50f500c502fa4a65d197fc6d84')
+xLabel <- "Ammonium Sulphate" 
+yLabel <- "Poly(ethylene glycol) 2000" 
+EvalData <- AQSysEval(dataSET2 , xlbl = xLabel, ylbl = yLabel)
 }
-
 }
 \references{
 KAUL, A. The Phase Diagram. In: HATTI-KAUL, R. (Ed.). Aqueous Two-Phase Systems: Methods and Protocols: Humana Press, v.11, 2000. cap. 2, p.11-21.  (Methods in Biotechnology). ISBN 978-0-89603-541-6.

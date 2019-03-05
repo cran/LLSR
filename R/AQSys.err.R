@@ -28,7 +28,7 @@ AQSys.err <- function (err, ...) {
       #stop(errmsg, call. = FALSE)
     },
     "6" = {
-      errmsg <- "      At least one of the parameters (pH, Temp, additive, UP.Rich or LP.Rich) must be not NULL.\n"
+      errmsg <- "      At least one of the parameters (UID, pH, Temp, CompA, CompB or CompC) must be not NULL.\n"
       cat(errmsg)
       #stop(errmsg, call. = FALSE)
     },

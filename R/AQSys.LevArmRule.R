@@ -1,9 +1,8 @@
 #' @rdname AQSys.LevArmRule
-#' @title Merchuk's Method - tie-line's Composition Calculation
+#' @title Lever-Arm Rule - tie-line's Composition Calculation
 #' @description Merchuk et al. described a very straightforward method to calculate the concentration of each component in the
-#' tieline giving only its global composition and phase's properties (such as volume and density).
-#' @details Using the binodal data, the global composition of a chosen tieline and its phases properties (more precisely each
-#' phase density and volume)
+#' tieline giving only its global composition and phase's properties (such as volume and density). Here this method is implemented and generalized for multiple mathematical descriptors.
+#' @details Using any implemented binodal data mathematical descriptor, the global composition of a chosen tieline and its phases properties.
 #' @method AQSys LevArmRule
 #' @export AQSys.LevArmRule
 #' @export

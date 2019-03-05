@@ -3,7 +3,6 @@
 #' @title Othmer's Equation - Tieline's correlation
 #' @description Othmer's equation to correlate tieline's data applying the lever's rule.
 #' @param dataSET - Tieline Experimental data that will be used in the nonlinear fit
-#' @param Order Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.
 # ' @param maxiter	- A positive integer specifying the maximum number of iterations allowed.
 #' @param ... Additional optional arguments. None are used at present.
 #' @export AQSysOthmer
@@ -24,12 +23,12 @@
 #' # bottom phases.
 #' # Then you just need to load the data.frame in the function:
 #' \dontrun{
-#' AQSysOthmer(dataSET)
+#' AQSysOthmer(dataSET, Order = "xy")
 #'}
-AQSysOthmer <- function(dataSET, Order, ...) {
+AQSysOthmer <- function(dataSET, ...) {
   # store tieline data into a dataframe variable. It might be a better approach check if
   # user stored it in a dataframe and if not trigger an error.
-  dataSET <- as.data.frame(dataSET)
+  dataSET <- as.data.frame(na.exclude(apply(dataSET, 1:2, as.numeric)))
   # tieline data is a set of mass fractions of all systems components obtained
   # experimentally for the system's upper and bottom phase.
   # the line bellow set the dataset header
@@ -58,7 +57,6 @@ AQSysOthmer <- function(dataSET, Order, ...) {
 #' (\href{https://www.sciencedirect.com/science/article/pii/S1383586608000361}{ScienceDirect})
 #' @export AQSysBancroft
 #' @param dataSET - Tieline Experimental data that will be used in the nonlinear fit
-#' @param Order Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.
 # ' @param maxiter	- A positive integer specifying the maximum number of iterations allowed.
 #' @param ... Additional optional arguments. None are used at present.
 #' @return Parameters k1, r and Statistical data
@@ -75,13 +73,13 @@ AQSysOthmer <- function(dataSET, Order, ...) {
 #' # bottom phases and W for water.
 #' # Then you just need to load the data.frame in the function:
 #' \dontrun{
-#' AQSysBancroft(dataSET, Order="xy")
+#' AQSysBancroft(dataSET, Order = "xy")
 #'}
-AQSysBancroft <- function(dataSET, Order, ...) {
+AQSysBancroft <- function(dataSET, ...) {
   # store tie-line data into a dataframe variable. It might be a better approach check if
   # user stored it in a dataframe and if not trigger an error.
   # dataSET <- as.data.frame(dataSET)
-  dataSET <- toNumeric(dataSET, Order)
+  dataSET <- as.data.frame(na.exclude(apply(dataSET, 1:2, as.numeric)))
   # tie-line data is a set of mass fractions of all systems components obtained
   # experimentally for the system's upper and bottom phase.
   # the line bellow set the dataset header

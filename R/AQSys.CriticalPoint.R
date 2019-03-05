@@ -1,12 +1,9 @@
 #' @rdname AQSys.CritPoint
 #' @name AQSys.CritPoint
 #' @title ATPS Critical Point Calculation
-#' @description Merchuk et al. described a very straightforward method to calculate the critical composition of a given Binodal
-#' curve and its Tielines.
-#' @details Using the binodal data, tieline's Slopes (S), the composition of bottom-rich component in the bottom phase (XB)
-#' and an equation which stablish a relatioship between them, this function returns the critical composition of the binodal
-#' under study. When used within a iterative function, mrchk.tielines() can be used to obtain TLL and S and therefore
-#' calculate the critical composition.
+#' @description This function implements methods available in current literature to calculate an ATPS critical point based on its experimental data.
+#' @details The Critical Point is one in which both the composition and volume of the phases become equal, and the tie-line length (TLL) tends to zero. 
+#' Thus, the methods here implemented the methods decribed by KAUL, A (2000) to calculated a theoretical critical point. 
 #' @method AQSys CritPoint
 #' @export AQSys.CritPoint
 #' @export
@@ -14,7 +11,7 @@
 #' @param tldata - A data.frame with two columns containing a set of Tieline's Slopes (S)
 #' and its bottom-rich component composition in the bottom phase (XB). [type:data.frame]
 #' @param method - Binodal Experimental data that will be used in the nonlinear fit. [type:string]
-#' "algebraic" - Uses the critical point own definition to set up constraints and solve a system of equations.
+#' "algebraic" - Uses the critical point own definition to set up constraints and solve a system of equations. Still in development.
 #' "numerical" - A number of tie-lines are calculated successively until TLL is close to zero and concentration of components are numerically equal. A constant slope is assumed.
 #' "polynomial" - Calculate the intercept point between the chosen mathematical description and a third order polynomial fitting the tie-lines mid-points
 #' @param modelName - Mathematical descriptor that will be used for non-linear fitting. 
@@ -34,6 +31,9 @@
 #' \dontrun{
 #' AQSys.CritPoint(dataSET, tldata)
 #' }
+#' @references 
+#' KAUL, A. The Phase Diagram. In: HATTI-KAUL, R. (Ed.). Aqueous Two-Phase Systems: Methods and Protocols: Humana Press, v.11, 2000. cap. 2, p.11-21.  (Methods in Biotechnology). ISBN 978-0-89603-541-6.
+#' (\href{https://doi.org/10.1385/1-59259-028-4:11}{ACS Publications})
 AQSys.CritPoint <- function(dataSET,
                        tldata,
                        method,

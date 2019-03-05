@@ -64,60 +64,49 @@ matchUID <- function(UIDList, UIDMatrix) {
   return(db.binodals.index)
 }
 #
-# matchBNDL <- function(matchingList, matchingMatrix) {
-#   matchingUIDs <- as.character(unique(matchingList))
-#   #
-#   db.binodals.index <-
-#     as.numeric(setNames(na.exclude(sapply(matchingUIDs, function(uid) {
-#       which(matchingMatrix == uid, TRUE)[2]
-#     })), NULL))
-#   #
-#   db.binodals.index <- sort(c(db.binodals.index, db.binodals.index + 1))
-#   #
-#   return(db.binodals.index)
-# }
-#
 matchTpH<- function(TpH, BinodalMatrix, pH) {
   #
   if (pH){RowIdx <- 1} else {RowIdx <- 2}
   #
   db.TpH.results <- which(BinodalMatrix == TpH, TRUE)
-  db.TpH.check <- which(db.TpH.results[, "row"] == RowIdx)
   #
-  db.binodals.index <- db.TpH.results[db.TpH.check, "col"]
-  #
-  db.binodals.index <-
-    sapply(db.binodals.index, function(idx) {
-      if (is.odd(idx)) {
-        idx
-      } else {
-        idx - 1
-      }
-    })
-  #
-  db.binodals.index <- sort(c(db.binodals.index, db.binodals.index + 1))
-  #
-  return(db.binodals.index)
+  if (length(db.TpH.results)!= 0) {
+    db.TpH.check <- which(db.TpH.results[, "row"] == RowIdx)
+    #
+    db.binodals.index <- db.TpH.results[db.TpH.check, "col"]
+    #
+    db.binodals.index <-
+      sapply(db.binodals.index, function(idx) {
+        if (is.odd(idx)) {
+          idx
+        } else {
+          idx - 1
+        }
+      })
+    #
+  } 
+  if (length(db.TpH.results)!= 0) {
+    #
+    db.binodals.seq <- sort(c(db.binodals.index, db.binodals.index + 1))
+    db.binodals.index <- unlist(ifelse(length(db.binodals.index) == 0, 0, list(db.binodals.seq)))
+    #
+    return(BinodalMatrix[, db.binodals.index])
+  } else{
+    return(data.frame())
+  }
 }
 #
 matchBNDL<- function(compNameList, BinodalMatrix) {
   #
-  if (length(compNameList)==0){return(c())}
+  if (length(compNameList)==0){return(c())} else (compNameList <- unlist(compNameList))
   #
-  req_results <- sapply(compNameList, function(compName) {
-    unlist(which(BinodalMatrix == compName, TRUE))
-  })
+  db.binodals.index <-  unlist(sapply(compNameList, function(compName) {
+    which(digest(compName, algo = "md5") == apply(BinodalMatrix, 1:2, digest, algo = "md5")[c(1, 3, 5),], TRUE)[, "col"]
+  }))
   #
-  if (is.list(req_results)){
-    db.binodals.index <- as.numeric(do.call(rbind, req_results)[, 2])
-  } else {
-    db.binodals.index <- req_results[(1 + length(req_results) / 2):length(req_results)]
-  }
+  if (length(unlist(db.binodals.index))==0){return(c())}
   #
-  if (length(db.binodals.index)==0){return(c())}
-  #
-  db.binodals.index <-
-    sapply(db.binodals.index, function(idx) {
+  db.binodals.index <- sapply(db.binodals.index, function(idx) {
       if (is.odd(idx)) {
         idx
       } else {
@@ -125,9 +114,19 @@ matchBNDL<- function(compNameList, BinodalMatrix) {
       }
     })
   #
-  db.binodals.index <- sort(c(db.binodals.index, db.binodals.index + 1))
+  db.binodals.index <- sort(unique(c(db.binodals.index, db.binodals.index + 1)))
   #
   return(db.binodals.index)
+}
+#
+matchComp <- function(compNameList, db.matrix){
+  #
+  if (length(compNameList)==0){return(c())} else (compNameList <- unlist(compNameList))
+  #
+  ans <- unique(unname(unlist(sapply(compNameList, function(compName) {
+    which(digest(compName, algo = "md5") == apply(db.matrix, 1:2, digest, algo = "md5")[, c("A", "B", "C")], TRUE)[, "row"]
+  }))))
+  return(ans)
 }
 #
 idx2name <- function(idx, casdb) {
@@ -149,10 +148,8 @@ getBNDL <- function(workBook, sheets) {
   # and determine which system in the workbook have bigger dataset (mrow)
   for (SheetIndex in grep("BINODAL", sheets)) {
     # determine the number of row and columns in the worksheet
-    sys.nrow <-
-      nrow(readWorksheet(workBook, SheetIndex, header = FALSE))
-    sys.ncol <-
-      ncol(readWorksheet(workBook, SheetIndex, header = FALSE))
+    sys.nrow <- nrow(readWorksheet(workBook, SheetIndex, header = FALSE))
+    sys.ncol <- ncol(readWorksheet(workBook, SheetIndex, header = FALSE))
     # initialize variables for first run only
     if (is.null(sys.mrow))
       sys.mrow <- sys.nrow
@@ -182,8 +179,7 @@ getBNDL <- function(workBook, sheets) {
     } else {
       # but if sys.data have data, convert it to list and concatenate it with data
       # from the current sheet. Then convert it to dataframe and store it.
-      sys.data <-
-        bindDATA(list("SET1" = sys.data, "SET2" = sys.temp))
+      sys.data <- bindDATA(list("SET1" = sys.data, "SET2" = sys.temp))
       #sys.data <- as.data.frame(c(sys.data, sys.temp), stringsAsFactors = FALSE)
     }
   }
@@ -236,6 +232,7 @@ IdxToRef <- function(db.ref, db.data, db.cas) {
   db.data[, "REF.MD5"] <- db.ref[db.data[, "REF.MD5"], 3]
   db.data[, "A"] <- sapply(db.data[, "A"], idx2name, casdb = db.cas)
   db.data[, "B"] <- sapply(db.data[, "B"], idx2name, casdb = db.cas)
+  db.data[, "C"] <- ifelse(is.valid(db.data[, "C"]), sapply(db.data[, "C"], idx2name, casdb = db.cas), db.data[, "C"])
   return(UIDGen(db.data))
 }
 #
@@ -321,7 +318,7 @@ getTL <- function(workBook, sheets) {
   }
   # sys.temp[, 19] <- ((sys.temp[, 9] - sys.temp[, 7]) / (sys.temp[, 10] - sys.temp[, 8]))
   #
-  uniqeKeys <- count_(sys.temp, vars = c("PH", "TEMP", "A", "B"))
+  uniqeKeys <- count_(sys.temp, vars = c("PH", "TEMP", "A", "B", "C"))
   #
   return(list("uniqeKeys" = uniqeKeys, "systems" = sys.temp))
 }
@@ -511,22 +508,21 @@ AQSys.merge <- function(wrbk, sheets) {
       sys.data <-
         as.data.frame(c(sys.data, sys.temp), stringsAsFactors = FALSE)
     }
-    
   }
   # return all data merged into a single dataframe
   invisible(sys.data)
 }
 #
 TLAnalysis <- function(workBook, sheets) {
+  #
+  ColNum <- 8 # Number of COlumns
   # path must point to a xlsx or xls file
   TLData <- getTL(workBook, sheets)
   uniqeKeys <- TLData[["uniqeKeys"]]
   sys.temp <- TLData[["systems"]]
   #
-  sys.slopes <- data.frame(matrix(nrow = nrow(uniqeKeys), ncol = 7))
-  # names(sys.slopes) <- c("REF.MD5", "PH", "TEMP", "A", "B", "TLSlope")
-  names(sys.slopes) <-
-    c("REF.MD5", "A", "B", "ORDER", "PH", "TEMP", "TLSlope")
+  sys.slopes <- data.frame(matrix(nrow = nrow(uniqeKeys), ncol = ColNum))
+  names(sys.slopes) <- c("REF.MD5", "A", "B", "ORDER", "PH", "TEMP", "C","TLSlope")
   for (sys in 1:nrow(uniqeKeys)) {
     #
     system_data <- sys.temp[which(
@@ -537,16 +533,12 @@ TLAnalysis <- function(workBook, sheets) {
     ), names(sys.temp)]
     #
     TLSlopes <- system_data[, ncol(system_data)]
-    sys.slopes[sys, 1:7] <-
-      system_data[1, -7:-(ncol(system_data) - 1)]
-    # sys.slopes[sys, 1:6] <- system_data[1, -2][1, -6:-17]
-    # sys.slopes[sys, 1:7] <- system_data[1 , c(1, 5, 6, 2, 3, 4, 19)]
+    sys.slopes[sys, 1:ColNum] <- system_data[1, -7:-(ncol(system_data)-5)][-8: -(ncol(system_data)-7)]
     #
-    TLSlope <-
-      mean(TLSlopes[which((abs(median(TLSlopes) - TLSlopes) / max(abs(TLSlopes))) < 0.15)])
+    TLSlope <- mean(TLSlopes[which((abs(median(TLSlopes) - TLSlopes) / max(abs(TLSlopes))) < 0.15)])
     #
     if (!is.nan(TLSlope)) {
-      sys.slopes[sys, 7] <- TLSlope
+      sys.slopes[sys, ColNum] <- TLSlope
     }
   }
   return(sys.slopes)
@@ -600,7 +592,7 @@ UIDGen <- function(db.data) {
         digest(paste(db.data[4, 2 * IDX - 1],
                      db.data[3, 2 * IDX - 1],
                      db.data[3, 2 * IDX],
-                     # db.data[1, 2 * IDX - 1],
+                     db.data[1, 2 * IDX - 1],
                      db.data[2, 2 * IDX - 1],
                      sep = "_"),
                algo = "md5")
@@ -629,4 +621,40 @@ ChckBndrs <- function(BNFn, slope, BNDL, xmax){
   }
   return(xmax)
   
+}
+#
+RevMD5 <- function(table, db.data){
+    BY.ROW <- ("REF.MD5" %in% colnames(table))
+    if (BY.ROW) {
+      REF.MD5 <- table[["REF.MD5"]]
+      table[["REF.MD5"]] <- sapply(REF.MD5, function(x){db.data$db.ref[db.data$db.ref$REF.MD5 == x, "REF.NAME"]})
+      names(table)[grep("REF.MD5", names(table))] <- "REF"
+    } else {
+      DATA.LENGTH <- ncol(table)
+      DATA.NSYS <- DATA.LENGTH / 2
+      for (IDX in seq(1, DATA.NSYS)) {
+        REF.MD5 <- table[4, 2 * IDX - 1]
+        table[4, 2 * IDX - 1] <- db.data$db.ref[db.data$db.ref$REF.MD5 == REF.MD5, "REF.NAME"]
+      }
+    }
+    return(table)
+}
+#
+RevREF <- function(db.tables, db.data) {
+  tables <- names(db.tables)
+  if (!is.data.frame(db.tables)) {
+    for (table in tables) {
+      if (!is.data.frame(db.tables[[table]])) {
+        nested_tables <-  names(db.tables[[table]])
+        for (nested_table in nested_tables) {
+          db.tables[[table]][[nested_table]] <- RevMD5(db.tables[[table]][[nested_table]], db.data)
+        }
+      } else {
+        db.tables[[table]] <- RevMD5(db.tables[[table]], db.data)
+      }
+    }
+  } else {
+    db.tables <- RevMD5(db.tables, db.data)
+  }
+  return(db.tables)
 }

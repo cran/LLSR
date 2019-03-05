@@ -40,7 +40,7 @@ AQSys <- function(dataSET, ...)
 ####################################################################################################################
 #' @rdname AQSys
 #' @title Merchuk's nonlinear Equation
-#' @description Perform a nonlinear regression fit using several mathematical descriptors in order to calculate the equation's parameters.
+#' @description Perform a nonlinear regression fit using any of the several mathematical descriptors implemented in order to calculate the equation's parameters.
 #' @details The function returns functions parameters after fitting experimental data to the equations listed in AQSysList().
 #' @param modelName - Character String specifying the nonlinear empirical equation to fit data.
 #' The default method uses Merchuk's equation. Other mathematical descriptors can be listed using AQSysList().
@@ -53,9 +53,9 @@ AQSys <- function(dataSET, ...)
 #' @return A list containing three data.frame variables with all data parsed from the worksheet and parameters calculated
 #' through the available mathematical descriptions.
 #' @examples
-#' #Populating variable dataSET with binodal data
-#' dataSET <- llsr_data$db.data[6:23,1:2]
-#' #Fitting dataSET using Merchuk's function
+#' # Populating variable dataSET with binodal data
+#' dataSET <- peg4kslt[ , 1:2]
+#' # Fitting dataSET using Merchuk's function
 #' AQSys(dataSET)
 #' @references 
 #' MURUGESAN, T.; PERUMALSAMY, M. Liquid-Liquid Equilibria of Poly(ethylene glycol) 2000 + Sodium Citrate + Water at (25, 30, 35, 40, and 45) C. Journal of Chemical & Engineering Data, v. 50, n. 4, p. 1392-1395, 2005/07/01 2005. ISSN 0021-9568. 
@@ -93,11 +93,60 @@ AQSys.default <- function(dataSET, modelName = "merchuk", Order="xy", ...) {
 }
 #
 ####################################################################################################################
-# MERCHUK PLOT TEST FUNCTION
+#' @rdname AQSys.data
+#' @title Dataset and Fitted Function plot
+#' @description The function returns a plot after fitting a dataset to the mathematical descriptor chosen by the user.
+#' @details This version uses the plot function and return a regular orthogonal plot.
+#' @method AQSys data
+#' @export AQSys.data
+#' @export
+#' 
+#' @param dataSET - Binodal Experimental data that will be used in the nonlinear fit. It might hold multiple systems stacked side-by-side. [type:data.frame]
+#' @param modelName - Character String specifying the nonlinear empirical equation to fit data. [type:String]
+#' The default method uses Merchuk's equation. Other mathematical descriptors can be listed using AQSysList().
+#' @param Order Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite. [type:String]
+#' @param xmax Maximum value for the Horizontal axis' value - optional [type:double]
+#' @param ymax Maximum value for the Vertical axis' value - optional [type:double]
+#' @param ... Additional optional arguments. None are used at present.
+#' @return return a data.frame with data fitted using the chosen mathematical descriptor.
+#' @examples
+#' # Populating variable dataSET with binodal data
+#' dataSET <- peg4kslt[ , 1:2]
+#' # Fitting dataSET using Merchuk's function
+#' data <- AQSys.data(dataSET, Order = "xy")
+AQSys.data <- function (dataSET,
+                        modelName = "merchuk",
+                        Order = "xy",
+                        xmax = "",
+                        ymax = "",
+                        ...
+) {
+  # guarantee all lines are valid (non-na and numeric)
+  dataSET <- toNumeric(dataSET, Order)
+  # Calculate aesthetically better xmax and ymax
+  if ((xmax == "") | ((xmax > 1) & (max(dataSET[1]) <= 1)) | ((xmax > 100) & (max(dataSET[1]) <= 100) & (max(dataSET[1]) >= 10)) | (xmax < round(max(dataSET[1]) / 0.92, 1))) {
+    xmax <- ceiling(round(max(dataSET[1]) / 0.92, 1)/5)*5
+  }
+  if ((ymax == "") | ((ymax > 1) & (max(dataSET[2]) <= 1)) | ((ymax > 100) & (max(dataSET[2]) <= 100) & (max(dataSET[2]) >= 1)) | (ymax < round(max(dataSET[2]) / 0.92, 1))) {
+    ymax <- ceiling(round(max(dataSET[2]) / 0.92, 1)/5)*5
+  }
+  # Select which model will be used to generate the plot. Function return list of plots and respective number of parameters
+  models_npars <- AQSysList(TRUE)
+  # choose model based in the user choice or standard value
+  Fn <- ifelse(modelName %in% names(models_npars), AQSys.mathDesc(modelName), AQSys.err("0"))
+  # calculate coefficients using the non-linear regression
+  CoefSET <- summary(AQSys(dataSET, modelName))$coefficients[, 1]
+  #
+  Xs <- as.data.frame(ifelse((xmax != max(dataSET[1])), rbind(dataSET[1], xmax), dataSET[1]))
+  rawdt <- setNames(data.frame(Xs, Fn(CoefSET, Xs)), c("XC", "YC"))
+  #
+  return(rawdt)
+}
+####################################################################################################################
 #' @rdname AQSys.plot
 #' @title Dataset and Fitted Function plot
-#' @description The function returns a plot after fitting a dataset to a given equation.
-#' @details This version uses the plot function and return a regular bidimensional plot.
+#' @description The function returns a plot after fitting a dataset to the mathematical descriptor chosen by the user.
+#' @details This version uses the plot function and return a regular orthogonal plot.
 #' @method AQSys plot
 #' @export AQSys.plot
 #' @export
@@ -114,6 +163,7 @@ AQSys.default <- function(dataSET, modelName = "merchuk", Order="xy", ...) {
 #' @param cexsub Legacy from plot package. For more details, see \code{\link{plot.default}}
 #' @param modelName - Character String specifying the nonlinear empirical equation to fit data. The default method uses
 #' Merchuk's equation. Other possibilities can be seen in AQSysList().
+#' 
 #' @param NP Number of points used to build the fitted curve. Default is 100. [type:Integer]
 #' @param xmax Maximum value for the Horizontal axis' value
 #' @param ymax Maximum value for the Vertical axis' value
@@ -124,15 +174,16 @@ AQSys.default <- function(dataSET, modelName = "merchuk", Order="xy", ...) {
 #' @param wdir The directory in which the plot file will be saved. [type:String]
 #' @param silent save plot file without actually showing it to the user. [type:Boulean]
 #' @param ... Additional optional arguments. None are used at present.
+#' 
 #' @return A plot containing the experimental data, the correspondent curve for the binodal in study and the curve's raw XY data.
 #' @examples
 #' #Populating variable dataSET with binodal data
-#' dataSET <- llsr_data$db.data[6:23,1:2]
-#' #Plot dataSET using Merchuk's function
+#' dataSET <- peg4kslt[, 1:2]
+#' # Plot dataSET using Merchuk's function
 #' #
 #' AQSys.plot(dataSET)
 #' #
-AQSys.plot <- function  (dataSET,
+AQSys.plot <- function (dataSET,
                          xlbl = "",
                          ylbl = "",
                          main = NULL,
@@ -178,11 +229,11 @@ AQSys.plot <- function  (dataSET,
     wdir <- saveConfig(save, HR, filename, wdir, silent)
     # Select which model will be used to generate the plot. Function return list of plots and respective number of parameters
     models_npars <- AQSysList(TRUE)
-    # calculate coefficients using the non-linear regression
-    CoefSET <- summary(AQSys(dataSET, modelName))$coefficients[, 1]
     # choose model based in the user choice or standard value
     Fn <- ifelse(modelName %in% names(models_npars), AQSys.mathDesc(modelName), AQSys.err("0"))
-    #plot phase diagram using experimental data and with previously calculated parameters
+    # calculate coefficients using the non-linear regression
+    CoefSET <- summary(AQSys(dataSET, modelName))$coefficients[, 1]
+    # plot phase diagram using experimental data and with previously calculated parameters
     plot_image <- ggplot(data = dataSET, aes_string(x = "XC", y = "YC")) + geom_point(shape = 8, size = 2) +
       theme_light() + xlab(paste(xlbl, "(%, m/m)")) + ylab(paste(ylbl, "(%, m/m)")) + theme(
         validate = FALSE,
@@ -223,8 +274,6 @@ AQSys.plot <- function  (dataSET,
       )
     #
     # add curve generated using regression parameters
-    # print(rbind(dataSET[1], xmax))
-    # Xs <- ifelse(((xmax != "") & (is.numeric(xmax)) & (xmax != max(dataSET[1]))), rbind(dataSET[1], xmax), dataSET[1])
     Xs <- as.data.frame(ifelse((xmax != max(dataSET[1])), rbind(dataSET[1], xmax), dataSET[1]))
     rawdt <- setNames(data.frame(Xs, Fn(CoefSET, Xs)), c("XC", "YC"))
     #

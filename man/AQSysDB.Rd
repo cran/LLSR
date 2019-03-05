@@ -10,10 +10,10 @@ AQSysDB(path)
 \item{path}{String containing the full path to the XLS or XLSX file.}
 }
 \description{
-Import DB data from an Excel Worksheet.
+Import DB data from an Excel Worksheet and process it through mathematical descriptors to output a highly structured variable comparable to a Database and which hold a list of references, chemicals and parameters for any implemented mathematical descriptors.
 }
 \examples{
 \dontrun{
-AQSysDB("C:/data.xls")
+AQSysDB("C:/data.xlsx")
 }
 }

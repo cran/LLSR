@@ -9,8 +9,8 @@ AQSearch <- function(db = LLSR::llsr_data, ...)
 ####################################################################################################################
 #' @rdname AQSearch
 #' @title Search function for ATPS Systems data
-#' @description This function allow the user to search the package database to find any ATPS that matches the used criteria.
-#' @details The function return the systems that matches the criteria submit by the user. 
+#' @description This function allow the user to search the package database to find any ATPS that matches the available criteria.
+#' @details The function return the systems that matches the criteria submitted by the user. 
 #' @param db A highly structure db containing data from previously analised data. LLSR database is used by default but user may input his own db if formatted properly.
 #' @param db.CompA A String variable containing either the CAS, chemical formula or name of the upper phase enriched component..
 #' @param db.CompB A String variable containing either the CAS, chemical formula or name of the lower phase component.

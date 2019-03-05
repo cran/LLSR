@@ -6,15 +6,14 @@ options(digits = 14)
 #' @rdname AQSysDB
 #' @name AQSysDB
 #' @title AQSysDB
-#' @description Import DB data from an Excel Worksheet.
+#' @description Import DB data from an Excel Worksheet and process it through mathematical descriptors to output a highly structured variable comparable to a Database and which hold a list of references, chemicals and parameters for any implemented mathematical descriptors.
 #' @export
 #' @param path String containing the full path to the XLS or XLSX file.
 # ' @param maxiter	- A positive integer specifying the maximum number of iterations allowed.
-# @ param Order Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.
-# @param CAS The user has the option to identify the component's cells in the worksheet with the CAS (CAS = TRUE) or with the row number that matches a CAS entry in the CASDB worksheet (CAS = FALSE)
+# ' @param Order Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.
 #' @examples
 #' \dontrun{
-#' AQSysDB("C:/data.xls")
+#' AQSysDB("C:/data.xlsx")
 #'}
 ####################################################################################################################
 # AQSysDB() is a simple approach that is ready to use any three-parameter equation
@@ -105,14 +104,6 @@ AQSysDB <- function(path) {
             BT.IDX <- (db.info + 2)
           }
           #
-          #
-          # if (CAS == TRUE) {
-          # add Component's CAS directly to sysDATA
-          # sysDATA[1, TP.IDX] <- casdb[which(casdb$CAS.INDEX == CA.CAS.INDEX), 2]
-          # sysDATA[1, BT.IDX] <- casdb[which(casdb$CAS.INDEX == CB.CAS.INDEX), 2]
-          # if cas field in sysdb in filled with an index refering to casdb
-          # } else{
-          # Cross reference indexes and add only the Component's NAME
           sysDATA[1, TP.IDX] <- casdb[which(casdb$CAS.INDEX == CA.CAS.INDEX), 3]
           sysDATA[1, BT.IDX] <- casdb[which(casdb$CAS.INDEX == CB.CAS.INDEX), 3]
           # }

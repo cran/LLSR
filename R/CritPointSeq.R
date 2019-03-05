@@ -63,6 +63,7 @@ crit_point_seq <- function(dataSET,
     reset_BNDL <- BNDL
     CrptFnd <- FALSE # Crital Point Found Logical variable
     DivFactor <- 25
+    cat("\t - Calculating: [")
     while ((dt > tol) && !CrptFnd) {
       TL <- TL + 1
       yMAXTL <- yMAX + 1
@@ -96,10 +97,11 @@ crit_point_seq <- function(dataSET,
         BNDL <- reset_BNDL
         xMAX <- ifelse((!is.numeric(xmax) | is.null(xmax) | (xmax == "")),
                        max(SysData[, seq(1, ncol(SysData), 2)] * 1.1), xmax)
-        yMAX <- max(SysData[, 2]) 
-        cat("\t - Convergence not achieved. Reseting Search Factors...\n")
+        yMAX <- max(SysData[, 2])
+        cat("#")
       }
     }
+    cat("#]\n")
     # data.frame holding data regarding Critical Point convergence
     output_res <- setNames(data.frame(dt, TL), c("dt", "TL"))
     # Setting up data.frame to hold data from the global points

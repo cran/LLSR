@@ -27,15 +27,15 @@ through the available mathematical descriptions.
 \description{
 .
 
-Perform a nonlinear regression fit using several mathematical descriptors in order to calculate the equation's parameters.
+Perform a nonlinear regression fit using any of the several mathematical descriptors implemented in order to calculate the equation's parameters.
 }
 \details{
 The function returns functions parameters after fitting experimental data to the equations listed in AQSysList().
 }
 \examples{
-#Populating variable dataSET with binodal data
-dataSET <- llsr_data$db.data[6:23,1:2]
-#Fitting dataSET using Merchuk's function
+# Populating variable dataSET with binodal data
+dataSET <- peg4kslt[ , 1:2]
+# Fitting dataSET using Merchuk's function
 AQSys(dataSET)
 }
 \references{
