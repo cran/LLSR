@@ -1,5 +1,5 @@
 options(digits = 14)
-####################################################################################################################
+###############################################################################
 #' @import rootSolve minpack.lm
 #
 merchuk <- function(XYdt, P1 = 10, P2 = 1, P3 = 0, ...) {
@@ -53,8 +53,8 @@ murugesan <- function(XYdt, ...) {
 
 tello <- function(XYdt, ...) {
   # tello's method is highly dependent of guess values to obtain its parameters
-  # so the method for calculating a more approximated guess value is described in
-  # his article and implemented below
+  # so the method for calculating a more approximated guess value is described 
+  # in his article and implemented below
   #
   # Output initialization
   FFn <- NULL
@@ -127,7 +127,7 @@ chen <- function(XYdt, P1 = 10, P2 = 0, P3 = 0, P4 = 0,P5 = 0, ...) {
   suppressWarnings(
     FFn <- tryCatch({
       nls(
-        YC ~ exp(P1 + P2 * (XC ^ (0.5)) + P3 * XC + P4 * (XC ^ 2) + P5 * (XC ^ 3)),
+        YC ~ exp(P1 + P2*(XC ^ (0.5)) + P3*XC + P4*(XC ^ 2) + P5*(XC ^ 3)),
         start = list(
           P1 = P1,
           P2 = P2,
@@ -148,33 +148,34 @@ chen <- function(XYdt, P1 = 10, P2 = 0, P3 = 0, P4 = 0,P5 = 0, ...) {
 }
 
 # 
-# xie <- function(XYdt, ...) {
-#   # Output initialization
-#   FFn <- NULL
-#   # define header
-#   names(XYdt) <- c("XC", "YC")
-#   # define nonlinear system and solve it
-#   FFn <- tryCatch({
-#     nlsLM(
-#       YC ~ exp(-(XC/P2) - (XC/P4))*(exp(XC/P4)*P1 + exp(XC/P2)*P3 + exp(XC/P2 + XC/P4)*P5), 
-#       start = c(
-#         P1 = 3,
-#         P2 = 5,
-#         P3 = 7,
-#         P4 = 9,
-#         P5 = 2
-#       ),
-#       data = XYdt,
-#       na.action = na.exclude,
-#       control = nls.lm.control(maxiter = 25)
-#       )
-#   },
-#   error = function(e) {
-#     return(NULL)
-#   })
-#   # return output from anaysis
-#   FFn
-# }
+xie <- function(XYdt, ...) {
+  # Output initialization
+  FFn <- NULL
+  # define header
+  names(XYdt) <- c("XC", "YC")
+  # define nonlinear system and solve it
+  FFn <- tryCatch({
+    nlsLM(
+      YC ~ exp(-(XC/P2) - (XC/P4)) * (exp(XC/P4)*P1 + exp(XC/P2)*P3 + 
+                                        exp(XC/P2 + XC/P4)*P5),
+      start = c(
+        P1 = 3,
+        P2 = 5,
+        P3 = 7,
+        P4 = 9,
+        P5 = 2
+      ),
+      data = XYdt,
+      na.action = na.exclude,
+      control = nls.lm.control(maxiter = 25)
+    )
+  },
+  error = function(e) {
+    return(NULL)
+  })
+  # return output from anaysis
+  FFn
+}
 # 
 # xueqiao <- function(XYdt, P1 = 0, P2 = 1, P3 = 1, P4 = 1, ...) {
 #   # Output initialization

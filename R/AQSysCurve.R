@@ -1,10 +1,13 @@
-####################################################################################################################
+###############################################################################
 #' @import svDialogs
-####################################################################################################################
+###############################################################################
 #' @rdname AQSysCurve
-#' @title This functions plot a curve based in the chosen model and its parameters.
-#' @description The function returns a plot after using the parameters and model given by the user.
-#' @details The function owns predefined set of equations that can be seen below and must be used, with adequated parameters,
+#' @title This functions plot a curve based in the chosen model and its 
+#' parameters.
+#' @description The function returns a plot after using the parameters and
+#'  model given by the user.
+#' @details The function owns predefined set of equations that can be seen
+#'  below and must be used, with adequated parameters,
 #' to return a plot which represent the chosen model.
 #' @export AQSysCurve
 #' @param modelName Equation to be used: merchuk, murugesan [type:string]
@@ -12,31 +15,47 @@
 #' @param xlbl Plot's Horizontal axis label.
 #' @param ylbl Plot's Vertical axis label.
 #' 
-#' @param col Legacy from plot package. For more details, see \code{\link{plot.default}}
-#' @param cex Legacy from plot package. For more details, see \code{\link{plot.default}}
-#' @param cexlab Legacy from plot package. For more details, see \code{\link{plot.default}}
-#' @param cexaxis Legacy from plot package. For more details, see \code{\link{plot.default}}
-#' @param cexmain Legacy from plot package. For more details, see \code{\link{plot.default}}
-#' @param cexsub Legacy from plot package. For more details, see \code{\link{plot.default}}
+#' @param col Legacy from plot package. For more details, 
+#' see \code{\link{plot.default}}
+#' @param cex Legacy from plot package. For more details,
+#'  see \code{\link{plot.default}}
+#' @param cexlab Legacy from plot package. For more details,
+#'  see \code{\link{plot.default}}
+#' @param cexaxis Legacy from plot package. For more details,
+#'  see \code{\link{plot.default}}
+#' @param cexmain Legacy from plot package. For more details,
+#'  see \code{\link{plot.default}}
+#' @param cexsub Legacy from plot package. For more details, 
+#' see \code{\link{plot.default}}
 #' 
-#' @param xmax Maximum value for the Horizontal axis' value (bottom-rich component)  [type:double]
-#' @param NP Number of points used to build the fitted curve. Default is 100. [type:Integer]
-#' @param save Save the generated plot in the disk using path and filename provided by the user. [type:Logical]
-#' @param HR Adjust Plot's text to be compatible with High Resolution size [type:Logical]
-#' @param seriesNames A list of sequential names which will identify each system provided by the user in the dataSET variable. [type:List]
-#' @param filename Filename provided by the user to save a given plot. [type:String]
-#' @param wdir The directory in which the plot file will be saved. [type:String]
-#' @param silent save plot file without actually showing it to the user. [type:Logical]
-# ' @param maxiter	- A positive integer specifying the maximum number of iterations allowed.
+#' @param xmax Maximum value for the Horizontal axis' value
+#'  (bottom-rich component)  [type:double]
+#' @param NP Number of points used to build the fitted curve.
+#'  Default is 100. [type:Integer]
+#' @param save Save the generated plot in the disk using path and filename 
+#' provided by the user. [type:Logical]
+#' @param HR Adjust Plot's text to be compatible with High Resolution 
+#' size [type:Logical]
+#' @param seriesNames A list of sequential names which will identify each system
+#'  provided by the user in the dataSET variable. [type:List]
+#' @param filename Filename provided by the user to save a given 
+#' plot. [type:String]
+#' @param wdir The directory in which the plot file will be 
+#' saved. [type:String]
+#' @param silent save plot file without actually showing it to the 
+#' user. [type:Logical]
+# ' @param maxiter	- A positive integer specifying the maximum number of 
+# iterations allowed.
 #' @inheritParams graphics::plot.default
-#' @return A plot using the input model within the chosen interval and the curve's raw XY data.
+#' @return A plot using the input model within the chosen interval and the 
+#' curve's raw XY data.
 #' If no interval is selected, xmax = 0.4.
 #' @examples
 #' \dontrun{
 #' AQSysCurve("murugesan", data.frame(90.389, -34.897, 2.924), col = "red")
 #' }
-####################################################################################################################
-AQSysCurve <- function  (
+###############################################################################
+AQSysCurve <- function(
   modelName,
   modelPars,
   seriesNames = NULL,
@@ -69,10 +88,16 @@ AQSysCurve <- function  (
     # select which model will be used to generate the plot
     # if user selects an option not available, it triggers an error
     # (check AQSys.err.R for details)
-    Fn <- ifelse(modelName %in% names(models_npars), AQSys.mathDesc(modelName), AQSys.err("0"))
+    Fn <- ifelse(modelName %in% names(models_npars), AQSys.mathDesc(modelName), 
+                 AQSys.err("0"))
     #
     if (is.null(seriesNames) || !(length(seriesNames) == nSys)) {
-      print(paste("The array seriesNames must have", nSys, "elements. Default names will be used instead."))
+      cat(
+        paste(
+          "\nThe array seriesNames must have", nSys, 
+          "element(s). Default names will be used instead.\n\n"
+          )
+        )
       seriesNames <- sapply(seq(1, nSys), function(x) paste("Series", x))
     } else {
       SysNames <- TRUE
@@ -92,8 +117,8 @@ AQSysCurve <- function  (
     output_plot <- BLOPlot(output_data, xlbl, ylbl)
     #
     saveConfig(output_plot, save, HR, filename, wdir, silent)
-    # make available data from fitted curve to user. Function returns it silently
-    # but user can get data using simple assign '<-'
+    # make available data from fitted curve to user. Function returns it 
+    # silently but user can get data using simple assign '<-'
     if (silent == FALSE) {
       print(output_plot)
       invisible(output_data)
@@ -107,11 +132,13 @@ AQSysCurve <- function  (
 }
 
 BLOPlot <- function(dataSET, xlbl = "", ylbl = "") {
-  # Calculate X and Y maximums as multiple of five and 8% superior of the axis maximum value
+  # Calculate X and Y maximums as multiple of five and 8% superior of the axis
+  #  maximum value
   xmax <- ceiling(round(max(dataSET$X) / 0.92, 1) / 5) * 5
   ymax <- ceiling(round(max(dataSET$Y) / 0.92, 1) / 5) * 5
   # Plot data
-  output_plot <- ggplot(dataSET, aes_string(x = "X", y = "Y", color = "System", shape = "System"))  +
+  output_plot <- ggplot(dataSET, aes_string(x = "X", y = "Y", color = "System",
+                                            shape = "System"))  +
     geom_line(size = 1) + 
     geom_point(size = 2) +
     theme_light() +  

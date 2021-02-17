@@ -1,9 +1,9 @@
-####################################################################################################################
+###############################################################################
 options(digits = 14)
-####################################################################################################################
+###############################################################################
 #' @import ggplot2
 #' @import rootSolve
-####################################################################################################################
+###############################################################################
 crit_point_poly <- function(dataSET,
                             tldt,
                             modelName,
@@ -13,13 +13,16 @@ crit_point_poly <- function(dataSET,
                             Order,
                             ext) {
   #
-  required_fields <- c("A", "B", "ORDER", "PH", "TEMP", "TOP.A", "TOP.B", "BOT.A", "BOT.B", "GLB.A", "GLB.B")
+  required_fields <- c("A", "B", "ORDER", "PH", "TEMP", "TOP.A", "TOP.B", 
+                       "BOT.A", "BOT.B", "GLB.A", "GLB.B")
   #
-  poly_data <- setNames(data.frame(matrix(nrow = 0, ncol = 2)), c("X", "TLL"))
+  poly_data <- setNames(data.frame(matrix(nrow = 0, ncol = 2)), 
+                        c("X", "TLL"))
   dataSET <- suppressWarnings(toNumeric(dataSET, Order))
   #
   if (all(required_fields %in% names(tldt))) {
-    dataTL <- setNames(data.frame(matrix(nrow = 0, ncol = 3)), c("X", "Y", "TL"))
+    dataTL <- setNames(data.frame(matrix(nrow = 0, ncol = 3)),
+                       c("X", "Y", "TL"))
     for (row in seq(1, nrow(tldt))) {
       tldt_row <- tldt[row, ]
       #
@@ -58,13 +61,16 @@ crit_point_poly <- function(dataSET,
     BNNLAnalysis <- AQSys(dataSET, modelName = modelName)
     PARs <- t(summary(BNNLAnalysis)$parameters[, 1])
     #
-    xmax <- ifelse((xmax == "" | is.null(xmax)), ceiling(round(max(dataSET[, 1]) / 0.92, 1) / 5) * 5, xmax)
+    xmax <- ifelse((xmax == "" | is.null(xmax)), 
+                   ceiling(round(max(dataSET[, 1]) / 0.92, 1) / 5) * 5, xmax)
     #
     BNFNs <- mathDescPair(modelName)
     #
     EqSys <- function(x) {
       F1 <- eval(parse(text = gsub("[$]", "", BNFNs)))
-      F2 <- coefs[1] + coefs[2] * x[2] + coefs[3] * (x[2] ^ 2) + coefs[4] * (x[2] ^ 3) - x[1]
+      F2 <- coefs[1] + coefs[2]*x[2] +
+        coefs[3]*(x[2]^2) + 
+        coefs[4]*(x[2]^3)-x[1]
       #
       c(F1 = F1, F2 = F2)
     }
@@ -125,4 +131,4 @@ crit_point_poly <- function(dataSET,
     # trigger error
   }
 }
-####################################################################################################################
+###############################################################################

@@ -1,25 +1,37 @@
 #' @importFrom dplyr bind_rows
-####################################################################################################################
+###############################################################################
 #' @rdname AQSysPlot
 #' @title AQSysPlot
 #' @export AQSysPlot
-#' @description This functions plot binodal data as a curve in a pre-defined high quality theme ready for publication.
-#' @details The function have a predefined set of ggplot2 features adjusted to return a high quality picture. 
-#' More suitable for plotting fitted data, once binodal data usually determined through cloudy-phase point will look irregular.
+#' @description This functions plot binodal data as a curve in a pre-defined 
+#' high quality theme ready for publication.
+#' @details The function have a predefined set of ggplot2 features adjusted to 
+#' return a high quality picture. 
+#' More suitable for plotting fitted data, once binodal data usually determined
+#'  through cloudy-phase point will look irregular.
 #' 
-#' @param dataSET - Binodal Experimental data that will be used in the nonlinear fit. It might hold multiple systems stacked side-by-side. [type:data.frame]
+#' @param dataSET - Binodal Experimental data that will be used in the nonlinear
+#'  fit. It might hold multiple systems stacked side-by-side. [type:data.frame]
 #' @param Order Defines how the data is organized in the Worksheet. 
-#' Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite. [type:string]
+#' Use "xy" whether the first column corresponds to the lower phase fraction and
+#'  "yx" whether the opposite. [type:string]
 #' @param xlbl Plot's Horizontal axis label.
 #' @param ylbl Plot's Vertical axis label.
-#' @param seriesNames A list of sequential names which will identify each system provided by the user in the dataSET variable. [type:List]
-#' @param save Save the generated plot in the disk using path and filename provided by the user. Default is False. [type:Logical]
-#' @param filename A filename provided by the user to save a given plot. No default is provided. [type:String]
-#' @param HR  Adjust Plot's text to be compatible with High Resolution size [type:Logical]
+#' @param seriesNames A list of sequential names which will identify each system
+#'  provided by the user in the dataSET variable. [type:List]
+#' @param save Save the generated plot in the disk using path and filename 
+#' provided by the user. Default is False. [type:Logical]
+#' @param filename A filename provided by the user to save a given plot. No 
+#' default is provided. [type:String]
+#' @param HR  Adjust Plot's text to be compatible with High Resolution 
+#' size [type:Logical]
 #' @param wdir The directory in which the plot file will be saved. [type:String]
-#' @param silent save plot file without actually showing it to the user. Default is FALSE. [type:Logical]
-#' @return The plot is returned as a ggplot2 object that can be manupulated accordingly.
-# ' @param maxiter	- A positive integer specifying the maximum number of iterations allowed.
+#' @param silent save plot file without actually showing it to the user. 
+#' Default is FALSE. [type:Logical]
+#' @return The plot is returned as a ggplot2 object that can be manipulated 
+#' accordingly.
+# ' @param maxiter	- A positive integer specifying the maximum number of 
+# iterations allowed.
 #' @examples
 #' # Populating variable dataSET with binodal data
 #' dataSET <- peg4kslt[ , 1:2]
@@ -42,7 +54,8 @@ AQSysPlot <- function (dataSET,
   #
   if ((ncol(dataSET) %% 2) == 0) {
     if (is.null(seriesNames) || !(length(seriesNames) == nSys)) {
-      print(paste("The array seriesNames must have", nSys, "elements. Default names will be used instead."))
+      print(paste("The array seriesNames must have", nSys, 
+                  "elements. Default names will be used instead."))
       seriesNames <- sapply(seq(1, nSys), function(x) paste("Series", x))
     } else {
       SysNames <- TRUE
@@ -72,17 +85,15 @@ AQSysPlot <- function (dataSET,
 
 bndOrthPlot <- function(dataSET, Order, xlbl = "", ylbl = "") {
   #
-  dataSET[, 1:2] <- toNumeric(dataSET, Order)
+  # dataSET[, 1:2] <- toNumeric(dataSET, Order)
   #
   xmax <- ceiling(round(max(dataSET[, 1]) / 0.92, 1) / 5) * 5
   ymax <- ceiling(round(max(dataSET[, 2]) / 0.92, 1) / 5) * 5
   #
   outputPLOT <- ggplot() + scale_colour_grey() +
-    geom_line(data = dataSET,
-              size = 1,
+    geom_line(data = dataSET, size = 1, 
               aes_string(color = "System", x = "X", y = "Y")) +
-    geom_point(data = dataSET,
-               size = 2,
+    geom_point(data = dataSET, size = 2,
                aes_string(color = "System", x = "X", y = "Y")) +
     xlab(paste(xlbl,  "(%, m/m)")) +
     ylab(paste(ylbl, "(%, m/m)")) +

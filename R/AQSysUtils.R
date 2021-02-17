@@ -1,7 +1,7 @@
-#' @importFrom dplyr count_
-####################################################################################################################
+#' @importFrom dplyr count
+###############################################################################
 # Set plot area to export high resolution pictures
-AQSysHR <- function (HR) {
+AQSysHR <- function(HR) {
   par.defaults <- par(no.readonly = TRUE)
   par(par.defaults)
   if (HR == TRUE) {
@@ -64,13 +64,13 @@ matchUID <- function(UIDList, UIDMatrix) {
   return(db.binodals.index)
 }
 #
-matchTpH<- function(TpH, BinodalMatrix, pH) {
+matchTpH <- function(TpH, BinodalMatrix, pH) {
   #
-  if (pH){RowIdx <- 1} else {RowIdx <- 2}
+  if (pH) {RowIdx <- 1} else {RowIdx <- 2}
   #
   db.TpH.results <- which(BinodalMatrix == TpH, TRUE)
   #
-  if (length(db.TpH.results)!= 0) {
+  if (length(db.TpH.results) != 0) {
     db.TpH.check <- which(db.TpH.results[, "row"] == RowIdx)
     #
     db.binodals.index <- db.TpH.results[db.TpH.check, "col"]
@@ -85,10 +85,11 @@ matchTpH<- function(TpH, BinodalMatrix, pH) {
       })
     #
   } 
-  if (length(db.TpH.results)!= 0) {
+  if (length(db.TpH.results) != 0) {
     #
     db.binodals.seq <- sort(c(db.binodals.index, db.binodals.index + 1))
-    db.binodals.index <- unlist(ifelse(length(db.binodals.index) == 0, 0, list(db.binodals.seq)))
+    db.binodals.index <- unlist(ifelse(length(db.binodals.index) == 0, 0, 
+                                       list(db.binodals.seq)))
     #
     return(BinodalMatrix[, db.binodals.index])
   } else{
@@ -96,15 +97,18 @@ matchTpH<- function(TpH, BinodalMatrix, pH) {
   }
 }
 #
-matchBNDL<- function(compNameList, BinodalMatrix) {
+matchBNDL <- function(compNameList, BinodalMatrix) {
   #
-  if (length(compNameList)==0){return(c())} else (compNameList <- unlist(compNameList))
+  if (length(compNameList) == 0) {return(c())} else {
+    (compNameList <- unlist(compNameList))
+  }
   #
   db.binodals.index <-  unlist(sapply(compNameList, function(compName) {
-    which(digest(compName, algo = "md5") == apply(BinodalMatrix, 1:2, digest, algo = "md5")[c(1, 3, 5),], TRUE)[, "col"]
+    which(digest(compName, algo = "md5") == apply(
+      BinodalMatrix, 1:2, digest, algo = "md5")[c(1, 3, 5),], TRUE)[, "col"]
   }))
   #
-  if (length(unlist(db.binodals.index))==0){return(c())}
+  if (length(unlist(db.binodals.index)) == 0) {return(c())}
   #
   db.binodals.index <- sapply(db.binodals.index, function(idx) {
       if (is.odd(idx)) {
@@ -121,10 +125,13 @@ matchBNDL<- function(compNameList, BinodalMatrix) {
 #
 matchComp <- function(compNameList, db.matrix){
   #
-  if (length(compNameList)==0){return(c())} else (compNameList <- unlist(compNameList))
+  if (length(compNameList) == 0) {return(c())} else {
+    (compNameList <- unlist(compNameList))
+  }
   #
   ans <- unique(unname(unlist(sapply(compNameList, function(compName) {
-    which(digest(compName, algo = "md5") == apply(db.matrix, 1:2, digest, algo = "md5")[, c("A", "B", "C")], TRUE)[, "row"]
+    which(digest(compName, algo = "md5") == apply(
+      db.matrix, 1:2, digest, algo = "md5")[, c("A", "B", "C")], TRUE)[, "row"]
   }))))
   return(ans)
 }
@@ -148,8 +155,18 @@ getBNDL <- function(workBook, sheets) {
   # and determine which system in the workbook have bigger dataset (mrow)
   for (SheetIndex in grep("BINODAL", sheets)) {
     # determine the number of row and columns in the worksheet
-    sys.nrow <- nrow(readWorksheet(workBook, SheetIndex, header = FALSE))
-    sys.ncol <- ncol(readWorksheet(workBook, SheetIndex, header = FALSE))
+    sys.nrow <-
+      nrow(readWorkbook(
+        xlsxFile = workBook,
+        sheet = SheetIndex,
+        colNames = FALSE
+      ))
+    sys.ncol <-
+      ncol(readWorkbook(
+        xlsxFile = workBook,
+        sheet = SheetIndex,
+        colNames = FALSE
+      ))
     # initialize variables for first run only
     if (is.null(sys.mrow))
       sys.mrow <- sys.nrow
@@ -164,8 +181,12 @@ getBNDL <- function(workBook, sheets) {
   #
   for (SheetIndex in grep("BINODAL", sheets)) {
     # Read data from a sheet and workbook provided by the user-invoked function
-    sys.temp <- readWorksheet(workBook, SheetIndex, header = FALSE)
-    # DISCONSIDER THE FIRST TWO COLUMNS FROM THE STANDARD DATASHEET, WHICH EXIST TO EXEMPLIFY USERS HOW TO FILL THE WORKSHEET
+    sys.temp <-
+      readWorkbook(xlsxFile = workBook,
+                   sheet = SheetIndex,
+                   colNames = FALSE)
+    # DISCONSIDER THE FIRST TWO COLUMNS FROM THE STANDARD DATASHEET, 
+    # WHICH EXIST TO EXEMPLIFY USERS HOW TO FILL THE WORKSHEET
     sys.temp <- sys.temp[, 0:-2]
     # COUNT NUMBER OF ROWS
     sys.nrow <- nrow(sys.temp)
@@ -177,10 +198,10 @@ getBNDL <- function(workBook, sheets) {
     if (is.null(sys.data)) {
       sys.data <- sys.temp
     } else {
-      # but if sys.data have data, convert it to list and concatenate it with data
-      # from the current sheet. Then convert it to dataframe and store it.
+      # but if sys.data have data, convert it to list and concatenate it with
+      # data from the current sheet. Then convert it to dataframe and store it.
       sys.data <- bindDATA(list("SET1" = sys.data, "SET2" = sys.temp))
-      #sys.data <- as.data.frame(c(sys.data, sys.temp), stringsAsFactors = FALSE)
+      #sys.data <- as.data.frame(c(sys.data, sys.temp), stringsAsFactors=FALSE)
     }
   }
   # return all data merged into a single dataframe
@@ -191,8 +212,9 @@ getCAS <- function(workBook, sheets) {
   # Initiate data.frame
   casdb <- data.frame(stringsAsFactors = FALSE)
   # find a sheet with the "CASDB" fragment in its name and load it
-  casdb <-
-    readWorksheet(workBook, grep("CASDB", sheets), header = TRUE)
+  # casdb <- readWorksheet(workBook, grep("CASDB", sheets), header = TRUE)
+  casdb <- readWorkbook(xlsxFile = workBook, 
+               sheet = grep("CASDB", sheets), colNames = TRUE)
   #define casdb headers
   names(casdb) <-
     c("CAS.INDEX", "CAS.CODE", "CAS.NAME", "CAS.COMMON")
@@ -203,8 +225,9 @@ getREF <- function(workBook, sheets) {
   # initiate data.frame
   refdb <- data.frame(stringsAsFactors = FALSE)
   # find a sheet with the "REFDB" fragment in its name and load it
-  refdb <-
-    readWorksheet(workBook, grep("REFDB", sheets), header = TRUE)
+  refdb <- readWorkbook(xlsxFile = workBook, 
+                        sheet = grep("REFDB", sheets), colNames = TRUE)
+    #readWorksheet(workBook, grep("REFDB", sheets), header = TRUE)
   # initiate its second column
   #refdb[, 2] <- NA
   # define refdb headers
@@ -232,12 +255,14 @@ IdxToRef <- function(db.ref, db.data, db.cas) {
   db.data[, "REF.MD5"] <- db.ref[db.data[, "REF.MD5"], 3]
   db.data[, "A"] <- sapply(db.data[, "A"], idx2name, casdb = db.cas)
   db.data[, "B"] <- sapply(db.data[, "B"], idx2name, casdb = db.cas)
-  db.data[, "C"] <- ifelse(is.valid(db.data[, "C"]), sapply(db.data[, "C"], idx2name, casdb = db.cas), db.data[, "C"])
+  db.data[, "C"] <- ifelse(is.valid(db.data[, "C"]), 
+                           sapply(db.data[, "C"], idx2name, casdb = db.cas), 
+                           db.data[, "C"])
   return(UIDGen(db.data))
 }
 #
 insertRow <- function(existingDF, newrow, r) {
-  existingDF[seq(r + 1, nrow(existingDF) + 1),] <-
+  existingDF[seq(r + 1, nrow(existingDF) + 1),] <- 
     existingDF[seq(r, nrow(existingDF)),]
   existingDF[r,] <- newrow
   existingDF
@@ -245,18 +270,18 @@ insertRow <- function(existingDF, newrow, r) {
 #
 saveDATA <- function(path, data) {
   workBook <- loadWorkbook(path)
-  sheets <- getSheets(workBook)
+  sheets <- getSheetNames(path)
   #
   if (any(grepl("results", sheets))) {
     res_idx <- grep("results", sheets)
-    clearSheet(workBook, sheet = res_idx)
+    removeWorksheet(workBook, sheet = res_idx)
   } else {
-    createSheet(workBook, name = "results")
+    addWorksheet(workBook, sheetName = "results")
   }
   #
-  writeWorksheet(
-    workBook,
-    data,
+  writeData(
+    wb = workBook,
+    x = data,
     sheet = "results",
     startRow = 1,
     startCol = 1
@@ -276,11 +301,12 @@ getTL <- function(workBook, sheets) {
   for (SheetIndex in grep("TIELINE", sheets)) {
     sys.temp <-
       rbind(sys.temp,
-            readWorksheet(
-              workBook,
-              SheetIndex,
-              endCol = 17,
-              header = TRUE
+            readWorkbook(
+              xlsxFile = workBook,
+              sheet = SheetIndex,
+              cols = seq(1, 17),
+              colNames = TRUE,
+              skipEmptyCols = FALSE
             ))
   }
   #
@@ -304,21 +330,24 @@ getTL <- function(workBook, sheets) {
       "GLB.C",
       "TLSlope"
     )
-  # Account for user mistakes while typing data to the worksheet by detecting which components are the top and bottom ones
+  # Account for user mistakes while typing data to the worksheet by detecting
+  # which components are the top and bottom ones
   for (tlr in seq(1, nrow(sys.temp))) {
     if (sys.temp[tlr, "TOP.A"] > sys.temp[tlr, "TOP.B"]) {
       sys.temp[tlr, "TLSlope"] <-
-        ((sys.temp[tlr, "BOT.A"] - sys.temp[tlr, "TOP.A"]) / (sys.temp[tlr, "BOT.B"] - sys.temp[tlr, "TOP.B"]))
+        ((sys.temp[tlr, "BOT.A"] - sys.temp[tlr, "TOP.A"]) / 
+           (sys.temp[tlr, "BOT.B"] - sys.temp[tlr, "TOP.B"]))
       sys.temp[tlr, "ORDER"] <- "YX"
     } else {
       sys.temp[tlr, "TLSlope"] <-
-        ((sys.temp[tlr, "BOT.B"] - sys.temp[tlr, "TOP.B"]) / (sys.temp[tlr, "BOT.A"] - sys.temp[tlr, "TOP.A"]))
+        ((sys.temp[tlr, "BOT.B"] - sys.temp[tlr, "TOP.B"]) / 
+           (sys.temp[tlr, "BOT.A"] - sys.temp[tlr, "TOP.A"]))
       sys.temp[tlr, "ORDER"] <- "XY"
     }
   }
-  # sys.temp[, 19] <- ((sys.temp[, 9] - sys.temp[, 7]) / (sys.temp[, 10] - sys.temp[, 8]))
+  # sys.temp[,19]<-((sys.temp[,9]-sys.temp[,7])/(sys.temp[, 10]-sys.temp[,8]))
   #
-  uniqeKeys <- count_(sys.temp, vars = c("PH", "TEMP", "A", "B", "C"))
+  uniqeKeys <- count(sys.temp, PH, TEMP, A, B, C)
   #
   return(list("uniqeKeys" = uniqeKeys, "systems" = sys.temp))
 }
@@ -431,8 +460,10 @@ toBNDL <- function(workBook, sheets) {
         names(XYdt) <- c("COLUMN_1", "COLUMN_2")
       } else{
         dFF <- data.frame(
-          as.numeric(c(system_data[tieline, "TOP.A"], system_data[tieline, "BOT.A"])),
-          as.numeric(c(system_data[tieline, "TOP.B"], system_data[tieline, "BOT.B"])),
+          as.numeric(c(system_data[tieline, "TOP.A"], 
+                       system_data[tieline, "BOT.A"])),
+          as.numeric(c(system_data[tieline, "TOP.B"], 
+                       system_data[tieline, "BOT.B"])),
           stringsAsFactors = FALSE
         )
         names(dFF) <- c("COLUMN_1", "COLUMN_2")
@@ -441,7 +472,8 @@ toBNDL <- function(workBook, sheets) {
     }
     # ORDER DATA - POINTS ARE SCATTERED DUE TIE-LINE DATA BINDING
     XYdt.temp <- XYdt[6:nrow(XYdt),]
-    XYdt.temp <- data.frame(sapply(XYdt[6:nrow(XYdt),], function(x) as.numeric(x)))
+    XYdt.temp <- data.frame(sapply(XYdt[6:nrow(XYdt),], 
+                                   function(x) as.numeric(x)))
     #
     XYdt.temp <- XYdt.temp[with(XYdt.temp, order(-COLUMN_1)), ]
     XYdt[6:nrow(XYdt),] <- XYdt.temp
@@ -464,9 +496,9 @@ toBNDL <- function(workBook, sheets) {
 }
 #
 AQSys.merge <- function(wrbk, sheets) {
-  # merges data contained in all sheets from the same workbook which are named using
-  # the pattern datasource_sheetname_YX in its name.
-  # the order in the end is optional by now but will soon be part of the main function
+  # merges data contained in all sheets from the same workbook which are named 
+  # using the pattern datasource_sheetname_YX in its name. the order in the end
+  # is optional by now but will soon be part of the main function
   #
   # initialize variables
   sys.nrow <- NULL
@@ -478,8 +510,18 @@ AQSys.merge <- function(wrbk, sheets) {
   # and determine which system in the workbook have bigger dataset (mrow)
   for (nSh in grep("datasource_", sheets)) {
     # determine the number of row and columns in the worksheet
-    sys.nrow <- nrow(readWorksheet(wrbk, nSh, header = FALSE))
-    sys.ncol <- ncol(readWorksheet(wrbk, nSh, header = FALSE))
+    sys.nrow <-
+      nrow(readWorkbook(
+        xlsxFile = wrbk,
+        sheet = nSh,
+        colNames = FALSE
+      ))
+    sys.ncol <-
+      ncol(readWorkbook(
+        xlsxFile = wrbk,
+        sheet = nSh,
+        colNames = FALSE
+      ))
     # initialize variables for first run only
     if (is.null(sys.mrow))
       sys.mrow <- sys.nrow
@@ -493,7 +535,7 @@ AQSys.merge <- function(wrbk, sheets) {
   #
   for (nSh in grep("datasource_", sheets)) {
     #
-    sys.temp <- readWorksheet(wrbk, nSh, header = FALSE)
+    sys.temp <- readWorkbook(xlsxFile = wrbk, sheet = nSh, colNames = FALSE)
     sys.nrow <- nrow(sys.temp)
     # populate all rows are initialized with NA
     if (sys.nrow < sys.mrow) {
@@ -502,11 +544,10 @@ AQSys.merge <- function(wrbk, sheets) {
     # if no system has been added, just add the first sheet
     if (is.null(sys.data)) {
       sys.data <- sys.temp
-      # but if sys.data have data, convert it to list and concatenate it with data
-      # from the current sheet. Then convert it to dataframe and store it.
+      # but if sys.data have data, convert it to list and concatenate it with 
+      # data from the current sheet. Then convert it to dataframe and store it.
     } else {
-      sys.data <-
-        as.data.frame(c(sys.data, sys.temp), stringsAsFactors = FALSE)
+      sys.data <- as.data.frame(c(sys.data, sys.temp), stringsAsFactors = FALSE)
     }
   }
   # return all data merged into a single dataframe
@@ -515,14 +556,15 @@ AQSys.merge <- function(wrbk, sheets) {
 #
 TLAnalysis <- function(workBook, sheets) {
   #
-  ColNum <- 8 # Number of COlumns
-  # path must point to a xlsx or xls file
+  ColNum <- 8 # Number of Columns
+  # 
   TLData <- getTL(workBook, sheets)
   uniqeKeys <- TLData[["uniqeKeys"]]
   sys.temp <- TLData[["systems"]]
   #
   sys.slopes <- data.frame(matrix(nrow = nrow(uniqeKeys), ncol = ColNum))
-  names(sys.slopes) <- c("REF.MD5", "A", "B", "ORDER", "PH", "TEMP", "C","TLSlope")
+  names(sys.slopes) <- c("REF.MD5", "A", "B", "ORDER", "PH", "TEMP", "C", 
+                         "TLSlope")
   for (sys in 1:nrow(uniqeKeys)) {
     #
     system_data <- sys.temp[which(
@@ -533,9 +575,11 @@ TLAnalysis <- function(workBook, sheets) {
     ), names(sys.temp)]
     #
     TLSlopes <- system_data[, ncol(system_data)]
-    sys.slopes[sys, 1:ColNum] <- system_data[1, -7:-(ncol(system_data)-5)][-8: -(ncol(system_data)-7)]
+    sys.slopes[sys, 1:ColNum] <-
+      system_data[1, -7:-(ncol(system_data) - 5)][-8:-(ncol(system_data) - 7)]
     #
-    TLSlope <- mean(TLSlopes[which((abs(median(TLSlopes) - TLSlopes) / max(abs(TLSlopes))) < 0.15)])
+    TLSlope <- mean(TLSlopes[which((abs(median(TLSlopes) - TLSlopes) /
+                                      max(abs(TLSlopes))) < 0.15)])
     #
     if (!is.nan(TLSlope)) {
       sys.slopes[sys, ColNum] <- TLSlope
@@ -547,15 +591,11 @@ TLAnalysis <- function(workBook, sheets) {
 toNumeric <- function(XYData, Order) {
   # convert and name variables accordingly into vectors
   if (tolower(Order) == "xy") {
-    xc <-
-      as.vector(as.numeric(sub(",", ".", XYData[, 1], fixed = TRUE)))
-    yc <-
-      as.vector(as.numeric(sub(",", ".", XYData[, 2], fixed = TRUE)))
+    xc <- as.vector(as.numeric(sub(",", ".", XYData[, 1], fixed = TRUE)))
+    yc <- as.vector(as.numeric(sub(",", ".", XYData[, 2], fixed = TRUE)))
   } else{
-    xc <-
-      as.vector(as.numeric(sub(",", ".", XYData[, 2], fixed = TRUE)))
-    yc <-
-      as.vector(as.numeric(sub(",", ".", XYData[, 1], fixed = TRUE)))
+    xc <- as.vector(as.numeric(sub(",", ".", XYData[, 2], fixed = TRUE)))
+    yc <- as.vector(as.numeric(sub(",", ".", XYData[, 1], fixed = TRUE)))
   }
   # and combine them into a dataframe
   XYdt <- data.frame(XC = xc, YC = yc)
@@ -605,18 +645,20 @@ UIDGen <- function(db.data) {
 ChckBndrs <- function(BNFn, slope, BNDL, xmax){
   #
   yMin <- BNFn(xmax)
-  Gn <- function (yMin, slope, xmax, x) {
+  Gn <- function(yMin, slope, xmax, x) {
     yMin + slope * (x - xmax)
   }
   #
-  x_min_b <- min(uniroot.all(function(x) (BNFn(x) - Gn(yMin, slope, xmax, x)), c(0, xmax), tol = 0.001)) 
+  x_min_b <- min(uniroot.all(function(x) (BNFn(x) - Gn(yMin, slope, xmax, x)),
+                             c(0, xmax), tol = 0.001)) 
   y_max_b <- max(BNDL["Y"])
   ymax <- BNFn(x_min_b)
   #
   while (ymax > y_max_b) {
     xmax <- xmax - 0.01
     yMin <- BNFn(xmax)
-    x_min_b <- min(uniroot.all(function(x) (BNFn(x) - Gn(yMin, slope, xmax, x)), c(0, xmax), tol = 0.001)) 
+    x_min_b <- min(uniroot.all(function(x) (BNFn(x) - Gn(yMin, slope, xmax, x)), 
+                               c(0, xmax), tol = 0.001)) 
     ymax <- BNFn(x_min_b)
   }
   return(xmax)
@@ -627,14 +669,17 @@ RevMD5 <- function(table, db.data){
     BY.ROW <- ("REF.MD5" %in% colnames(table))
     if (BY.ROW) {
       REF.MD5 <- table[["REF.MD5"]]
-      table[["REF.MD5"]] <- sapply(REF.MD5, function(x){db.data$db.ref[db.data$db.ref$REF.MD5 == x, "REF.NAME"]})
+      table[["REF.MD5"]] <- sapply(REF.MD5, function(x) {
+        db.data$db.ref[db.data$db.ref$REF.MD5 == x, "REF.NAME"]
+      })
       names(table)[grep("REF.MD5", names(table))] <- "REF"
     } else {
       DATA.LENGTH <- ncol(table)
       DATA.NSYS <- DATA.LENGTH / 2
       for (IDX in seq(1, DATA.NSYS)) {
         REF.MD5 <- table[4, 2 * IDX - 1]
-        table[4, 2 * IDX - 1] <- db.data$db.ref[db.data$db.ref$REF.MD5 == REF.MD5, "REF.NAME"]
+        table[4, 2 * IDX - 1] <-
+          db.data$db.ref[db.data$db.ref$REF.MD5 == REF.MD5, "REF.NAME"]
       }
     }
     return(table)
@@ -647,7 +692,8 @@ RevREF <- function(db.tables, db.data) {
       if (!is.data.frame(db.tables[[table]])) {
         nested_tables <-  names(db.tables[[table]])
         for (nested_table in nested_tables) {
-          db.tables[[table]][[nested_table]] <- RevMD5(db.tables[[table]][[nested_table]], db.data)
+          db.tables[[table]][[nested_table]] <-
+            RevMD5(db.tables[[table]][[nested_table]], db.data)
         }
       } else {
         db.tables[[table]] <- RevMD5(db.tables[[table]], db.data)

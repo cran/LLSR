@@ -3,14 +3,17 @@
 \name{peg4kslt}
 \alias{peg4kslt}
 \title{Dataset of experimental binodal data of an ATPS}
-\format{multi-level data.frame()
+\format{
+multi-level data.frame()
 \describe{
   \item{XC}{Ammonium Sulphate mass fraction}
   \item{YC}{Poly(ethylene glycol) mass fraction}
   ...
-}}
+}
+}
 \description{
-A dataset containing the experimental binodal data for a PEG/SALT Aqueous Two-Phases System (ATPS)
+A dataset containing the experimental binodal data for a
+ PEG/SALT Aqueous Two-Phases System (ATPS)
 }
 \examples{
 #

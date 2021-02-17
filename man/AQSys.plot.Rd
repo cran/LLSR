@@ -4,66 +4,106 @@
 \alias{AQSys.plot}
 \title{Dataset and Fitted Function plot}
 \usage{
-\method{AQSys}{plot}(dataSET, xlbl = "", ylbl = "", main = NULL,
-  col = "blue", type = "p", cex = 1, cexlab = 1, cexaxis = 1,
-  cexmain = 1, cexsub = 1, modelName = "merchuk", NP = 100,
-  xmax = "", ymax = "", Order = "xy", save = FALSE, HR = FALSE,
-  filename = NULL, wdir = NULL, silent = FALSE, ...)
+\method{AQSys}{plot}(
+  dataSET,
+  xlbl = "",
+  ylbl = "",
+  main = NULL,
+  col = "blue",
+  type = "p",
+  cex = 1,
+  cexlab = 1,
+  cexaxis = 1,
+  cexmain = 1,
+  cexsub = 1,
+  modelName = "merchuk",
+  NP = 100,
+  xmax = "",
+  ymax = "",
+  Order = "xy",
+  save = FALSE,
+  HR = FALSE,
+  filename = NULL,
+  wdir = NULL,
+  silent = FALSE,
+  ...
+)
 }
 \arguments{
-\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit. It might hold multiple systems stacked side-by-side. [type:data.frame]}
+\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear
+fit. It might hold multiple systems stacked side-by-side. [type:data.frame]}
 
 \item{xlbl}{Plot's Horizontal axis label.}
 
 \item{ylbl}{Plot's Vertical axis label.}
 
-\item{main}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{main}{Legacy from plot package. For more details, 
+see \code{\link{plot.default}}}
 
-\item{col}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{col}{Legacy from plot package. For more details, 
+see \code{\link{plot.default}}}
 
-\item{type}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{type}{Legacy from plot package. For more details, 
+see \code{\link{plot.default}}}
 
-\item{cex}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{cex}{Legacy from plot package. For more details, 
+see \code{\link{plot.default}}}
 
-\item{cexlab}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{cexlab}{Legacy from plot package. For more details, 
+see \code{\link{plot.default}}}
 
-\item{cexaxis}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{cexaxis}{Legacy from plot package. For more details, 
+see \code{\link{plot.default}}}
 
-\item{cexmain}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{cexmain}{Legacy from plot package. For more details, 
+see \code{\link{plot.default}}}
 
-\item{cexsub}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{cexsub}{Legacy from plot package. For more details, 
+see \code{\link{plot.default}}}
 
-\item{modelName}{- Character String specifying the nonlinear empirical equation to fit data. The default method uses
+\item{modelName}{- Character String specifying the nonlinear empirical 
+equation to fit data. The default method uses
 Merchuk's equation. Other possibilities can be seen in AQSysList().}
 
-\item{NP}{Number of points used to build the fitted curve. Default is 100. [type:Integer]}
+\item{NP}{Number of points used to build the fitted curve. 
+Default is 100. [type:Integer]}
 
 \item{xmax}{Maximum value for the Horizontal axis' value}
 
 \item{ymax}{Maximum value for the Vertical axis' value}
 
-\item{Order}{Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.}
+\item{Order}{Defines how the data is organized in the Worksheet. 
+Use "xy" whether the first column corresponds to the lower phase fraction 
+and "yx" whether the opposite.}
 
-\item{save}{Save the generated plot in the disk using path and filename provided by the user. [type:Boulean]}
+\item{save}{Save the generated plot in the disk using path and filename 
+provided by the user. [type:Boulean]}
 
-\item{HR}{Adjust Plot's text to be compatible with High Resolution size [type:Boulean]}
+\item{HR}{Adjust Plot's text to be compatible with High Resolution 
+size [type:Boulean]}
 
-\item{filename}{Filename provided by the user to save a given plot. [type:String]}
+\item{filename}{Filename provided by the user to save a given 
+plot. [type:String]}
 
-\item{wdir}{The directory in which the plot file will be saved. [type:String]}
+\item{wdir}{The directory in which the plot file will be 
+saved. [type:String]}
 
-\item{silent}{save plot file without actually showing it to the user. [type:Boulean]}
+\item{silent}{save plot file without actually showing it to the 
+user. [type:Boulean]}
 
 \item{...}{Additional optional arguments. None are used at present.}
 }
 \value{
-A plot containing the experimental data, the correspondent curve for the binodal in study and the curve's raw XY data.
+A plot containing the experimental data, the correspondent curve for
+ the binodal in study and the curve's raw XY data.
 }
 \description{
-The function returns a plot after fitting a dataset to the mathematical descriptor chosen by the user.
+The function returns a plot after fitting a dataset to the 
+mathematical descriptor chosen by the user.
 }
 \details{
-This version uses the plot function and return a regular orthogonal plot.
+This version uses the plot function and return a regular orthogonal 
+plot.
 }
 \examples{
 #Populating variable dataSET with binodal data

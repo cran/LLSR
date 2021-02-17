@@ -7,30 +7,38 @@
 \usage{
 AQSys(dataSET, ...)
 
-\method{AQSys}{default}(dataSET, modelName = "merchuk", Order = "xy",
-  ...)
+\method{AQSys}{default}(dataSET, modelName = "merchuk", Order = "xy", ...)
 }
 \arguments{
-\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit}
+\item{dataSET}{- Binodal Experimental data that will be used in the 
+nonlinear fit}
 
 \item{...}{Additional optional arguments. None are used at present.}
 
-\item{modelName}{- Character String specifying the nonlinear empirical equation to fit data.
-The default method uses Merchuk's equation. Other mathematical descriptors can be listed using AQSysList().}
+\item{modelName}{- Character String specifying the nonlinear empirical 
+equation to fit data.
+The default method uses Merchuk's equation. Other mathematical descriptors 
+can be listed using AQSysList().}
 
-\item{Order}{Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.}
+\item{Order}{Defines how the data is organized in the Worksheet. Use "xy"
+whether the first column corresponds to the lower phase fraction and "yx"
+ whether the opposite.}
 }
 \value{
-A list containing three data.frame variables with all data parsed from the worksheet and parameters calculated
+A list containing three data.frame variables with all data parsed 
+from the worksheet and parameters calculated
 through the available mathematical descriptions.
 }
 \description{
 .
 
-Perform a nonlinear regression fit using any of the several mathematical descriptors implemented in order to calculate the equation's parameters.
+Perform a nonlinear regression fit using any of the several 
+mathematical descriptors implemented in order to calculate the equation's 
+parameters.
 }
 \details{
-The function returns functions parameters after fitting experimental data to the equations listed in AQSysList().
+The function returns functions parameters after fitting experimental
+ data to the equations listed in AQSysList().
 }
 \examples{
 # Populating variable dataSET with binodal data
@@ -39,20 +47,31 @@ dataSET <- peg4kslt[ , 1:2]
 AQSys(dataSET)
 }
 \references{
-MURUGESAN, T.; PERUMALSAMY, M. Liquid-Liquid Equilibria of Poly(ethylene glycol) 2000 + Sodium Citrate + Water at (25, 30, 35, 40, and 45) C. Journal of Chemical & Engineering Data, v. 50, n. 4, p. 1392-1395, 2005/07/01 2005. ISSN 0021-9568. 
-(\href{https://www.doi.org/10.1021/je050081k}{ACS Publications})
+MURUGESAN, T.; PERUMALSAMY, M. Liquid-Liquid Equilibria of 
+Poly(ethylene glycol) 2000 + Sodium Citrate + Water at 
+(25, 30, 35, 40, and 45) C. Journal of Chemical & Engineering Data,
+ v. 50, n. 4, p. 1392-1395, 2005/07/01 2005. ISSN 0021-9568. 
+(\doi{10.1021/je050081k})
 
-MERCHUK, J. C.; ANDREWS, B. A.; ASENJO, J. A. Aqueous two-phase systems for protein separation: Studies on phase inversion. Journal of Chromatography B: Biomedical Sciences and Applications, v. 711, n. 1-2, p. 285-293,  1998. ISSN 0378-4347.
-(\href{https://www.doi.org/10.1016/s0378-4347(97)00594-x}{ScienceDirect})
+MERCHUK, J. C.; ANDREWS, B. A.; ASENJO, J. A. Aqueous two-phase systems for 
+protein separation: Studies on phase inversion. Journal of Chromatography B: 
+Biomedical Sciences and Applications, v. 711, n. 1-2, p. 285-293,  1998. 
+ISSN 0378-4347. (\doi{10.1016/s0378-4347(97)00594-x})
 
-TANG, X.  et al. The study of phase behavior of aqueous two-phase system containing [Cnmim] BF 4 (n=2, 3, 4)+(NH4)2SO4 + H2O at different temperatures. Fluid Phase Equilibria, v. 383, p. 100-107,  2014. ISSN 0378-3812. 
-(\href{https://doi.org/10.1016/j.fluid.2014.09.029}{ScienceDirect})
+TANG, X.  et al. The study of phase behavior of aqueous two-phase system 
+containing [Cnmim] BF 4 (n=2, 3, 4)+(NH4)2SO4 + H2O at different 
+temperatures. Fluid Phase Equilibria, v. 383, p. 100-107,  2014. 
+ISSN 0378-3812. (\doi{10.1016/j.fluid.2014.09.029})
 
-GONZALEZ-TELLO, P.  et al. Liquid-Liquid Equilibrium in the System Poly(ethylene glycol) + MgSO4 + H2O at 298 K. Journal of Chemical & Engineering Data, v. 41, n. 6, p. 1333-1336, 1996/01/01 1996. ISSN 0021-9568. 
-(\href{https://www.doi.org/10.1021/je960075b}{ACS Publications})
+GONZALEZ-TELLO, P.  et al. Liquid-Liquid Equilibrium in the System 
+Poly(ethylene glycol) + MgSO4 + H2O at 298 K. Journal of Chemical &
+ Engineering Data, v. 41, n. 6, p. 1333-1336, 1996/01/01 1996. 
+ ISSN 0021-9568. (\doi{10.1021/je960075b})
 
-CHEN, Y.  et al. Liquid-liquid equilibria of aqueous biphasic systems composed of 1-butyl-3-methyl imidazolium tetrafluoroborate+ sucrose/maltose+ water. Journal of Chemical & Engineering Data, v. 55, n. 9, p. 3612-3616,  2010. ISSN 0021-9568. 
-(\href{https://pubs.acs.org/doi/ipdf/10.1021/je100212p}{ACS Publications})
+CHEN, Y.  et al. Liquid-liquid equilibria of aqueous biphasic systems 
+composed of 1-butyl-3-methyl imidazolium tetrafluoroborate+ sucrose/maltose+
+water. Journal of Chemical & Engineering Data, v. 55, n. 9, p. 3612-3616,
+2010. ISSN 0021-9568. (\doi{10.1021/je100212p})
 }
 \seealso{
 \itemize{

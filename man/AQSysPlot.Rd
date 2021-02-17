@@ -4,41 +4,61 @@
 \alias{AQSysPlot}
 \title{AQSysPlot}
 \usage{
-AQSysPlot(dataSET, Order = "xy", xlbl = "", ylbl = "",
-  seriesNames = NULL, save = FALSE, filename = NULL, HR = FALSE,
-  wdir = NULL, silent = FALSE)
+AQSysPlot(
+  dataSET,
+  Order = "xy",
+  xlbl = "",
+  ylbl = "",
+  seriesNames = NULL,
+  save = FALSE,
+  filename = NULL,
+  HR = FALSE,
+  wdir = NULL,
+  silent = FALSE
+)
 }
 \arguments{
-\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit. It might hold multiple systems stacked side-by-side. [type:data.frame]}
+\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear
+fit. It might hold multiple systems stacked side-by-side. [type:data.frame]}
 
 \item{Order}{Defines how the data is organized in the Worksheet. 
-Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite. [type:string]}
+Use "xy" whether the first column corresponds to the lower phase fraction and
+ "yx" whether the opposite. [type:string]}
 
 \item{xlbl}{Plot's Horizontal axis label.}
 
 \item{ylbl}{Plot's Vertical axis label.}
 
-\item{seriesNames}{A list of sequential names which will identify each system provided by the user in the dataSET variable. [type:List]}
+\item{seriesNames}{A list of sequential names which will identify each system
+provided by the user in the dataSET variable. [type:List]}
 
-\item{save}{Save the generated plot in the disk using path and filename provided by the user. Default is False. [type:Logical]}
+\item{save}{Save the generated plot in the disk using path and filename 
+provided by the user. Default is False. [type:Logical]}
 
-\item{filename}{A filename provided by the user to save a given plot. No default is provided. [type:String]}
+\item{filename}{A filename provided by the user to save a given plot. No 
+default is provided. [type:String]}
 
-\item{HR}{Adjust Plot's text to be compatible with High Resolution size [type:Logical]}
+\item{HR}{Adjust Plot's text to be compatible with High Resolution 
+size [type:Logical]}
 
 \item{wdir}{The directory in which the plot file will be saved. [type:String]}
 
-\item{silent}{save plot file without actually showing it to the user. Default is FALSE. [type:Logical]}
+\item{silent}{save plot file without actually showing it to the user. 
+Default is FALSE. [type:Logical]}
 }
 \value{
-The plot is returned as a ggplot2 object that can be manupulated accordingly.
+The plot is returned as a ggplot2 object that can be manipulated 
+accordingly.
 }
 \description{
-This functions plot binodal data as a curve in a pre-defined high quality theme ready for publication.
+This functions plot binodal data as a curve in a pre-defined 
+high quality theme ready for publication.
 }
 \details{
-The function have a predefined set of ggplot2 features adjusted to return a high quality picture. 
-More suitable for plotting fitted data, once binodal data usually determined through cloudy-phase point will look irregular.
+The function have a predefined set of ggplot2 features adjusted to 
+return a high quality picture. 
+More suitable for plotting fitted data, once binodal data usually determined
+ through cloudy-phase point will look irregular.
 }
 \examples{
 # Populating variable dataSET with binodal data

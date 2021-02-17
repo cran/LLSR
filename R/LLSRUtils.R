@@ -35,7 +35,7 @@ to.numeric <- function(x) {
 #
 is.equal <- function(TLData, tol) {
   # Verify if all Xs and Ys are equal among themselves
-  return ((all((
+  return((all((
     max(TLData[, 1]) - min(TLData[, 1])
   ) < tol) == TRUE) &&
     (all((
@@ -44,17 +44,22 @@ is.equal <- function(TLData, tol) {
 }
 #
 FindMinTL <- function(SysCP, maxGP, xMax, slope, BLFn, tol, dfr = 0.05){
-  # Calculate distance between the critical point (SysCP) and the furthest viable TL's Global Point (maxGP)
+  # Calculate distance between the critical point (SysCP) and the furthest 
+  # viable TL's Global Point (maxGP)
   DMaxTL <- sqrt((maxGP[1] - SysCP[1]) ^ 2 + (maxGP[2] - SysCP[2]) ^ 2)
-  # Establishes that the distance between the critical point and the closest viable tieline is a fraction (dfr) of the distance to MaxTL
+  # Establishes that the distance between the critical point and the closest 
+  # viable tieline is a fraction (dfr) of the distance to MaxTL
   d <- DMaxTL * dfr
-  # Calculate the coordinates for a point existing in the minTL (closest viable TL)
+  # Calculate the coordinates for a point existing in the minTL 
+  # (closest viable TL)
   X <- as.numeric(SysCP[1] + sqrt(d ^ 2 / (1 + (slope) ^ 2)))
   Y <- as.numeric(SysCP[2] + (-1 / slope) * (X - SysCP[1]))
-  # Initiate a generic line function but using calculated X, Y and provided Slope (assuming all tielines are parallel)
+  # Initiate a generic line function but using calculated X, Y and provided 
+  # Slope (assuming all tielines are parallel)
   TLFn <- function(x) { Y + slope * (x - X) }
   # find the intersections between the minTL and the binodal
-  xRoots <- uniroot.all(function(x) (BLFn(x) - TLFn(x)), c(0, xMax * 1.5), tol = 0.1) # REPLACE XMAX TO THE LIMIT OF SOLUBILITY?
+  xRoots <- uniroot.all(function(x) (BLFn(x) - TLFn(x)), c(0, xMax * 1.5), 
+                        tol = 1e-3) # REPLACE XMAX TO THE LIMIT OF SOLUBILITY?
   # Creates an array containing all Xs which characterizes minTL
   xTL <- c(min(xRoots), sum(xRoots) / 2, max(xRoots))
   # return a data.frame containing all Xs and Ys for minTL
@@ -83,22 +88,29 @@ TLL <- function(minTL, maxTL){
 }
 #
 findTL <- function(dTLL, SysTLL, BLFn, slope){
-  # If the target TLL is smaller than the minimum calculated TLL, throw an error.
-  if ((dTLL < SysTLL$TLL$MinTLL) | (dTLL > SysTLL$TLL$MaxTLL)){
+  # If the target TLL is smaller than the minimum calculated TLL, 
+  # throw an error.
+  if ((dTLL < SysTLL$TLL$MinTLL) | (dTLL > SysTLL$TLL$MaxTLL)) {
     #AQSys.err("10")
     print(c(dTLL, SysTLL$TLL$MinTLL, SysTLL$TLL$MaxTLL))
   }
-  # Initial guess for the tieline, calculated using the tieline length proportions
+  # Initial guess for the tieline, calculated using the tieline length 
+  # proportions
   X <- (dTLL / SysTLL$TLL$MaxTLL)*max(SysTLL$maxTL$X)
   # Initializing variables
   TL <- setNames(as.data.frame(matrix(nrow = 3, ncol = 2)), c("X", "Y"))
   OUTPUT <- list()
   dt <- 1
   #
-  while (dt > 1e-4){
+  whl_idx <- 1
+  while ((dt > 1e-4) & (whl_idx < 30000)) {
     Y <- BLFn(X)
     TLFn <- function(x) { Y + slope * (x - X) }
-    xRoots <- uniroot.all(function(x) (BLFn(x) - TLFn(x)), c(0, X), tol = 0.1) 
+    xRoots <- uniroot.all(function(x) (BLFn(x) - TLFn(x)), c(0, X), tol = 1e-3)
+    if (identical(xRoots, numeric(0))) {
+      X <- X - dt * (-(TLL - dTLL) / abs(TLL - dTLL)) / 10
+      break
+    }
     #
     TL[1, 1] <- min(xRoots)
     TL[3, 1] <- max(xRoots)
@@ -106,9 +118,10 @@ findTL <- function(dTLL, SysTLL, BLFn, slope){
     TL[3, 2] <- unname(BLFn(TL[3, 1]))
     #
     TLL <- dPoints(TL[1, ], TL[3, ])
-    dt <- abs(TLL - dTLL)
+    dt <- (abs(TLL - dTLL))^2
     #
-    X <- X + dt * ( -(TLL - dTLL) / abs(TLL - dTLL)) / 10
+    X <- X + dt * (-(TLL - dTLL) / abs(TLL - dTLL)) / 100
+    whl_idx <- whl_idx + 1
   }
   TL[2, 1] <- (TL[1, 1] + TL[3, 1]) / 2
   TL[2, 2] <- (TL[1, 2] + TL[3, 2]) / 2
@@ -125,12 +138,12 @@ findSlope <- function(db, dataSET){
   # check how many systems were provided
   nSys <- (ncol(dataSET) / 2)
   if ((ncol(dataSET) %% 2) == 0) {
-    for (sys in seq(1, nSys)){
+    for (sys in seq(1, nSys)) {
       # Get the system characterization variables
-      idx_Y <- dataSET[3, sys * 2 - 1]
-      idx_X <- dataSET[3, sys * 2]
+      idx_Y <- idx2name(dataSET[3, sys * 2 - 1], db$db.cas)
+      idx_X <- idx2name(dataSET[3, sys * 2], db$db.cas)
       idx_PH <- dataSET[1, sys * 2 - 1]
-      idx_T <- dataSET[2, sys * 2 - 1]
+      idx_T <- round(as.numeric(dataSET[2, sys * 2 - 1]),2)
       #
       TL_db <- db[["db.tielines"]][["slopes"]]
       slope[sys] <- TL_db[which(
@@ -140,10 +153,10 @@ findSlope <- function(db, dataSET){
           (TL_db$A == idx_Y | TL_db$B == idx_Y) ), "TLSlope"]
       #
     }
-    if (length(slope)==0) {
+    if (length(slope) == 0) {
       AQSys.err("12")
     } else {
-      return(slope)
+      return(as.numeric(slope))
     }
   } else{
     # Return an error if an invalid dataset is provided.
@@ -158,21 +171,27 @@ seqTL <- function(minTL, maxTL, slope, BLFn, nTL = 3, nSYS = 3) {
   xMax <- max(maxTL["X"])
   # Bottom Phase Compositions
   xRange <- seq(xMin, xMax, (xMax - xMin) / (nTL - 1))
-  oDATA <- setNames(data.frame(xRange, BLFn(xRange), seq(1, nTL), "B", row.names = NULL), dataNames) 
+  oDATA <- setNames(data.frame(xRange, BLFn(xRange), seq(1, nTL), "B", 
+                               row.names = NULL), dataNames) 
   #
   for (p in seq(1, nrow(oDATA))) {
     X <- oDATA[p, "X"]
     Y <- oDATA[p, "Y"]
     #
     TLFn <- function(x) { Y + slope * (x - X) }
-    xRoots <- uniroot.all(function(x) (BLFn(x) - TLFn(x)), c(0, X*2), tol = 0.1) # REPLACE XMAX TO THE LIMIT OF SOLUBILITY?
+    xRoots <- uniroot.all(function(x) (BLFn(x) - TLFn(x)), c(0, X*2), 
+                          tol = 0.1) # REPLACE XMAX TO THE LIMIT OF SOLUBILITY?
     xTL <- c(min(xRoots), sum(xRoots) / 2)
     #
-    temp.TLC <- setNames(data.frame(xTL, TLFn(xTL), rep(oDATA[p, "System"], 2), c("T", "M")), dataNames)
+    temp.TLC <- setNames(data.frame(xTL, TLFn(xTL), rep(oDATA[p, "System"], 2),
+                                    c("T", "M")), dataNames)
     #
     xSYS <- seq(min(xRoots), X, (X - min(xRoots)) / (nSYS + 1))
     #
-    temp.SYS <- setNames(data.frame(xSYS, TLFn(xSYS), rep(oDATA[p, "System"], nSYS + 2), rep("S", nSYS + 2)), dataNames)
+    temp.SYS <- setNames(data.frame(xSYS, 
+                                    TLFn(xSYS), rep(oDATA[p, "System"], 
+                                                    nSYS + 2), 
+                                    rep("S", nSYS + 2)), dataNames)
     #
     oDATA <- rbind(oDATA, temp.TLC, temp.SYS)
     #
@@ -180,7 +199,7 @@ seqTL <- function(minTL, maxTL, slope, BLFn, nTL = 3, nSYS = 3) {
   return(oDATA)
 }
 #
-saveConfig <- function (plot_obj, save, HR, filename, wdir, silent) {
+saveConfig <- function(plot_obj, save, HR, filename, wdir, silent) {
   if (save == TRUE) {
     #
     if (HR == TRUE) {
@@ -266,11 +285,12 @@ Name2Index <- function(chem_name) {
   return(chem_idx)
 }
 #
-####################################################################################################################
+###############################################################################
 #' @rdname ExportTemplate
 #' @export 
 #' @title LLSR Template Exporter
-#' @description The function makes a copy of LLSR's template file and copy it to the folder pointed by the user.
+#' @description The function makes a copy of LLSR's template file and copy it 
+#' to the folder pointed by the user.
 export_template <- function() {
   llsr_path <- system.file("extdata", package = "LLSR")
   template <- file.path(llsr_path, "template.xlsx")
@@ -286,12 +306,14 @@ export_template <- function() {
   #
 }
 #
-####################################################################################################################
+###############################################################################
 #' @rdname ExportData
 #' @export 
 #' @title LLSR Data Exporter
-#' @description The function saves a copy of a specified variable to a file in the folder pointed by the user.
-#' @param localData A variable existing in R environment and that will be saved locally.
+#' @description The function saves a copy of a specified variable to a file in 
+#' the folder pointed by the user.
+#' @param localData A variable existing in R environment and that will be saved
+#'  locally.
 export_data <- function(localData = NULL) {
   #
   if (is.null(localData)) {
@@ -303,4 +325,20 @@ export_data <- function(localData = NULL) {
     save(localData, file = file_local_database)
   }
   #
+}
+#
+###############################################################################
+# Recursive function to ensure that data on every data.frame is ASCII compliant 
+to.ascii <- function(x) {
+  if (class(x) == 'list') {
+    for (nm in names(x)) {
+      x[[nm]] <- to.ascii(x[[nm]])
+    }
+  } else
+    if (class(x) == "data.frame") {
+      for (col in colnames(x)) {
+        x[, col] <- iconv(x[, col], from = "UTF-8", to = "ASCII", sub = "")
+        } 
+      }
+  return(x)
 }

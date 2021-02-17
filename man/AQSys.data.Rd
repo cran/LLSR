@@ -4,31 +4,40 @@
 \alias{AQSys.data}
 \title{Dataset and Fitted Function plot}
 \usage{
-\method{AQSys}{data}(dataSET, modelName = "merchuk", Order = "xy",
-  xmax = "", ymax = "", ...)
+\method{AQSys}{data}(dataSET, modelName = "merchuk", Order = "xy", xmax = "", ymax = "", ...)
 }
 \arguments{
-\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit. It might hold multiple systems stacked side-by-side. [type:data.frame]}
+\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear
+fit. It might hold multiple systems stacked side-by-side. [type:data.frame]}
 
-\item{modelName}{- Character String specifying the nonlinear empirical equation to fit data. [type:String]
-The default method uses Merchuk's equation. Other mathematical descriptors can be listed using AQSysList().}
+\item{modelName}{- Character String specifying the nonlinear empirical 
+equation to fit data. [type:String]
+The default method uses Merchuk's equation. Other mathematical descriptors 
+can be listed using AQSysList().}
 
-\item{Order}{Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite. [type:String]}
+\item{Order}{Defines how the data is organized in the Worksheet. Use "xy" 
+whether the first column corresponds to the lower phase fraction and "yx" 
+whether the opposite. [type:String]}
 
-\item{xmax}{Maximum value for the Horizontal axis' value - optional [type:double]}
+\item{xmax}{Maximum value for the Horizontal axis' 
+value - optional [type:double]}
 
-\item{ymax}{Maximum value for the Vertical axis' value - optional [type:double]}
+\item{ymax}{Maximum value for the Vertical axis' 
+value - optional [type:double]}
 
 \item{...}{Additional optional arguments. None are used at present.}
 }
 \value{
-return a data.frame with data fitted using the chosen mathematical descriptor.
+return a data.frame with data fitted using the chosen mathematical 
+descriptor.
 }
 \description{
-The function returns a plot after fitting a dataset to the mathematical descriptor chosen by the user.
+The function returns a plot after fitting a dataset to the
+ mathematical descriptor chosen by the user.
 }
 \details{
-This version uses the plot function and return a regular orthogonal plot.
+This version uses the plot function and return a regular orthogonal
+ plot.
 }
 \examples{
 # Populating variable dataSET with binodal data

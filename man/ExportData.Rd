@@ -7,8 +7,10 @@
 export_data(localData = NULL)
 }
 \arguments{
-\item{localData}{A variable existing in R environment and that will be saved locally.}
+\item{localData}{A variable existing in R environment and that will be saved
+locally.}
 }
 \description{
-The function saves a copy of a specified variable to a file in the folder pointed by the user.
+The function saves a copy of a specified variable to a file in 
+the folder pointed by the user.
 }

@@ -2,29 +2,49 @@
 % Please edit documentation in R/AQSysCurve.R
 \name{AQSysCurve}
 \alias{AQSysCurve}
-\title{This functions plot a curve based in the chosen model and its parameters.}
+\title{This functions plot a curve based in the chosen model and its 
+parameters.}
 \usage{
-AQSysCurve(modelName, modelPars, seriesNames = NULL, xlbl = "",
-  ylbl = "", col = "black", type = "p", cex = 1, cexlab = 1,
-  cexaxis = 1, cexmain = 1, cexsub = 1, xmax = 35, HR = FALSE,
-  NP = 100, filename = NULL, wdir = NULL, save = FALSE,
-  silent = FALSE, ...)
+AQSysCurve(
+  modelName,
+  modelPars,
+  seriesNames = NULL,
+  xlbl = "",
+  ylbl = "",
+  col = "black",
+  type = "p",
+  cex = 1,
+  cexlab = 1,
+  cexaxis = 1,
+  cexmain = 1,
+  cexsub = 1,
+  xmax = 35,
+  HR = FALSE,
+  NP = 100,
+  filename = NULL,
+  wdir = NULL,
+  save = FALSE,
+  silent = FALSE,
+  ...
+)
 }
 \arguments{
 \item{modelName}{Equation to be used: merchuk, murugesan [type:string]}
 
 \item{modelPars}{Model's parameters [type::data.frame]}
 
-\item{seriesNames}{A list of sequential names which will identify each system provided by the user in the dataSET variable. [type:List]}
+\item{seriesNames}{A list of sequential names which will identify each system
+provided by the user in the dataSET variable. [type:List]}
 
 \item{xlbl}{Plot's Horizontal axis label.}
 
 \item{ylbl}{Plot's Vertical axis label.}
 
-\item{col}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{col}{Legacy from plot package. For more details, 
+see \code{\link{plot.default}}}
 
 \item{type}{1-character string giving the type of plot desired.  The
-    following values are possible, for details, see \code{\link{plot}}:
+    following values are possible, for details, see \code{\link[graphics]{plot}}:
     \code{"p"} for points, \code{"l"} for lines,
     \code{"b"} for both points and lines,
     \code{"c"} for empty points joined by lines,
@@ -33,42 +53,57 @@ AQSysCurve(modelName, modelPars, seriesNames = NULL, xlbl = "",
     \code{"h"} for histogram-like vertical lines.  Finally,
     \code{"n"} does not produce any points or lines.}
 
-\item{cex}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{cex}{Legacy from plot package. For more details,
+see \code{\link{plot.default}}}
 
-\item{cexlab}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{cexlab}{Legacy from plot package. For more details,
+see \code{\link{plot.default}}}
 
-\item{cexaxis}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{cexaxis}{Legacy from plot package. For more details,
+see \code{\link{plot.default}}}
 
-\item{cexmain}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{cexmain}{Legacy from plot package. For more details,
+see \code{\link{plot.default}}}
 
-\item{cexsub}{Legacy from plot package. For more details, see \code{\link{plot.default}}}
+\item{cexsub}{Legacy from plot package. For more details, 
+see \code{\link{plot.default}}}
 
-\item{xmax}{Maximum value for the Horizontal axis' value (bottom-rich component)  [type:double]}
+\item{xmax}{Maximum value for the Horizontal axis' value
+(bottom-rich component)  [type:double]}
 
-\item{HR}{Adjust Plot's text to be compatible with High Resolution size [type:Logical]}
+\item{HR}{Adjust Plot's text to be compatible with High Resolution 
+size [type:Logical]}
 
-\item{NP}{Number of points used to build the fitted curve. Default is 100. [type:Integer]}
+\item{NP}{Number of points used to build the fitted curve.
+Default is 100. [type:Integer]}
 
-\item{filename}{Filename provided by the user to save a given plot. [type:String]}
+\item{filename}{Filename provided by the user to save a given 
+plot. [type:String]}
 
-\item{wdir}{The directory in which the plot file will be saved. [type:String]}
+\item{wdir}{The directory in which the plot file will be 
+saved. [type:String]}
 
-\item{save}{Save the generated plot in the disk using path and filename provided by the user. [type:Logical]}
+\item{save}{Save the generated plot in the disk using path and filename 
+provided by the user. [type:Logical]}
 
-\item{silent}{save plot file without actually showing it to the user. [type:Logical]}
+\item{silent}{save plot file without actually showing it to the 
+user. [type:Logical]}
 
-\item{...}{other \link{graphical parameters} (see \code{\link{par}} and
+\item{...}{other \link[graphics]{graphical parameters} (see \code{\link[graphics]{par}} and
     section \sQuote{Details} below).}
 }
 \value{
-A plot using the input model within the chosen interval and the curve's raw XY data.
+A plot using the input model within the chosen interval and the 
+curve's raw XY data.
 If no interval is selected, xmax = 0.4.
 }
 \description{
-The function returns a plot after using the parameters and model given by the user.
+The function returns a plot after using the parameters and
+ model given by the user.
 }
 \details{
-The function owns predefined set of equations that can be seen below and must be used, with adequated parameters,
+The function owns predefined set of equations that can be seen
+ below and must be used, with adequated parameters,
 to return a plot which represent the chosen model.
 }
 \examples{

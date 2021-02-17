@@ -4,37 +4,58 @@
 \alias{AQSysDOE}
 \title{AQSysDOE}
 \usage{
-AQSysDOE(dataSET, db = LLSR::llsr_data, slope = NULL, xmax = NULL,
-  modelName = "merchuk", nTL = 3, nPoints = 3, tol = 1e-05)
+AQSysDOE(
+  dataSET,
+  db = LLSR::llsr_data,
+  slope = NULL,
+  xmax = 100,
+  modelName = "merchuk",
+  nTL = 3,
+  nPoints = 3,
+  tol = 1e-05
+)
 }
 \arguments{
-\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit.}
+\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear
+fit.}
 
-\item{db}{A highly structure db containing data from previously analised data. LLSR database is used by default but
-user may input his own db if formatted properly.}
+\item{db}{A highly structure db containing data from previously analyzed 
+data. LLSR database is used by default but
+ user may input his own db if formatted properly.}
 
-\item{slope}{The method assumes all tielines for a given ATPS are parallel, thus only one slope is required. [type:double]}
+\item{slope}{The method assumes all tielines for a given ATPS are parallel, 
+thus only one slope is required. [type:double]}
 
-\item{xmax}{Maximum value for the Horizontal axis' value (bottom-rich component). [type:double]}
+\item{xmax}{Maximum value for the Horizontal axis' value 
+(bottom-rich component). [type:double]}
 
-\item{modelName}{Character String specifying the nonlinear empirical equation to fit data.
-The default method uses Merchuk's equation. Other mathematical descriptors can be listed using AQSysList(). [type:string]}
+\item{modelName}{Character String specifying the nonlinear empirical equation
+ to fit data.
+The default method uses Merchuk's equation. Other mathematical descriptors 
+can be listed using AQSysList(). [type:string]}
 
-\item{nTL}{Number of tielines plotted for a given ATPS. Default is 3. [type:Integer]}
+\item{nTL}{Number of tielines plotted for a given ATPS. 
+Default is 3. [type:Integer]}
 
-\item{nPoints}{Number of points chosen for a given tieline. Default is 3. [type:Integer]}
+\item{nPoints}{Number of points chosen for a given tieline. 
+Default is 3. [type:Integer]}
 
-\item{tol}{limit of tolerance to reach to assume convergence. Default is 1e-5. [type:Integer]}
+\item{tol}{limit of tolerance to reach to assume convergence.
+Default is 1e-5. [type:Integer]}
 }
 \description{
-The function uses a ATPS characterization data to build a Design Of Experiments (DOE) matrix based on
+The function uses a ATPS characterization data to build a Design
+ Of Experiments (DOE) matrix based on
  Tie-Line Length (TLL) and Volume Ratio. 
 see \code{\link{AQSysEval}} for more details.
 }
 \examples{
-# dataSET is a data.frame which contains series of Tieline's mass fraction and information
-# from both components and #' # extraction conditions (T, pH). The function perform a system
-# characterizaion based on data stored in LLSR's database (or provided by the user) 
+# dataSET is a data.frame which contains series of Tieline's mass fraction
+# and information
+# from both components and #' # extraction conditions (T, pH). The function
+# perform a system
+# characterizaion based on data stored in LLSR's database
+# (or provided by the user) 
 # and then calculate a DOE based on the input.
 \dontrun{
 dataSET <- AQSearch.Binodal(db.uid='56b53a50f500c502fa4a65d197fc6d84')

@@ -4,54 +4,89 @@
 \alias{AQSysEval}
 \title{AQSysEval}
 \usage{
-AQSysEval(dataSET, db = LLSR::llsr_data, xmax = NULL, ymax = NULL,
-  NP = 100, slope = NULL, modelName = "merchuk",
-  convrgnceLines = FALSE, nTL = 3, nPoints = 3, tol = 1e-05,
-  xlbl = "", ylbl = "", seriesNames = NULL, save = FALSE,
-  HR = FALSE, autoname = FALSE, wdir = NULL, silent = TRUE)
+AQSysEval(
+  dataSET,
+  db = LLSR::llsr_data,
+  xmax = NULL,
+  ymax = NULL,
+  NP = 100,
+  slope = NULL,
+  modelName = "merchuk",
+  convrgnceLines = FALSE,
+  nTL = 3,
+  nPoints = 3,
+  tol = 1e-04,
+  xlbl = "",
+  ylbl = "",
+  seriesNames = NULL,
+  save = FALSE,
+  HR = FALSE,
+  autoname = FALSE,
+  wdir = NULL,
+  silent = TRUE
+)
 }
 \arguments{
-\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit. [type:data.frame]}
+\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear
+fit. [type:data.frame]}
 
-\item{db}{A highly structure db containing data from previously analised data. LLSR database is used by default but user may input his own db if formatted properly.}
+\item{db}{A highly structure db containing data from previously analyzed 
+data. LLSR database is used by default but user may input his own db if 
+formatted properly.}
 
-\item{xmax}{Maximum value for the Horizontal axis' value (bottom-rich component). [type:double]}
+\item{xmax}{Maximum value for the Horizontal axis' value (bottom-rich
+component). [type:double]}
 
-\item{ymax}{Maximum value for the vertical axis' value (bottom-rich component). [type:double]}
+\item{ymax}{Maximum value for the vertical axis' value 
+(bottom-rich component). [type:double]}
 
-\item{NP}{Number of points used to build the fitted curve. Default is 100. [type:Integer]}
+\item{NP}{Number of points used to build the fitted curve. 
+Default is 100. [type:Integer]}
 
-\item{slope}{The method assumes all tielines for a given ATPS are parallel, thus only one slope is required. [type:double]}
+\item{slope}{The method assumes all tielines for a given ATPS are parallel,
+thus only one slope is required. [type:double]}
 
-\item{modelName}{Character String specifying the nonlinear empirical equation to fit data.
-The default method uses Merchuk's equation. Other mathematical descriptors can be listed using AQSysList(). [type:string]}
+\item{modelName}{Character String specifying the nonlinear empirical
+ equation to fit data.
+The default method uses Merchuk's equation. Other mathematical descriptors 
+can be listed using AQSysList(). [type:string]}
 
-\item{convrgnceLines}{Magnify Plot's text to be compatible with High Resolution size [type:Logical]}
+\item{convrgnceLines}{Magnify Plot's text to be compatible with High
+Resolution size [type:Logical]}
 
-\item{nTL}{Number of tielines plotted for a given ATPS. Default is 3. [type:Integer]}
+\item{nTL}{Number of tielines plotted for a given ATPS. 
+Default is 3. [type:Integer]}
 
-\item{nPoints}{Number of points chosen for a given tieline. Default is 3. [type:Integer]}
+\item{nPoints}{Number of points chosen for a given tieline. 
+Default is 3. [type:Integer]}
 
-\item{tol}{limit of tolerance to reach to assume convergence. Default is 1e-5. [type:Integer]}
+\item{tol}{limit of tolerance to reach to assume convergence.
+Default is 1e-5. [type:Integer]}
 
 \item{xlbl}{Plot's Horizontal axis label. [type:String]}
 
 \item{ylbl}{Plot's Vertical axis label. [type:String]}
 
-\item{seriesNames}{Number of points used to build the fitted curve. Default is 100. [type:Integer]}
+\item{seriesNames}{Number of points used to build the fitted curve. 
+Default is 100. [type:Integer]}
 
-\item{save}{Save the generated plot in the disk using path and filename provided by the user. Default is FALSE. [type:Logical]}
+\item{save}{Save the generated plot in the disk using path and filename 
+provided by the user. Default is FALSE. [type:Logical]}
 
-\item{HR}{Magnify Plot's text to be compatible with High Resolution size [type:Logical]}
+\item{HR}{Magnify Plot's text to be compatible with High Resolution
+size [type:Logical]}
 
-\item{autoname}{Number of points used to build the fitted curve. Default is FALSE. [type:Logical]}
+\item{autoname}{Number of points used to build the fitted curve. 
+Default is FALSE. [type:Logical]}
 
 \item{wdir}{The directory in which the plot file will be saved. [type:String]}
 
-\item{silent}{save plot file without actually showing it to the user. Default is FALSE. [type:Logical]}
+\item{silent}{save plot file without actually showing it to the user. 
+Default is FALSE. [type:Logical]}
 }
 \description{
-The function perform a full ATPS characterization (parameters, tie-line boundaries and critical point), generating a brief report.
+The function perform a full ATPS characterization (parameters,
+ tie-line boundaries and critical point), generating a brief report.
 }
 \examples{
 \dontrun{
@@ -62,6 +97,8 @@ EvalData <- AQSysEval(dataSET2 , xlbl = xLabel, ylbl = yLabel)
 }
 }
 \references{
-KAUL, A. The Phase Diagram. In: HATTI-KAUL, R. (Ed.). Aqueous Two-Phase Systems: Methods and Protocols: Humana Press, v.11, 2000. cap. 2, p.11-21.  (Methods in Biotechnology). ISBN 978-0-89603-541-6.
+KAUL, A. The Phase Diagram. In: HATTI-KAUL, R. (Ed.). 
+Aqueous Two-Phase Systems: Methods and Protocols: Humana Press, v.11, 2000. 
+cap. 2, p.11-21.  (Methods in Biotechnology). ISBN 978-0-89603-541-6.
 (\href{https://link.springer.com/10.1385/1-59259-028-4:11}{SpringerLink})
 }

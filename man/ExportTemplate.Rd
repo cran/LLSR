@@ -7,5 +7,6 @@
 export_template()
 }
 \description{
-The function makes a copy of LLSR's template file and copy it to the folder pointed by the user.
+The function makes a copy of LLSR's template file and copy it 
+to the folder pointed by the user.
 }

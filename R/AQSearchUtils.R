@@ -1,10 +1,12 @@
-####################################################################################################################
+###############################################################################
 undigest <- function(str.md5) {
-  # using a given db, the function search for a md5 match nd return the correspondent plain string
-  ans <- LLSR::llsr_data$db.ref[grep(str.md5, LLSR::llsr_data$db.ref[, 3], fixed = TRUE), 2]
+  # using a given db, the function search for a md5 match nd return the 
+  # correspondent plain string
+  ans <- LLSR::llsr_data$db.ref[grep(str.md5, LLSR::llsr_data$db.ref[, 3], 
+                                     fixed = TRUE), 2]
   ans
 }
-####################################################################################################################
+###############################################################################
 db.check <- function(db) {
   # check if the variable parsed as a parameter isn't null
   if (is.null(db)) {
@@ -19,10 +21,11 @@ db.check <- function(db) {
         if (is.data.frame(db[[i]]) == FALSE)
           AQSys.err("3", k = names(db)[i])
       }
-      # if db isn't a list with length = 3, it triggers an error (check AQSys.err.R for details)
+      # if db isn't a list with length = 3, it triggers an error 
+      # (check AQSys.err.R for details)
     } else {
       AQSys.err("7")
     }
   }
 }
-####################################################################################################################
+###############################################################################

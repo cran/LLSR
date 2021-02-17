@@ -4,15 +4,30 @@
 \alias{AQSys.LevArmRule}
 \title{Lever-Arm Rule - tie-line's Composition Calculation}
 \usage{
-\method{AQSys}{LevArmRule}(dataSET, modelName = "merchuk", Xm, Ym,
-  Vt = NULL, Vb = NULL, dyt = NULL, dyb = NULL, WT = NULL,
-  WB = NULL, byW = TRUE, Order = "xy", ...)
+\method{AQSys}{LevArmRule}(
+  dataSET,
+  modelName = "merchuk",
+  Xm,
+  Ym,
+  Vt = NULL,
+  Vb = NULL,
+  dyt = NULL,
+  dyb = NULL,
+  WT = NULL,
+  WB = NULL,
+  byW = TRUE,
+  Order = "xy",
+  ...
+)
 }
 \arguments{
-\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear fit}
+\item{dataSET}{- Binodal Experimental data that will be used in the nonlinear
+fit}
 
-\item{modelName}{- Character String specifying the nonlinear empirical equation to fit data.
-The default method uses Merchuk's equation. Other mathematical descriptors can be listed using AQSysList().}
+\item{modelName}{- Character String specifying the nonlinear empirical 
+equation to fit data.
+The default method uses Merchuk's equation. Other mathematical descriptors
+ can be listed using AQSysList().}
 
 \item{Xm}{- Component X's concentration in the tieline's global composition.}
 
@@ -30,22 +45,30 @@ The default method uses Merchuk's equation. Other mathematical descriptors can b
 
 \item{WB}{- ATPS bottom phase weight}
 
-\item{byW}{- Use weight (TRUE) or volume and density (FALSE) during lever arm rule calculation.}
+\item{byW}{- Use weight (TRUE) or volume and density (FALSE) during lever 
+arm rule calculation.}
 
-\item{Order}{Defines how the data is organized in the Worksheet. Use "xy" whether the first column corresponds to the lower phase fraction and "yx" whether the opposite.}
+\item{Order}{Defines how the data is organized in the Worksheet. Use "xy"
+whether the first column corresponds to the lower phase fraction and "yx"
+ whether the opposite.}
 
 \item{...}{Additional optional arguments. None are used at present.}
 }
 \value{
-The function returns the Critical Point (X,Y), Tieline Length (TLL), Tieline's Equivolume point (xVRe2o,yVRe2o),
+The function returns the Critical Point (X,Y), Tieline Length (TLL),
+ Tieline's Equivolume point (xVRe2o,yVRe2o),
 and Tieline's Slope.
 }
 \description{
-Merchuk et al. described a very straightforward method to calculate the concentration of each component in the
-tieline giving only its global composition and phase's properties (such as volume and density). Here this method is implemented and generalized for multiple mathematical descriptors.
+Merchuk et al. described a very straightforward method to 
+calculate the concentration of each component in the
+tieline giving only its global composition and phase's properties (such as 
+volume and density). Here this method is implemented and generalized for 
+multiple mathematical descriptors.
 }
 \details{
-Using any implemented binodal data mathematical descriptor, the global composition of a chosen tieline and its phases properties.
+Using any implemented binodal data mathematical descriptor, the 
+global composition of a chosen tieline and its phases properties.
 }
 \examples{
 \dontrun{
@@ -53,6 +76,9 @@ AQSys.LevArmRule(dataSET, Xm, Ym, Vt, Vb, dyt, dyb, WT, WB, byW = FALSE)
 }
 }
 \references{
-MERCHUK, J. C.; ANDREWS, B. A.; ASENJO, J. A. Aqueous two-phase systems for protein separation: Studies on phase inversion. Journal of Chromatography B: Biomedical Sciences and Applications, v. 711, n. 1-2, p. 285-293,  1998. ISSN 0378-4347.
+MERCHUK, J. C.; ANDREWS, B. A.; ASENJO, J. A. Aqueous two-phase systems for 
+protein separation: Studies on phase inversion. Journal of Chromatography B:
+Biomedical Sciences and Applications, v. 711, n. 1-2, p. 285-293,  1998.
+ISSN 0378-4347.
 (\href{https://www.doi.org/10.1016/s0378-4347(97)00594-x}{ScienceDIrect})
 }

@@ -1,4 +1,4 @@
-####################################################################################################################
+###############################################################################
 mathDescPair <- function(modelName) {
   #
   switch(modelName,
@@ -12,17 +12,19 @@ mathDescPair <- function(modelName) {
       FN <- "PARs[1] * log(PARs[2] + x[$2]) + PARs[3] - x[$1]"
     },
     "tang" = {
-      FN <- "exp(PARs[1] + PARs[2] * (x[$2] ^ (0.5)) + PARs[3] * x[$2] + PARs[4] * (x[$2] ^ 2)) - x[$1]"
+      FN <- "exp(PARs[1] + PARs[2] * (x[$2] ^ (0.5)) + PARs[3] * x[$2] + PARs[4]
+      * (x[$2] ^ 2)) - x[$1]"
     },
     "chen" = {
-      FN <- "exp(PARs[1] + PARs[2] * (x[$2] ^ (0.5)) + PARs[3] * x[$2] + PARs[4] * (x[$2] ^ 2)+ PARs[5] * (x[$2] ^ 3)) - x[$1]"
+      FN <- "exp(PARs[1] + PARs[2] * (x[$2] ^ (0.5)) + PARs[3] * x[$2] + PARs[4]
+      * (x[$2] ^ 2)+ PARs[5] * (x[$2] ^ 3)) - x[$1]"
     },
     AQSys.err("0")
   )
   # return chosen functions
   return(FN)
 }
-####################################################################################################################
+###############################################################################
 AQSys.mathDesc <- function(mathDesc) {
   # Each switch option provides an equation that will be available to be used to
   # make plots and calculate compositions for a system with known parameters
@@ -112,14 +114,17 @@ AQSys.mathDesc <- function(mathDesc) {
   # return chosen function
   return(Fn)
 }
-####################################################################################################################
+###############################################################################
 #' @rdname AQSysList
 #' @export
 #' @title Aqueous Systems Descriptors already implemented
-#' @description The function returns a list of all mathematical descriptors available at the time.
-#' @param npars Logic option to return a List variable containing the number of required parameters for each equation.
+#' @description The function returns a list of all mathematical descriptors 
+#' available at the time.
+#' @param npars Logic option to return a List variable containing the number of
+#'  required parameters for each equation.
 AQSysList <- function(npars=FALSE) {
-  # a new entry in updte must be added for each new equation implemmented in AQSys.mathDesc()
+  # a new entry in updte must be added for each new equation implemmented in 
+  # AQSys.mathDesc()
   # updte entries' name must match AQSys.mathDesc switch options
   model_list <- list(
     "merchuk" = 3,
@@ -138,4 +143,4 @@ AQSysList <- function(npars=FALSE) {
   # return list
   return(updte)
 }
-####################################################################################################################
+###############################################################################

@@ -7,7 +7,8 @@
 AQSysBancroft(dataSET, ...)
 }
 \arguments{
-\item{dataSET}{- Tieline Experimental data that will be used in the nonlinear fit}
+\item{dataSET}{- Tieline Experimental data that will be used in the nonlinear
+fit}
 
 \item{...}{Additional optional arguments. None are used at present.}
 }
@@ -20,9 +21,10 @@ Bancroft's equation to correlate tie-line's data.
 \examples{
 # dataSET is a data.frame which contains series of Tieline's mass fraction
 # (upper-rich component, bottom-rich component and water)
-# Each column in the data.frame represents a series of one component mass fraction
+# Each column in the data.frame represents a series of one component mass
+# fraction
 # For example, an empty data.frame for four tielines can be obtaining using:
-dataSET <- matrix(NA,nrow=4,ncol=6)
+dataSET <- matrix(NA, nrow = 4, ncol = 6)
 # Variables order must follows the sequence presented below:
 # "mfXt","mfYt","mfXb","mfYb","mfWt","mfWb"
 # In which: mf stands for mass fraction; X and Y for the component
@@ -34,6 +36,8 @@ AQSysBancroft(dataSET, Order = "xy")
 }
 }
 \references{
-TUBIO, G.  et al. Liquid-liquid equilibrium of the Ucon 50-HB5100/sodium citrate aqueous two-phase systems. Separation and Purification Technology, v. 65, n. 1, p. 3-8,  2009. ISSN 1383-5866. 
+TUBIO, G.  et al. Liquid-liquid equilibrium of the Ucon 50-HB5100/sodium 
+citrate aqueous two-phase systems. Separation and Purification Technology, 
+v. 65, n. 1, p. 3-8,  2009. ISSN 1383-5866. 
 (\href{https://www.sciencedirect.com/science/article/pii/S1383586608000361}{ScienceDirect})
 }

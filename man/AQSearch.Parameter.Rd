@@ -4,37 +4,56 @@
 \alias{AQSearch.Parameter}
 \title{Search function for ATPS Systems data}
 \usage{
-\method{AQSearch}{Parameter}(db = LLSR::llsr_data, db.CompA = NULL,
-  db.CompB = NULL, db.CompC = NULL, db.Temp = NULL, db.ph = NULL,
-  db.uid = NULL, stacked = FALSE, ...)
+\method{AQSearch}{Parameter}(
+  db = LLSR::llsr_data,
+  db.CompA = NULL,
+  db.CompB = NULL,
+  db.CompC = NULL,
+  db.Temp = NULL,
+  db.ph = NULL,
+  db.uid = NULL,
+  stacked = FALSE,
+  ...
+)
 }
 \arguments{
-\item{db}{A highly structure db containing data from previously analised data. LLSR database is used by default but user may input his own db if formatted properly.}
+\item{db}{A highly structure db containing data from previously analised 
+data. LLSR database is used by default but user may input his own db if 
+formatted properly.}
 
-\item{db.CompA}{A String variable containing either the CAS, chemical formula or name of the upper phase enriched component..}
+\item{db.CompA}{A String variable containing either the CAS, chemical 
+formula or name of the upper phase enriched component..}
 
-\item{db.CompB}{A String variable containing either the CAS, chemical formula or name of the lower phase component.}
+\item{db.CompB}{A String variable containing either the CAS, chemical 
+formula or name of the lower phase component.}
 
-\item{db.CompC}{A String variable containing either the CAS, chemical formula or name of the additive component.}
+\item{db.CompC}{A String variable containing either the CAS, chemical 
+formula or name of the additive component.}
 
-\item{db.Temp}{A numeric variable containing the Temperature (in Kelvin) to be searched within DB.}
+\item{db.Temp}{A numeric variable containing the Temperature (in Kelvin) to 
+be searched within DB.}
 
 \item{db.ph}{A numeric variable containing the pH to be searched within DB.}
 
-\item{db.uid}{An Unique md5 hash Identification. User can retrieve data for a specific system if in possesion of its UID.}
+\item{db.uid}{An Unique md5 hash Identification. User can retrieve data for 
+a specific system if in possesion of its UID.}
 
-\item{stacked}{A boolean variable used to return value as a nested list or a data.frame. Used internally to organize data output.}
+\item{stacked}{A boolean variable used to return value as a nested list or 
+a data.frame. Used internally to organize data output.}
 
 \item{...}{Additional optional arguments. None are used at present.}
 }
 \value{
-Returns a data.frame containing system's parameters which match searched conditions
+Returns a data.frame containing system's parameters which match 
+searched conditions
 }
 \description{
-This function allow the user to search the package database to find any ATPS that matches the available criteria.
+This function allow the user to search the package database to 
+find any ATPS that matches the available criteria.
 }
 \details{
-The function return the systems that matches the criteria submitted by the user.
+The function return the systems that matches the criteria submitted
+ by the user.
 }
 \examples{
 \dontrun{
