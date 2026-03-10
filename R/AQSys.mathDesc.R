@@ -25,7 +25,8 @@ mathDescPair <- function(modelName) {
   return(FN)
 }
 ###############################################################################
-AQSys.mathDesc <- function(mathDesc) {
+AQSys.mathDesc <- function(dataSET, ...) {
+  mathDesc <- dataSET
   # Each switch option provides an equation that will be available to be used to
   # make plots and calculate compositions for a system with known parameters
   switch(

@@ -21,7 +21,7 @@ if (getRversion() >= "3.5")
     )
   )
 ###############################################################################
-#' @import rootSolve graphics stats svDialogs ggplot2 svglite
+#' @import rootSolve graphics stats svDialogs ggplot2
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices png
 # options(warn = 1)
@@ -111,6 +111,13 @@ AQSys <- function(dataSET, ...)
 #  ISSN 0021-9568. 
 # (\href{https://pubs.acs.org/doi/abs/10.1021/je901019t}{ACS Publications})
 AQSys.default <- function(dataSET, modelName = "merchuk", Order="xy", ...) {
+  # basic input validation
+  if (!is.data.frame(dataSET)) {
+    AQSys.err("3", "dataSET")
+  }
+  if (ncol(dataSET) < 2) {
+    AQSys.err("9")
+  }
   # arrange data and guarantee R converted it to numbers but dont switch 
   # columns to prevent incompatibility with pre-existent functions 
   dataSET <- toNumeric(dataSET, Order)
@@ -332,10 +339,10 @@ AQSys.plot <- function(dataSET,
     CoefSET <- summary(AQSys(dataSET, modelName))$coefficients[, 1]
     # plot phase diagram using experimental data and with previously calculated
     #  parameters
-    plot_image <- ggplot(data = dataSET, aes_string(x = "XC", y = "YC")) + 
+    plot_image <- ggplot(data = dataSET, aes(x = .data[["XC"]], y = .data[["YC"]])) +
       geom_point(shape = 8, size = 2) +
-      theme_light() + xlab(paste(xlbl, "(%, m/m)")) + 
-      ylab(paste(ylbl, "(%, m/m)")) + 
+      theme_light() + xlab(paste(xlbl, "(%, m/m)")) +
+      ylab(paste(ylbl, "(%, m/m)")) +
       theme(
         validate = FALSE,
         plot.margin = unit(c(1, 1, 1, 1), "cm"),
@@ -343,12 +350,12 @@ AQSys.plot <- function(dataSET,
         legend.position = "top",
         axis.title.y = element_text(vjust = 5),
         axis.title.x = element_text(vjust = -2),
-        panel.grid.major = element_line(size = .70, colour = "black"),
-        panel.grid.minor = element_line(size = .70),
-        panel.border = element_rect(size = .5, colour = "white"),
+        panel.grid.major = element_line(linewidth = .70, colour = "black"),
+        panel.grid.minor = element_line(linewidth = .70),
+        panel.border = element_rect(linewidth = .5, colour = "white"),
         axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
-        axis.line = element_line(colour = 'black', size = 1.25),
+        axis.line = element_line(colour = 'black', linewidth = 1.25),
         legend.title = element_text(
           colour = "black",
           size = 12,
@@ -370,8 +377,8 @@ AQSys.plot <- function(dataSET,
       scale_x_continuous(
         expand = c(0, 0),
         limits = c(0, xmax),
-        breaks = seq(0, ymax, by = xmax / 10),
-        labels = seq(0, ymax, by = xmax / 10)
+        breaks = seq(0, xmax, by = xmax / 10),
+        labels = seq(0, xmax, by = xmax / 10)
       )
     #
     # add curve generated using regression parameters
@@ -382,10 +389,10 @@ AQSys.plot <- function(dataSET,
     plot_image <-
       plot_image + geom_line(
         data = rawdt,
-        aes_string(x = "XC", y = "YC"),
+        aes(x = .data[["XC"]], y = .data[["YC"]]),
         color = "red",
         linetype = "solid",
-        size = 1
+        linewidth = 1
       )
     #
     if (save == TRUE) {

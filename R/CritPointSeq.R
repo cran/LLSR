@@ -1,6 +1,4 @@
 ###############################################################################
-options(digits = 14)
-###############################################################################
 #' @import ggplot2
 #' @import rootSolve
 ###############################################################################
@@ -150,12 +148,12 @@ crit_point_seq <- function(dataSET,
                                 ylbl = ylbl)
       OUTPUT_PLOT <- OUTPUT_PLOT + geom_line(
         data = subset(BNDL, BNDL$System != "CriticalPointSeries"),
-        aes_string(x = "X", y = "Y", group = "System"),
+        aes(x = .data[["X"]], y = .data[["Y"]], group = .data[["System"]]),
         colour = "red",
         alpha = 0.4
       ) + geom_point(
         data = subset(BNDL, BNDL$System != "CriticalPointSeries"),
-        aes_string(x = "X", y = "Y"),
+        aes(x = .data[["X"]], y = .data[["Y"]]),
         colour = "black",
         size = 1,
         alpha = 1

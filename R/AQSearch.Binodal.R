@@ -3,12 +3,12 @@
 ###############################################################################
 #' @rdname AQSearch.Binodal
 #' @title Search function for ATPS Systems data
-#' @description This function allow the user to search the package database to 
+#' @description This function allow the user to search the package database to
 #' find any ATPS that matches the available criteria.
-#' @details The function return the systems that matches the criteria submitted 
+#' @details The function return the systems that matches the criteria submitted
 #' by the user.
 #' @param db A highly structure db containing data from previously analyzed
-#'  data. LLSR database is used by default but user may input his own db if 
+#'  data. LLSR database is used by default but user may input his own db if
 #'  formatted properly.
 #' @param db.CompA A String variable containing either the CAS, chemical
 #'  formula or name of the upper phase enriched component..
@@ -20,9 +20,10 @@
 #'  be searched within DB.
 #' @param db.ph A numeric variable containing the pH to be searched within DB.
 #' @param db.uid An Unique md5 hash Identification. User can retrieve data
+
 #'  for a specific system if in possesion of its UID.
 #' @param stacked A boolean variable used to return value as a nested list
-#'  or a data.frame. Used internally to organize data output. 
+#'  or a data.frame. Used internally to organize data output.
 #' @param ... Additional optional arguments. None are used at present.
 #' @method AQSearch Binodal
 #' @export AQSearch.Binodal
@@ -48,84 +49,88 @@ AQSearch.Binodal <-
     # initialize db.ans
     db.ans <- list()
     # create and initialise a list using the function's parameters
-    db.params <- c(db.ph, db.CompA, db.CompB, db.Temp, db.CompC, db.uid)
+    db.params <- list(db.ph, db.CompA, db.CompB, db.Temp, db.CompC, db.uid)
     # if all parameters are null, the search is not valid and it triggers an
     # error (check AQSys.err.R for details)
-    if (all(unlist(lapply(db.params, is.null)))) AQSys.err("6")
+    if (all(sapply(db.params, is.null))) AQSys.err("6")
+    
     # output variable is initialised with data from db.
     db.grep <- db$db.data
+    
+    # IMPROVEMENT: Exit early if there's no data to search. Use && for short-circuiting.
+    if (is.null(db.grep) || (nrow(db.grep) == 0 && ncol(db.grep) == 0)) {
+        AQSys.err("5") # No data in db$db.data, so no results possible
+        return(invisible(NULL))
+    }
+
+    # IMPROVEMENT: Create a local, pre-processed CAS database for searching.
+    # This is the single most important performance enhancement.
+    # The tolower() operation is now performed only ONCE, not for every component search.
+    cas_search_db <- db$db.cas
+    cas_search_db$CAS.NAME_lower <- tolower(cas_search_db$CAS.NAME)
+    cas_search_db$CAS.COMMON_lower <- tolower(cas_search_db$CAS.COMMON)
+    cas_search_db$CAS.CODE_lower <- tolower(cas_search_db$CAS.CODE)
+
+    # --------------------------------------------------------------------------
+    # IMPROVEMENT: Abstract the repetitive search logic into a helper function.
+    # This makes the main function body much cleaner and easier to maintain (DRY principle).
     #
-    if ((nrow(db.grep)==0)&(ncol(db.grep)==0)) 
-      {db.ph = db.CompA = db.CompB = db.Temp = db.CompC = db.uid = NULL}
+    # @param component_query The search term (e.g., db.CompA).
+    # @param local_cas_db The pre-processed CAS database.
+    # @return A character vector of matching canonical CAS.NAMEs.
     #
-    if (is.valid(db.CompA)) {
-      db.CompA.names <- db$db.cas[grep(tolower(db.CompA), 
-                                       tolower(db$db.cas$CAS.NAME), 
-                                       fixed = TRUE), "CAS.NAME"]
-      db.CompA.altNames <- db$db.cas[grep(tolower(db.CompA), 
-                                          tolower(db$db.cas$CAS.COMMON),
-                                          fixed = TRUE), "CAS.NAME"]
-      db.CompA.cas <- db$db.cas[grep(tolower(db.CompA), 
-                                     tolower(db$db.cas$CAS.CODE), 
-                                     fixed = TRUE), "CAS.NAME"]
-      #
-      db.chem.names <- list(db.CompA.names, db.CompA.altNames, db.CompA.cas)
-      db.chem.names <- ifelse(length(db.chem.names) == 0, "", db.chem.names)
-      db.grep <- db.grep[, matchBNDL(db.chem.names, db.grep)]
+    search_component <- function(component_query, local_cas_db) {
+      if (!is.valid(component_query)) return(NULL)
+      
+      # Convert search query to lowercase once
+      query_lower <- tolower(component_query)
+      
+      # Find rows where the query matches any of the relevant columns
+      match_idx <- grepl(query_lower, local_cas_db$CAS.NAME_lower, fixed = TRUE) |
+                   grepl(query_lower, local_cas_db$CAS.COMMON_lower, fixed = TRUE) |
+                   grepl(query_lower, local_cas_db$CAS.CODE_lower, fixed = TRUE)
+      
+      # Return the canonical names for all matches
+      unique(local_cas_db$CAS.NAME[match_idx])
     }
-    # search a system that matchs the lower-phase component, if search parameter
-    #  is not null.
-    if (is.valid(db.CompB)) {
-      db.CompB.names <- db$db.cas[grep(tolower(db.CompB), 
-                                       tolower(db$db.cas$CAS.NAME), 
-                                       fixed = TRUE), "CAS.NAME"]
-      db.CompB.altNames <- db$db.cas[grep(tolower(db.CompB), 
-                                          tolower(db$db.cas$CAS.COMMON), 
-                                          fixed = TRUE), "CAS.NAME"]
-      db.CompB.cas <- db$db.cas[grep(tolower(db.CompB), 
-                                     tolower(db$db.cas$CAS.CODE), 
-                                     fixed = TRUE), "CAS.NAME"]
-      #
-      db.chem.names <- list(db.CompB.names, db.CompB.altNames, db.CompB.cas)
-      db.chem.names <- ifelse(length(db.chem.names) == 0, "", db.chem.names)
-      db.grep <- db.grep[, matchBNDL(db.chem.names, db.grep)]
+    # --------------------------------------------------------------------------
+    
+    # IMPROVEMENT: Use the helper function for cleaner, faster, and non-repetitive searches.
+    # The logic is now streamlined and much more readable.
+    for (component in list(db.CompA, db.CompB, db.CompC)) {
+      if (is.valid(component) && ncol(db.grep) > 0) {
+        chem_names <- search_component(component, cas_search_db)
+        if (length(chem_names) > 0) {
+          db.grep <- db.grep[, matchBNDL(chem_names, db.grep), drop = FALSE]
+        } else {
+          db.grep <- db.grep[, FALSE, drop = FALSE] # No names found, so no systems will match
+        }
+      }
     }
-    # search a system that matchs the additive component, if search parameter 
-    # is not null.
-    if (is.valid(db.CompC)) {
-      db.CompC.names <- db$db.cas[grep(tolower(db.CompC), 
-                                       tolower(db$db.cas$CAS.NAME),
-                                       fixed = TRUE), "CAS.NAME"]
-      db.CompC.altNames <- db$db.cas[grep(tolower(db.CompC), 
-                                          tolower(db$db.cas$CAS.COMMON),
-                                          fixed = TRUE), "CAS.NAME"]
-      db.CompC.cas <- db$db.cas[grep(tolower(db.CompC), 
-                                     tolower(db$db.cas$CAS.CODE),
-                                     fixed = TRUE), "CAS.NAME"]
-      #
-      db.chem.names <- list(db.CompC.names, db.CompC.altNames, db.CompC.cas)
-      db.chem.names <- ifelse(length(db.chem.names) == 0, "", db.chem.names)
-      db.grep <- db.grep[, matchBNDL(db.chem.names, db.grep)]
-    }
+
     # search a system that match the system's temperature, if search parameter
     #  is not null.
-    if (is.valid(db.Temp)) {
+    if (is.valid(db.Temp) && ncol(db.grep) > 0) {
       db.grep <- matchTpH(db.Temp, db.grep, FALSE)
     }
+    
     # search a system that matchs the system's pH, if search parameter is not
     #  null.
-    if (is.valid(db.ph)) {
+    if (is.valid(db.ph) && ncol(db.grep) > 0) {
       db.grep <- matchTpH(db.ph, db.grep, TRUE)
     }
-    # search a system that matchs the system's UID, if search parameter is not 
+    
+    # search a system that matchs the system's UID, if search parameter is not
     # null.
-    if (is.valid(db.uid)) {
-      db.grep <- db.grep[, matchBNDL(db.uid, db.grep)]
+    if (is.valid(db.uid) && ncol(db.grep) > 0) {
+      db.grep <- db.grep[, matchBNDL(db.uid, db.grep), drop = FALSE]
     }
-    if (ncol(db.grep) != 0) {
+
+    # Add a check for ncol to prevent errors with crayon
+    if (ncol(db.grep) > 0) {
       cat(paste("    Your search had [", red(ncol(db.grep) / 2), "] results.",
-                "\n",sep = ""))
-      #
+                "\n", sep = ""))
+      
       if (stacked) {
         db.ans[["Binodal"]] <- db.grep
       } else {

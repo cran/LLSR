@@ -91,10 +91,10 @@ bndOrthPlot <- function(dataSET, Order, xlbl = "", ylbl = "") {
   ymax <- ceiling(round(max(dataSET[, 2]) / 0.92, 1) / 5) * 5
   #
   outputPLOT <- ggplot() + scale_colour_grey() +
-    geom_line(data = dataSET, size = 1, 
-              aes_string(color = "System", x = "X", y = "Y")) +
+    geom_line(data = dataSET, linewidth = 1,
+              aes(color = .data[["System"]], x = .data[["X"]], y = .data[["Y"]])) +
     geom_point(data = dataSET, size = 2,
-               aes_string(color = "System", x = "X", y = "Y")) +
+               aes(color = .data[["System"]], x = .data[["X"]], y = .data[["Y"]])) +
     xlab(paste(xlbl,  "(%, m/m)")) +
     ylab(paste(ylbl, "(%, m/m)")) +
     theme_light() +
@@ -105,12 +105,12 @@ bndOrthPlot <- function(dataSET, Order, xlbl = "", ylbl = "") {
       legend.position = "top",
       axis.title.y = element_text(vjust = 5),
       axis.title.x = element_text(vjust = -2),
-      panel.grid.major = element_line(size = .70, colour = "black"),
-      panel.grid.minor = element_line(size = .70),
-      panel.border = element_rect(size = .5, colour = "white"),
+      panel.grid.major = element_line(linewidth = .70, colour = "black"),
+      panel.grid.minor = element_line(linewidth = .70),
+      panel.border = element_rect(linewidth = .5, colour = "white"),
       axis.text.x = element_text(size = 15),
       axis.text.y = element_text(size = 15),
-      axis.line = element_line(colour = 'black', size = 1.25),
+      axis.line = element_line(colour = 'black', linewidth = 1.25),
       legend.title = element_blank(),
       legend.text = element_text(
         colour = "black",

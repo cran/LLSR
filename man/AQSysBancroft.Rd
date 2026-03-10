@@ -39,5 +39,5 @@ AQSysBancroft(dataSET, Order = "xy")
 TUBIO, G.  et al. Liquid-liquid equilibrium of the Ucon 50-HB5100/sodium 
 citrate aqueous two-phase systems. Separation and Purification Technology, 
 v. 65, n. 1, p. 3-8,  2009. ISSN 1383-5866. 
-(\href{https://www.sciencedirect.com/science/article/pii/S1383586608000361}{ScienceDirect})
+\doi{10.1016/j.fluid.2008.01.002}
 }

@@ -54,57 +54,28 @@ AQSearch.Slope <-
     if (all(unlist(lapply(db.params, is.null)))) AQSys.err("6")
     # output variable is initialized with data from db.
     db.grep <- db$db.tielines$slopes
+    cas_search_db <- build_cas_search_db(db$db.cas)
     #
     if ((nrow(db.grep)==0)&(ncol(db.grep)==0)) 
       {db.ph = db.CompA = db.CompB = db.Temp = db.CompC = db.uid = NULL}
     #
     if (is.valid(db.CompA)) {
-      db.CompA.names <- db$db.cas[grep(tolower(db.CompA),
-                                       tolower(db$db.cas$CAS.NAME), 
-                                       fixed = TRUE), "CAS.NAME"]
-      db.CompA.altNames <- db$db.cas[grep(tolower(db.CompA), 
-                                          tolower(db$db.cas$CAS.COMMON), 
-                                          fixed = TRUE), "CAS.NAME"]
-      db.CompA.cas <- db$db.cas[grep(tolower(db.CompA), 
-                                     tolower(db$db.cas$CAS.CODE), 
-                                     fixed = TRUE), "CAS.NAME"]
-      #
-      db.chem.names <- list(db.CompA.names, db.CompA.altNames, db.CompA.cas)
-      db.chem.names <- ifelse(length(db.chem.names) == 0, "", db.chem.names)
+      db.CompA.names <- search_component_names(db.CompA, cas_search_db)
+      db.chem.names <- ifelse(length(db.CompA.names) == 0, "", db.CompA.names)
       db.grep <- db.grep[matchComp(db.chem.names, db.grep), ]
     }
     # search a system that matchs the lower-phase component, if search 
     # parameter is not null.
     if (is.valid(db.CompB)) {
-      db.CompB.names <- db$db.cas[grep(tolower(db.CompB), 
-                                       tolower(db$db.cas$CAS.NAME), 
-                                       fixed = TRUE), "CAS.NAME"]
-      db.CompB.altNames <- db$db.cas[grep(tolower(db.CompB), 
-                                          tolower(db$db.cas$CAS.COMMON), 
-                                          fixed = TRUE), "CAS.NAME"]
-      db.CompB.cas <- db$db.cas[grep(tolower(db.CompB), 
-                                     tolower(db$db.cas$CAS.CODE), 
-                                     fixed = TRUE), "CAS.NAME"]
-      #
-      db.chem.names <- list(db.CompB.names, db.CompB.altNames, db.CompB.cas)
-      db.chem.names <- ifelse(length(db.chem.names) == 0, "", db.chem.names)
+      db.CompB.names <- search_component_names(db.CompB, cas_search_db)
+      db.chem.names <- ifelse(length(db.CompB.names) == 0, "", db.CompB.names)
       db.grep <- db.grep[matchComp(db.chem.names, db.grep),]
     }
     # search a system that matchs the additive component, if search parameter 
     # is not null.
     if (is.valid(db.CompC)) {
-      db.CompC.names <- db$db.cas[grep(tolower(db.CompC),
-                                       tolower(db$db.cas$CAS.NAME),
-                                       fixed = TRUE), "CAS.NAME"]
-      db.CompC.altNames <- db$db.cas[grep(tolower(db.CompC),
-                                          tolower(db$db.cas$CAS.COMMON),
-                                          fixed = TRUE), "CAS.NAME"]
-      db.CompC.cas <- db$db.cas[grep(tolower(db.CompC),
-                                     tolower(db$db.cas$CAS.CODE),
-                                     fixed = TRUE), "CAS.NAME"]
-      #
-      db.chem.names <- list(db.CompC.names, db.CompC.altNames, db.CompC.cas)
-      db.chem.names <- ifelse(length(db.chem.names) == 0, "", db.chem.names)
+      db.CompC.names <- search_component_names(db.CompC, cas_search_db)
+      db.chem.names <- ifelse(length(db.CompC.names) == 0, "", db.CompC.names)
       db.grep <- db.grep[matchComp(db.chem.names, db.grep), ]
     }
     # search a system that matchs the system's temperature, if search parameter

@@ -100,5 +100,5 @@ EvalData <- AQSysEval(dataSET2 , xlbl = xLabel, ylbl = yLabel)
 KAUL, A. The Phase Diagram. In: HATTI-KAUL, R. (Ed.). 
 Aqueous Two-Phase Systems: Methods and Protocols: Humana Press, v.11, 2000. 
 cap. 2, p.11-21.  (Methods in Biotechnology). ISBN 978-0-89603-541-6.
-(\href{https://link.springer.com/10.1385/1-59259-028-4:11}{SpringerLink})
+(\href{https://link.springer.com/protocol/10.1385/1-59259-028-4:11}{SpringerLink})
 }

@@ -1,6 +1,4 @@
 ###############################################################################
-options(digits = 14)
-###############################################################################
 #' @import rootSolve
 ###############################################################################
 #' @rdname AQSysDOE
@@ -84,18 +82,19 @@ AQSysDOE <- function(dataSET,
   for (idx in seq(1, length(SysCharData))) {
     TLLs[idx, 1:2] <- as.data.frame(SysCharData[[idx]]$TLL)
   }
-  # values are rounded 1% to make sure they are within the method boundaries
-  # seqTLL <- seq(round(max(TLLs[, 1]), 2), 
-  #               round(min(TLLs[ifelse(max(TLLs$V2) == min(TLLs$V2),
-  #                                     which(TLLs$V1 == min(TLLs$V1)),
-  #                                     which(TLLs$V2 > max(TLLs$V1))
-  #               ), 
-  #                              names(TLLs)][, 2]), 2)*0.99, 
-  #               length.out = nTL)
   #
-  seqTLL <- seq(round(max(TLLs[, 1]), 2), round(min(
-    TLLs[which(TLLs$V2 > max(TLLs$V1)), names(TLLs)][, 2]), 2) * 0.99, 
-    length.out = nTL)
+  # values are rounded 1% to make sure they are within the method boundaries
+  #
+  max_min_tll <- max(TLLs[, 1])
+  feasible_idx <- which(TLLs$V2 > max(TLLs$V1))
+  if (length(feasible_idx) == 0) {
+    stop("Unable to construct DOE: no valid TLL range found for the provided systems.",
+         call. = FALSE)
+  }
+  min_max_tll <- min(TLLs[feasible_idx, 2])
+  seqTLL <- seq(round(max_min_tll, 2),
+                round(min_max_tll, 2) * 0.99,
+                length.out = nTL)
   #
   # return(list(A = TLLs, B = seqTLL))
   # Select which model will be used to generate the plot. Function return list

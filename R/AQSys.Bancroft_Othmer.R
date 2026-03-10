@@ -14,7 +14,7 @@
 #' OTHMER, D.; TOBIAS, P. Liquid-Liquid Extraction Data - The Line Correlation.
 #'  Industrial & Engineering Chemistry, v. 34, n. 6, p. 693-696, 
 #'  1942/06/01 1942. ISSN 0019-7866. 
-#' (\href{https://pubs.acs.org/doi/abs/10.1021/ie50390a600}{ACS Publications})
+#' \doi{10.1021/ie50390a600}
 #' @examples
 #' # dataSET is a data.frame which contains series of Tieline's mass fraction
 #' # (upper-rich component, bottom-rich component and water)
@@ -63,7 +63,7 @@ AQSysOthmer <- function(dataSET, ...) {
 #' TUBIO, G.  et al. Liquid-liquid equilibrium of the Ucon 50-HB5100/sodium 
 #' citrate aqueous two-phase systems. Separation and Purification Technology, 
 #' v. 65, n. 1, p. 3-8,  2009. ISSN 1383-5866. 
-#' (\href{https://www.sciencedirect.com/science/article/pii/S1383586608000361}{ScienceDirect})
+#' \doi{10.1016/j.fluid.2008.01.002}
 #' @export AQSysBancroft
 #' @param dataSET - Tieline Experimental data that will be used in the nonlinear
 #'  fit

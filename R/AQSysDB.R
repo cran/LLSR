@@ -1,6 +1,4 @@
 ###############################################################################
-options(digits = 14)
-###############################################################################
 #' @import openxlsx digest
 ###############################################################################
 #' @rdname AQSysDB
@@ -29,8 +27,6 @@ options(digits = 14)
 AQSysDB <- function(path) {
   # path must point to a xlsx or xls file
   if (grepl(".xlsx", path) | grepl(".xls", path)) {
-    # Clean terminal and load the specified file
-    cat('\014')
     workBook <- loadWorkbook(path)
     # load sheets
     sheets <- getSheetNames(path)

@@ -1,6 +1,4 @@
 ###############################################################################
-options(digits = 14)
-###############################################################################
 #' @import ggplot2
 #' @import nleqslv
 #' @import rootSolve
@@ -14,6 +12,12 @@ crit_point_eqsys <- function(dataSET,
                              Order,
                              ext) {
   
+  required_fields <- c("A", "B", "ORDER", "PH", "TEMP", "TOP.A", "TOP.B", 
+                       "BOT.A", "BOT.B", "GLB.A", "GLB.B")
+  if (!all(required_fields %in% names(tldt))) {
+    stop("tldt is missing required fields for critical-point equation-system method.",
+         call. = FALSE)
+  }
   ###
   dataSET <- suppressWarnings(toNumeric(dataSET, Order))
   PARs <- summary(AQSys(dataSET))$coefficients[, 1]

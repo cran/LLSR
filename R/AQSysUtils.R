@@ -268,6 +268,7 @@ insertRow <- function(existingDF, newrow, r) {
   existingDF
 }
 #
+#
 saveDATA <- function(path, data) {
   workBook <- loadWorkbook(path)
   sheets <- getSheetNames(path)
@@ -275,9 +276,8 @@ saveDATA <- function(path, data) {
   if (any(grepl("results", sheets))) {
     res_idx <- grep("results", sheets)
     removeWorksheet(workBook, sheet = res_idx)
-  } else {
-    addWorksheet(workBook, sheetName = "results")
   }
+  addWorksheet(workBook, sheetName = "results")
   #
   writeData(
     wb = workBook,
@@ -286,8 +286,8 @@ saveDATA <- function(path, data) {
     startRow = 1,
     startCol = 1
   )
-  saveWorkbook(workBook)
-  #return()
+  saveWorkbook(workBook, path, overwrite = TRUE)
+  # return()
 }
 #
 getTL <- function(workBook, sheets) {
@@ -495,8 +495,10 @@ toBNDL <- function(workBook, sheets) {
   return(sys.block[, 0:-1])
 }
 #
-AQSys.merge <- function(wrbk, sheets) {
-  # merges data contained in all sheets from the same workbook which are named 
+AQSys.merge <- function(dataSET, ...) {
+  wrbk <- dataSET
+  sheets <- list(...)[[1]]
+  # merges data contained in all sheets from the same workbook which are named
   # using the pattern datasource_sheetname_YX in its name. the order in the end
   # is optional by now but will soon be part of the main function
   #

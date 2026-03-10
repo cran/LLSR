@@ -66,7 +66,7 @@ scale_color_llsr <-
     pal <- llsr_pal(palette = palette, reverse = reverse)
     
     if (discrete) {
-      discrete_scale("colour", paste0("llsr_", palette), palette = pal, ...)
+      discrete_scale("colour", palette = pal, name = paste0("llsr_", palette), ...)
     } else {
       scale_color_gradientn(colours = pal(256), ...)
     }
@@ -88,7 +88,7 @@ scale_fill_llsr <-
     pal <- llsr_pal(palette = palette, reverse = reverse)
     
     if (discrete) {
-      discrete_scale("fill", paste0("llsr_", palette), palette = pal, ...)
+      discrete_scale("fill", palette = pal, name = paste0("llsr_", palette), ...)
     } else {
       scale_fill_gradientn(colours = pal(256), ...)
     }

@@ -1,31 +1,21 @@
 ###############################################################################
-undigest <- function(str.md5) {
-  # using a given db, the function search for a md5 match nd return the 
-  # correspondent plain string
-  ans <- LLSR::llsr_data$db.ref[grep(str.md5, LLSR::llsr_data$db.ref[, 3], 
-                                     fixed = TRUE), 2]
-  ans
-}
+# Shared helpers for AQSearch* functions
 ###############################################################################
-db.check <- function(db) {
-  # check if the variable parsed as a parameter isn't null
-  if (is.null(db)) {
-    # if null, it triggers an error (check AQSys.err.R for details)
-    AQSys.err("4")
-  } else {
-    # check if db is a list with length = 3 (db.cas, db.sys and db.ref)
-    if ((is.list(db)) & (length(db) == 3)) {
-      # Every element in db must be a dataframe
-      for (i in 1:length(db)) {
-        # if not, it triggers an error (check AQSys.err.R for details)
-        if (is.data.frame(db[[i]]) == FALSE)
-          AQSys.err("3", k = names(db)[i])
-      }
-      # if db isn't a list with length = 3, it triggers an error 
-      # (check AQSys.err.R for details)
-    } else {
-      AQSys.err("7")
-    }
-  }
+
+build_cas_search_db <- function(cas_db) {
+  cas_db$CAS.NAME_lower <- tolower(cas_db$CAS.NAME)
+  cas_db$CAS.COMMON_lower <- tolower(cas_db$CAS.COMMON)
+  cas_db$CAS.CODE_lower <- tolower(cas_db$CAS.CODE)
+  cas_db
 }
+
+search_component_names <- function(component_query, cas_search_db) {
+  if (!is.valid(component_query)) return(character(0))
+  query_lower <- tolower(component_query)
+  match_idx <- grepl(query_lower, cas_search_db$CAS.NAME_lower, fixed = TRUE) |
+    grepl(query_lower, cas_search_db$CAS.COMMON_lower, fixed = TRUE) |
+    grepl(query_lower, cas_search_db$CAS.CODE_lower, fixed = TRUE)
+  unique(cas_search_db$CAS.NAME[match_idx])
+}
+
 ###############################################################################
